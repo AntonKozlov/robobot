@@ -1,4 +1,4 @@
-package com.example.android.BluetoothChat;
+package org.embox.robobot;
 
 import android.util.Log;
 
