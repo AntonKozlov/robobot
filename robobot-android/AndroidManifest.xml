@@ -22,7 +22,7 @@
 
     <application android:label="@string/app_name"
                  android:icon="@drawable/app_icon" >
-        <activity android:name=".BluetoothChat"
+        <activity android:name="ui.BluetoothChat"
                   android:label="@string/app_name"
                   android:configChanges="orientation|keyboardHidden">
             <intent-filter>
@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.embox.robobot.DeviceListActivity"
+        <activity android:name="org.embox.robobot.ui.DeviceListActivity"
                   android:label="@string/select_device"
                   android:theme="@android:style/Theme.Dialog"
                   android:configChanges="orientation|keyboardHidden" />
