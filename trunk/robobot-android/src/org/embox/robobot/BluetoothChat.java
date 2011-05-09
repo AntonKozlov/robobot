@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.android.BluetoothChat;
+package org.embox.robobot;
+
+import com.example.android.BluetoothChat.R;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
