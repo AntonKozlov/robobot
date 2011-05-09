@@ -34,7 +34,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,7 +71,7 @@ public class BluetoothChat extends Activity implements SensorEventListener {
     // Name of the connected device
     private String mConnectedDeviceName = null;
     // Array adapter for the conversation thread
-    private ArrayAdapter<String> mConversationArrayAdapter;
+    //private ArrayAdapter<String> mConversationArrayAdapter;
     // String buffer for outgoing messages
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -89,7 +88,7 @@ public class BluetoothChat extends Activity implements SensorEventListener {
 	private static TextView nxtStatus;
 	
 	private Boolean isTransmit;
-	private float xCalibrate, yCalibrate;
+	//private float xCalibrate, yCalibrate;
 	private float curX, curY, curZ;
 	
 	private NXTHandler mNXTHandler;
@@ -134,7 +133,7 @@ public class BluetoothChat extends Activity implements SensorEventListener {
         
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorAcceler = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        xCalibrate = yCalibrate = 0;
+       // xCalibrate = yCalibrate = 0;
         isTransmit = false;
         
         mTransmitButton.setText(R.string.is_not_transit);
@@ -267,20 +266,20 @@ public class BluetoothChat extends Activity implements SensorEventListener {
      * Sends a message.
      * @param message  A string of text to send.
      */
-    private void sendMessage(byte[] message) {
-        // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
-            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check that there's actually something to send
-        if (message.length > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-           
-            mChatService.write(message);
-        }
-    }
+//    private void sendMessage(byte[] message) {
+//        // Check that we're actually connected before trying anything
+//        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+//            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        // Check that there's actually something to send
+//        if (message.length > 0) {
+//            // Get the message bytes and tell the BluetoothChatService to write
+//           
+//            mChatService.write(message);
+//        }
+//    }
 
     // The action listener for the EditText widget, to listen for the return key
     // The Handler that gets information back from the BluetoothChatService
@@ -308,7 +307,7 @@ public class BluetoothChat extends Activity implements SensorEventListener {
                 }
                 break;
             case MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
+                //byte[] writeBuf = (byte[]) msg.obj;
                 // construct a string from the buffer
                 
                 //mChatService.write(writeBuf);
