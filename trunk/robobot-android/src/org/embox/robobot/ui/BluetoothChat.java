@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-package org.embox.robobot;
+package org.embox.robobot.ui;
+
+import org.embox.robobot.BluetoothChatService;
+import org.embox.robobot.NXTHandler;
+import org.embox.robobot.R;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

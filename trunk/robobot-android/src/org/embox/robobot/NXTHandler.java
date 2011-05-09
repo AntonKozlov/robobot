@@ -1,5 +1,7 @@
 package org.embox.robobot;
 
+import org.embox.robobot.ui.BluetoothChat;
+
 import android.util.Log;
 
 public class NXTHandler {

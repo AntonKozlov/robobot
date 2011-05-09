@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.embox.robobot;
+package org.embox.robobot.ui;
 
 import java.util.Set;
+
+import org.embox.robobot.R;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -48,6 +50,7 @@ public class DeviceListActivity extends Activity {
     private static final String TAG = "DeviceListActivity";
     private static final boolean D = true;
 
+    
     // Return Intent extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
