@@ -28,18 +28,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -145,7 +141,6 @@ public class BluetoothChat extends Activity implements SensorEventListener {
         
         mTransmitButton.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View arg0) {
 		        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
 		            Toast.makeText(getApplicationContext(), R.string.not_connected, Toast.LENGTH_SHORT).show();
@@ -172,7 +167,6 @@ public class BluetoothChat extends Activity implements SensorEventListener {
         
         mCalibrateButton.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View arg0) {
 				if (mNXTHandler == null) {
 					Toast.makeText(getApplicationContext(), R.string.not_connected, Toast.LENGTH_SHORT).show();
@@ -185,7 +179,6 @@ public class BluetoothChat extends Activity implements SensorEventListener {
         
         mRequestButton.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				mNXTHandler.askSensor((byte) 0x0);
 				
@@ -395,13 +388,11 @@ public class BluetoothChat extends Activity implements SensorEventListener {
         return false;
     }
 
-	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void onSensorChanged(SensorEvent arg0) {
 		curX = (float) arg0.values[0];
 		curY = (float) arg0.values[1];
