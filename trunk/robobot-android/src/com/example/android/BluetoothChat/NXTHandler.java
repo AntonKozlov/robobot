@@ -1,10 +1,6 @@
 package com.example.android.BluetoothChat;
 
-import java.lang.reflect.Array;
-
-import android.text.format.Time;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 public class NXTHandler {
 	
