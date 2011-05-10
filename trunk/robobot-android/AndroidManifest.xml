@@ -24,7 +24,8 @@
                  android:icon="@drawable/app_icon" >
         <activity android:name=".ui.BluetoothChat"
                   android:label="@string/app_name"
-                  android:configChanges="orientation|keyboardHidden">
+                  android:configChanges="orientation|keyboardHidden"
+                  android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
