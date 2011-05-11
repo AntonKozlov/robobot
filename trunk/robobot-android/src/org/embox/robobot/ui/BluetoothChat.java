@@ -23,6 +23,7 @@ import org.embox.robobot.R;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -31,6 +32,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -98,6 +100,8 @@ public class BluetoothChat extends Activity implements SensorEventListener {
 	private NXTHandler mNXTHandler;
 	
 	private BluetoothChat mBluetoothChat;
+	
+	private PowerManager.WakeLock mWakeLock;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -188,6 +192,8 @@ public class BluetoothChat extends Activity implements SensorEventListener {
 			}
 		});
         
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "robobotWL");
     }
 
     @Override
@@ -222,6 +228,7 @@ public class BluetoothChat extends Activity implements SensorEventListener {
             }
         }
         mSensorManager.registerListener(this, mSensorAcceler, SensorManager.SENSOR_DELAY_GAME);
+        mWakeLock.acquire();
     }
 
     private void setupChat() {
@@ -236,6 +243,7 @@ public class BluetoothChat extends Activity implements SensorEventListener {
         super.onPause();
         if(D) Log.e(TAG, "- ON PAUSE -");
         mSensorManager.unregisterListener(this);
+        mWakeLock.release();
     }
 
     @Override
