@@ -1,4 +1,4 @@
-package org.embox.robobotandroidiface;
+package org.embox.robobot.ui;
 
 import org.embox.robobotandroidiface.R;
 
