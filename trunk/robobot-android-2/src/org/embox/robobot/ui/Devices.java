@@ -1,6 +1,6 @@
 package org.embox.robobot.ui;
 
-import org.embox.robobotandroidiface.R;
+import org.embox.robobot.ui.R;
 
 import android.app.Activity;
 import android.os.Bundle;
