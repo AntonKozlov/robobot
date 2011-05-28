@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, robobotAndroidIface!</string>
     <string name="app_name">iface for robobot application on android platform</string>
+    <string name="nxt_bt_name">NXT</string>
 </resources>
