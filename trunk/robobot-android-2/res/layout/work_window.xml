@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:gravity="bottom|center_horizontal" android:orientation="vertical">
+    <LinearLayout android:id="@+id/linearLayout2" android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="top|center_horizontal" android:minHeight="10pt">
+        <TextView android:text="TextView1" android:id="@+id/textView1" android:layout_height="wrap_content" android:layout_width="50pt" android:minHeight="15pt" android:gravity="center"></TextView>
+        <TextView android:text="TextView2" android:id="@+id/textView2" android:layout_height="wrap_content" android:layout_width="50pt" android:minHeight="15pt" android:gravity="center"></TextView>
+        <TextView android:text="TextView3" android:id="@+id/textView3" android:layout_height="wrap_content" android:layout_width="50pt" android:minHeight="15pt" android:gravity="center"></TextView>
+        <TextView android:text="TextView4" android:id="@+id/textView4" android:layout_height="wrap_content" android:layout_width="50pt" android:minHeight="15pt" android:gravity="center"></TextView>
+    </LinearLayout>
+    <FrameLayout android:id="@+id/frameLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent" android:minHeight="75pt" android:minWidth="100pt">
+        <ImageSwitcher android:id="@+id/imageSwitcher1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:duplicateParentState="false" android:layout_gravity="center_vertical|center_horizontal" android:minHeight="75pt" android:minWidth="100pt"></ImageSwitcher>
+        <ImageSwitcher android:id="@+id/imageSwitcher2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="left" android:minHeight="75pt" android:minWidth="54pt"></ImageSwitcher>
+        <ImageSwitcher android:id="@+id/imageSwitcher3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right" android:minHeight="75pt" android:minWidth="54pt"></ImageSwitcher>
+    </FrameLayout>
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_height="fill_parent" android:layout_width="wrap_content" android:gravity="bottom|center_horizontal" android:minHeight="20pt">
+        <Button android:id="@+id/btn1" android:text="Button1" android:layout_height="25pt" android:layout_width="50pt"></Button>
+        <Button android:id="@+id/btn2" android:text="Button2" android:layout_height="25pt" android:layout_width="50pt"></Button>
+        <Button android:id="@+id/btn3" android:text="Button3" android:layout_height="25pt" android:layout_width="50pt"></Button>
+        <Button android:id="@+id/btn4" android:text="Button4" android:layout_height="25pt" android:layout_width="50pt"></Button>
+    </LinearLayout>
+</LinearLayout>
