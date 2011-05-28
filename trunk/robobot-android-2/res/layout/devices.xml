@@ -10,7 +10,7 @@
     android:layout_gravity="center" android:minHeight="95pt">
     </TableLayout>
     <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_gravity="center" android:gravity="bottom|center_horizontal">
-        <Button android:layout_gravity="bottom" android:id="@+id/btn1" android:layout_height="25pt" android:layout_width="100pt" android:text="Scan"></Button>
+        <Button android:layout_gravity="bottom" android:id="@+id/button_scan" android:layout_height="25pt" android:layout_width="100pt" android:text="Scan"></Button>
         <Button android:id="@+id/btn2" android:layout_height="25pt" android:layout_width="100pt" android:text="Connect"></Button>
     </LinearLayout>
 </LinearLayout>
