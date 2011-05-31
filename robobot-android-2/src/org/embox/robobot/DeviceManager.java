@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.embox.robobot.proto.IProto;
 import org.embox.robobot.proto.NxtDirect;
-import org.embox.robobot.transport.Bluetooth;
+import org.embox.robobot.transport.BluetoothTransport;
 import org.embox.robobot.transport.ITransport;
 import org.embox.robobot.ui.R;
 
@@ -66,7 +66,7 @@ public class DeviceManager {
 	
 	public void startScan(IDeviceEventListener listener) {
 		this.listener = listener; 
-		ITransport bt = new Bluetooth();
+		ITransport bt = new BluetoothTransport();
 		
 		// Register for broadcasts when a device is discovered
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);

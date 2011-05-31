@@ -3,9 +3,9 @@ package org.embox.robobot.transport;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 
-public class Bluetooth implements ITransport {
+public class BluetoothTransport implements ITransport {
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-	public Bluetooth() {
+	public BluetoothTransport() {
 		
 	}
 	@Override
