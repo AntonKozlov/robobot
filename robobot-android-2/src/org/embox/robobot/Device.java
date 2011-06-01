@@ -34,17 +34,14 @@ public class Device implements IDevice, IProto {
 	}
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return devId;
 	}
 	@Override
 	public IProto getProto() {
-		// TODO Auto-generated method stub
-		return null;
+		return proto;
 	}
 }
