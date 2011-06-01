@@ -35,8 +35,7 @@ public class MainSelect extends Activity {
 			switch (msg.what) {
 				case IDeviceEvent.DEVICE_FOUND:
 					IDevice device = (IDevice) msg.obj;
-					String str = device.getId();
-					mFoundDeviceAdapter.add(str);
+					mFoundDeviceAdapter.add(device.getId());
 					deviceList.add(device);
 					break;
 				case IDeviceEvent.SCAN_FINISHED:
@@ -55,7 +54,7 @@ public class MainSelect extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			Toast.makeText(getParent(),deviceList.get(position).getName(),Toast.LENGTH_LONG);
+			Toast.makeText(getApplicationContext(),deviceList.get(position).getName(),Toast.LENGTH_LONG).show();
 			
 		}
 		
