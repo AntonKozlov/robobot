@@ -16,10 +16,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.os.Handler;
+import android.os.Message;
 
 
 public class DeviceManager {
-	private IDeviceEventListener listener;
+	private Handler handler;
 	private List<IDevice> deviceList;
 	Context context;
 	
@@ -54,18 +56,18 @@ public class DeviceManager {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 Resources res = context.getResources();
                 if (0 == device.getName().compareTo(res.getString(R.string.nxt_bt_name))) {
-                	listener.receive(IDeviceEvent.DEVICE_FOUND, 
-                			createDevice(device.getAddress(), device.getName(), mNxtDirect));
+                	Message.obtain(handler,IDeviceEvent.DEVICE_FOUND,
+                			createDevice(device.getAddress(), device.getName(), mNxtDirect)).sendToTarget();
                 }
             // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-            	listener.receive(IDeviceEvent.SCAN_FINISHED, null);
+            	Message.obtain(handler,IDeviceEvent.SCAN_FINISHED).sendToTarget();
             }
         }
 	};
 	
-	public void startScan(IDeviceEventListener listener) {
-		this.listener = listener; 
+	public void startScan(Handler handler) {
+		this.handler = handler; 
 		ITransport bt = new BluetoothTransport();
 		
 		// Register for broadcasts when a device is discovered
