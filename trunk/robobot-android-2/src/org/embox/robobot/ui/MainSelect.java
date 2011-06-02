@@ -2,9 +2,10 @@ package org.embox.robobot.ui;
 
 import java.util.ArrayList;
 
+import org.embox.robobot.DeviceHandler;
 import org.embox.robobot.DeviceManager;
 import org.embox.robobot.IDevice;
-import org.embox.robobot.IDeviceEvent;
+import org.embox.robobot.transport.ITransport;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,25 +30,24 @@ public class MainSelect extends Activity {
 	private ArrayList<IDevice> deviceList = new ArrayList<IDevice>();
 	Handler mHandler = new Handler();
 	
-	private class DeviceHandler extends Handler {
+	private class selectDeviceHandler extends DeviceHandler  {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-				case IDeviceEvent.DEVICE_FOUND:
+				case ITransport.DEVICE_FOUND:
 					IDevice device = (IDevice) msg.obj;
 					mFoundDeviceAdapter.add(device.getId());
 					deviceList.add(device);
 					break;
-				case IDeviceEvent.SCAN_FINISHED:
+				case ITransport.SCAN_FINISHED:
 					break;
 				default:
 					break;
 			}
-			super.handleMessage(msg);
 		}
 	}
 	
-	DeviceHandler mDeviceHandler = new DeviceHandler();
+	selectDeviceHandler mDeviceHandler = new selectDeviceHandler();
 	
 	private class DeviceListClickListener implements OnItemClickListener {
 
