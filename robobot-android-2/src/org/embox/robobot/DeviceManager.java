@@ -3,7 +3,7 @@ package org.embox.robobot;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.embox.robobot.proto.IProto;
+import org.embox.robobot.proto.IProtocol;
 import org.embox.robobot.proto.NxtDirect;
 import org.embox.robobot.transport.BluetoothTransport;
 import org.embox.robobot.transport.ITransport;
@@ -25,7 +25,7 @@ public class DeviceManager {
 	private List<IDevice> deviceList;
 	Context context;
 	
-	IProto mNxtDirect;
+	IProtocol mNxtDirect;
 	
 	public DeviceManager(Context context) {
 		deviceList = new ArrayList<IDevice>();
@@ -36,13 +36,13 @@ public class DeviceManager {
 	List<IDevice> getDeviceList() {
 		return deviceList;
 	}
-	private IDevice createDevice(String devId, String name, IProto proto) {
+	private IDevice createDevice(String devId, String name, IProtocol proto, BluetoothDevice device) {
 		for (IDevice dev : deviceList) {
 			if (0 == dev.getId().compareTo(devId)) {
 				return dev;
 			}
 		}
-		IDevice dev = new Device(devId, name, proto); 
+		IDevice dev = new BtDevice(devId, name, proto, device); 
 		deviceList.add(dev);
 		return dev;
 	}
@@ -56,12 +56,15 @@ public class DeviceManager {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 Resources res = context.getResources();
                 if (0 == device.getName().compareTo(res.getString(R.string.nxt_bt_name))) {
-                	Message.obtain(handler,IDeviceEvent.DEVICE_FOUND,
-                			createDevice(device.getAddress(), device.getName(), mNxtDirect)).sendToTarget();
+                	Message.obtain(handler,ITransport.DEVICE_FOUND,
+                			createDevice(device.getAddress(), 
+                					device.getName(), 
+                					mNxtDirect,
+                					device)).sendToTarget();
                 }
             // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-            	Message.obtain(handler,IDeviceEvent.SCAN_FINISHED).sendToTarget();
+            	Message.obtain(handler,ITransport.SCAN_FINISHED).sendToTarget();
             }
         }
 	};

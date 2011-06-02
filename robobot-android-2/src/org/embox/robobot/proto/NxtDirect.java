@@ -1,11 +1,11 @@
 package org.embox.robobot.proto;
 
-public class NxtDirect implements IProto {
+public class NxtDirect implements IProtocol {
 
 	@Override
-	public void setControl(int[] control) {
+	public byte[] setControl(int[] control) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 	
 
