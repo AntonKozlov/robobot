@@ -13,7 +13,7 @@
     <LinearLayout android:id="@+id/linearLayout1" 
     	android:layout_height="wrap_content"
     	android:layout_width="fill_parent">
-        <Button android:text="Button" 
+        <Button android:text="ReScan" 
         	android:id="@+id/button_scan"
         	android:layout_width="fill_parent" 
         	android:layout_height="wrap_content">

@@ -9,7 +9,7 @@
 
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name="org.embox.robobot.ui.MainSelect"
+        <activity android:name="SelectActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
