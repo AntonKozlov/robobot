@@ -22,7 +22,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 
-public class MainSelect extends Activity {
+public class SelectActivity extends Activity {
     private Button mRescanButton;
     private ListView mFoundDevicesList;
     private ArrayAdapter<String> mFoundDeviceAdapter;
@@ -44,7 +44,7 @@ public class MainSelect extends Activity {
 				long id) {
 			//Toast.makeText(getApplicationContext(),deviceList.get(position).getName(),Toast.LENGTH_LONG).show();
 			choosedDevice = deviceList.get(position);
-			Intent intent = new Intent(MainSelect.this, ControlActivity.class);
+			Intent intent = new Intent(SelectActivity.this, ControlActivity.class);
 			startActivity(intent);
 			
 		}
@@ -55,7 +55,7 @@ public class MainSelect extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.devices);
+        setContentView(R.layout.select);
         mFoundDevicesList = (ListView) findViewById(R.id.found_devices_list);
         mFoundDeviceAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         mFoundDevicesList.setAdapter(mFoundDeviceAdapter);
@@ -64,7 +64,7 @@ public class MainSelect extends Activity {
         
         mDeviceHandler = new ScanDeviceHandler() {
     		protected void deviceFound(IDevice device) {
-    			mFoundDeviceAdapter.add(device.getId());
+    			mFoundDeviceAdapter.add(device.getName() + " (" + device.getId() + ")");
     			deviceList.add(device);
     		};
     	};
@@ -74,10 +74,10 @@ public class MainSelect extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				
-				deviceManager.startScan(mDeviceHandler);
+				deviceManager.startIncrementScan(mDeviceHandler);
 			}
 		});
         
-        deviceManager.startScan(mDeviceHandler);
+        deviceManager.startFullScan(mDeviceHandler);
         }
 }

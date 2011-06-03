@@ -39,7 +39,7 @@ public class DeviceManager {
 	private IDevice createDevice(String devId, String name, IProtocol proto, BluetoothDevice device) {
 		for (IDevice dev : deviceList) {
 			if (0 == dev.getId().compareTo(devId)) {
-				return dev;
+				return null;
 			}
 		}
 		IDevice dev = new BtDevice(devId, name, proto, device); 
@@ -56,11 +56,13 @@ public class DeviceManager {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 //Resources res = context.getResources();
                 //if (0 == device.getName().compareTo(res.getString(R.string.nxt_bt_name))) {
-                	Message.obtain(handler,ITransport.DEVICE_FOUND,
-                			createDevice(device.getAddress(), 
-                					device.getName(), 
-                					mNxtDirect,
-                					device)).sendToTarget();
+                	IDevice foundDevice = createDevice(device.getAddress(), 
+        					device.getName(), 
+        					mNxtDirect,
+        					device);
+                	if (foundDevice != null) {
+                		Message.obtain(handler,ITransport.DEVICE_FOUND, foundDevice).sendToTarget();
+                	}
                 //}
             // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
@@ -68,8 +70,13 @@ public class DeviceManager {
             }
         }
 	};
+	 
+	public void startFullScan(Handler handler) {
+		deviceList.clear();
+		startIncrementScan(handler);
+	}
 	
-	public void startScan(Handler handler) {
+	public void startIncrementScan(Handler handler) {
 		this.handler = handler; 
 		ITransport bt = new BluetoothTransport();
 		

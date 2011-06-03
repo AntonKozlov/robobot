@@ -18,7 +18,7 @@ public class ControlActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.control);
-	    device = MainSelect.getChoosedDevice();
+	    device = SelectActivity.getChoosedDevice();
 	    Toast.makeText(getApplicationContext(),
 	    		device.getName(),Toast.LENGTH_SHORT).show();
 	    device.setDeviceHandler(new ControlDeviceHandler());
