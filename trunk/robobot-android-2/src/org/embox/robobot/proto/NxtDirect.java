@@ -4,8 +4,12 @@ public class NxtDirect implements IProtocol {
 
 	@Override
 	public byte[] setControl(int[] control) {
-		// TODO Auto-generated method stub
-		return null;
+		return Integer.toString(control[0]).getBytes();
+	}
+
+	@Override
+	public byte[] translateInput(byte[] data) {
+		return data;
 	}
 	
 

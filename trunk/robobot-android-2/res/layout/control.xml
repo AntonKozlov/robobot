@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" 
+  android:orientation="vertical">
+    <LinearLayout android:id="@+id/linearLayout1" 
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:layout_weight="1">
+        <FrameLayout android:layout_width="fill_parent" 
+        	android:id="@+id/frameLayout1" 
+        	android:layout_height="wrap_content" 
+        	android:layout_weight="1">
+            <TextView android:id="@+id/textViewTransmit" 
+            	android:text="Transmitting..." 
+            	android:layout_height="fill_parent" 
+            	android:layout_width="fill_parent" 
+            	android:gravity="center" 
+            	android:paddingTop="10dp" 
+            	android:paddingBottom="10dip"></TextView>
+        </FrameLayout>
+        <FrameLayout android:layout_width="fill_parent"
+        	android:id="@+id/frameLayout2" 
+        	android:layout_height="wrap_content" 
+        	android:layout_weight="1">
+            <TextView android:text="Lock" 
+            	android:id="@+id/textViewLock" 
+            	android:layout_width="fill_parent" 
+            	android:layout_height="fill_parent" 
+            	android:gravity="center"
+           		android:paddingTop="10dp" 
+            	android:paddingBottom="10dip"></TextView>
+        </FrameLayout>
+    </LinearLayout>
+    <Button android:layout_width="fill_parent" 
+    	android:id="@+id/button_transmit" 
+    	android:layout_height="wrap_content" 
+    	android:text="Transmit"
+    	android:paddingTop="10dip"
+    	android:paddingBottom="10dip"></Button>
+</LinearLayout>

@@ -54,14 +54,14 @@ public class DeviceManager {
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Resources res = context.getResources();
-                if (0 == device.getName().compareTo(res.getString(R.string.nxt_bt_name))) {
+                //Resources res = context.getResources();
+                //if (0 == device.getName().compareTo(res.getString(R.string.nxt_bt_name))) {
                 	Message.obtain(handler,ITransport.DEVICE_FOUND,
                 			createDevice(device.getAddress(), 
                 					device.getName(), 
                 					mNxtDirect,
                 					device)).sendToTarget();
-                }
+                //}
             // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             	Message.obtain(handler,ITransport.SCAN_FINISHED).sendToTarget();
