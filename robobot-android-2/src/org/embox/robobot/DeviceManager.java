@@ -26,6 +26,7 @@ public class DeviceManager {
 	Context context;
 	
 	IProtocol mNxtDirect;
+	ITransport bt = new BluetoothTransport();
 	
 	public DeviceManager(Context context) {
 		deviceList = new ArrayList<IDevice>();
@@ -78,8 +79,7 @@ public class DeviceManager {
 	
 	public void startIncrementScan(Handler handler) {
 		this.handler = handler; 
-		ITransport bt = new BluetoothTransport();
-		
+				
 		// Register for broadcasts when a device is discovered
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         context.registerReceiver(btReceiver, filter);

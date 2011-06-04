@@ -72,9 +72,23 @@ public class BtDevice implements IDevice {
 					}
 					try {
 						socket = btDevice.createRfcommSocketToServiceRecord(BluetoothTransport.BT_UUID);
-						socket.connect();
+						
 					} catch (IOException e) {
 						Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR).sendToTarget();
+						return;
+					}
+					try {
+						socket.connect();
+					} catch (IOException e1) {
+						try {
+							socket.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						e1.printStackTrace();
+						Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR).sendToTarget();
+						return;
 					}
 					deviceState = DEVICE_CONNECTED;
 					Message.obtain(hnd, IDevice.RESULT_CONNECT_OK).sendToTarget();
@@ -87,6 +101,7 @@ public class BtDevice implements IDevice {
 						socket.close();
 					} catch (IOException e) {
 						Message.obtain(hnd, IDevice.RESULT_DISCONNECT_ERROR).sendToTarget();
+						return;
 					}
 					deviceState = DEVICE_DISCONNECTED;
 					Message.obtain(hnd, IDevice.RESULT_DISCONNECT_OK);
@@ -99,7 +114,7 @@ public class BtDevice implements IDevice {
 					try {
 						OutputStream deviceOutput = socket.getOutputStream();
 						deviceOutput.write((byte[]) msg.obj);
-						Message.obtain(hnd, IDevice.RESULT_WRITE_DONE);
+						Message.obtain(hnd, IDevice.RESULT_WRITE_DONE).sendToTarget();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						// must crash in this case imho AK
