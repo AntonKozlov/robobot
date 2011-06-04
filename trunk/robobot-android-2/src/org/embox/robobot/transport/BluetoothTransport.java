@@ -15,6 +15,10 @@ public class BluetoothTransport implements ITransport {
 	
 	@Override
 	public void startScan(BroadcastReceiver receiver) {
+		if (mBluetoothAdapter.isDiscovering()) {
+			return;
+		}
+			
 		mBluetoothAdapter.startDiscovery();
 		
 	}
