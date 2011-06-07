@@ -13,7 +13,7 @@ public class DeviceHandler extends Handler {
 				connectOk();
 				break;
 			case IDevice.RESULT_CONNECT_ERROR:
-				connectError();
+				connectError((String) msg.obj);
 				break;
 			case IDevice.RESULT_DISCONNECT_OK:
 				disconnectOk();
@@ -52,7 +52,7 @@ public class DeviceHandler extends Handler {
 		
 	}
 	
-	protected void connectError() {
+	protected void connectError(String error) {
 		
 	}
 	

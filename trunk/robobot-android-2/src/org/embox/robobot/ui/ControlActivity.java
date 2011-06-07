@@ -36,6 +36,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	float callbZ;
 	
 	int[] acts = new int[3];
+	int[] zeroControl = new int[3];
 	
 	boolean needToTransmit;
 	
@@ -111,6 +112,12 @@ public class ControlActivity extends Activity implements SensorEventListener{
 				device.setControl(acts);
 			}
 		}
+		
+		@Override
+		protected void connectError(String error) {
+			Toast.makeText(getApplicationContext(), "Connect Error: ".concat(error), Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 
 	@Override
@@ -165,7 +172,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	
 	void stopTransmit() {
 		needToTransmit = false;
-		
+		device.setControl(zeroControl);
 	}
 	
 	@Override

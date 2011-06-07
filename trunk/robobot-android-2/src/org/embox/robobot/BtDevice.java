@@ -2,6 +2,8 @@ package org.embox.robobot;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.embox.robobot.proto.IProtocol;
 import org.embox.robobot.transport.BluetoothTransport;
@@ -71,23 +73,29 @@ public class BtDevice implements IDevice {
 						throw new IllegalStateException("BtDevice thread illegal state change");
 					}
 					try {
-						socket = btDevice.createRfcommSocketToServiceRecord(BluetoothTransport.BT_UUID);
+					//	socket = btDevice.createRfcommSocketToServiceRecord(BluetoothTransport.BT_UUID);
+						Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+				        socket = (BluetoothSocket) m.invoke(btDevice, 1);
 						
-					} catch (IOException e) {
-						Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR).sendToTarget();
+					} catch (Exception e) {
+						Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR, e.getMessage()).sendToTarget();
+						e.printStackTrace();
 						return;
 					}
+					
 					try {
 						socket.connect();
 					} catch (IOException e1) {
+						String exString = e1.toString();
 						try {
 							socket.close();
 						} catch (IOException e) {
+							exString.concat(e.getMessage());
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						e1.printStackTrace();
-						Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR).sendToTarget();
+						Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR,exString).sendToTarget();
 						return;
 					}
 					deviceState = DEVICE_CONNECTED;
@@ -170,8 +178,8 @@ public class BtDevice implements IDevice {
 		}
 		
 		@Override
-		protected void connectError() {
-			outsideHandler.connectError();
+		protected void connectError(String error) {
+			outsideHandler.connectError(error);
 		}
 		
 		@Override

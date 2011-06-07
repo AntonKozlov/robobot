@@ -7,7 +7,6 @@ import org.embox.robobot.proto.IProtocol;
 import org.embox.robobot.proto.NxtDirect;
 import org.embox.robobot.transport.BluetoothTransport;
 import org.embox.robobot.transport.ITransport;
-import org.embox.robobot.ui.R;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -15,7 +14,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
 
