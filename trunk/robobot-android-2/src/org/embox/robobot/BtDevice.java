@@ -52,95 +52,119 @@ public class BtDevice implements IDevice {
 	}
 	
 	private class DeviceThread extends Thread {
-		private Handler threadHandler;
+		private DeviceThreadHandler threadHandler;
 		private DeviceHandler deviceHandler;
 		
 		public Handler getThreadHandler() {
 			return threadHandler;
 		}
 
+		public void writeData(byte[] data) {
+			threadHandler.requestWrite(data);
+		}
+		
 		private class DeviceThreadHandler extends Handler {
 			private DeviceHandler hnd;
 			public DeviceThreadHandler(DeviceHandler hnd) {
 				this.hnd = hnd;
 			}
 			
+
+			public void requestConnect() {
+				if (deviceState != DEVICE_DISCONNECTED) {
+					throw new IllegalStateException("BtDevice thread illegal state change");
+				}
+				try {
+				//	socket = btDevice.createRfcommSocketToServiceRecord(BluetoothTransport.BT_UUID);
+					Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+			        socket = (BluetoothSocket) m.invoke(btDevice, 1);
+					
+				} catch (Exception e) {
+					Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR, e.getMessage()).sendToTarget();
+					e.printStackTrace();
+					return;
+				}
+				
+				try {
+					socket.connect();
+				} catch (IOException e1) {
+					String exString = e1.toString();
+					try {
+						socket.close();
+					} catch (IOException e) {
+						exString.concat(e.getMessage());
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					e1.printStackTrace();
+					Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR,exString).sendToTarget();
+					return;
+				}
+				deviceState = DEVICE_CONNECTED;
+				Message.obtain(hnd, IDevice.RESULT_CONNECT_OK).sendToTarget();
+			}
+			
+			public void requestDisconnect() {
+				if (deviceState != DEVICE_CONNECTED) {
+					throw new IllegalStateException("BtDevice thread illegal state change");
+				}
+				try {
+					socket.close();
+				} catch (IOException e) {
+					Message.obtain(hnd, IDevice.RESULT_DISCONNECT_ERROR).sendToTarget();
+					return;
+				}
+				deviceState = DEVICE_DISCONNECTED;
+				Message.obtain(hnd, IDevice.RESULT_DISCONNECT_OK);
+			}
+			
+			public void requestWrite(byte[] data) {
+				if (deviceState != DEVICE_CONNECTED) {
+					throw new IllegalStateException("BtDevice thread illegal state change");
+				}
+				
+				try {
+					OutputStream deviceOutput = socket.getOutputStream();
+					deviceOutput.write(data);
+					//Message.obtain(hnd, IDevice.RESULT_WRITE_DONE).sendToTarget();
+				} catch (IOException e) {
+					
+					// TODO Auto-generated catch block
+					// must crash in this case imho AK
+					e.printStackTrace();
+				}
+				
+			}
+			
+			public void requestClose() {
+				if (deviceState == DEVICE_CONNECTED) {
+					try {
+						socket.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						// cannot do anything? AK
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			
 			@Override
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
 				case IDevice.REQUEST_CONNECT:
-					if (deviceState != DEVICE_DISCONNECTED) {
-						throw new IllegalStateException("BtDevice thread illegal state change");
-					}
-					try {
-					//	socket = btDevice.createRfcommSocketToServiceRecord(BluetoothTransport.BT_UUID);
-						Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-				        socket = (BluetoothSocket) m.invoke(btDevice, 1);
-						
-					} catch (Exception e) {
-						Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR, e.getMessage()).sendToTarget();
-						e.printStackTrace();
-						return;
-					}
-					
-					try {
-						socket.connect();
-					} catch (IOException e1) {
-						String exString = e1.toString();
-						try {
-							socket.close();
-						} catch (IOException e) {
-							exString.concat(e.getMessage());
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						e1.printStackTrace();
-						Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR,exString).sendToTarget();
-						return;
-					}
-					deviceState = DEVICE_CONNECTED;
-					Message.obtain(hnd, IDevice.RESULT_CONNECT_OK).sendToTarget();
+					requestConnect();
 					break;
 				case IDevice.REQUEST_DISCONNECT:
-					if (deviceState != DEVICE_CONNECTED) {
-						throw new IllegalStateException("BtDevice thread illegal state change");
-					}
-					try {
-						socket.close();
-					} catch (IOException e) {
-						Message.obtain(hnd, IDevice.RESULT_DISCONNECT_ERROR).sendToTarget();
-						return;
-					}
-					deviceState = DEVICE_DISCONNECTED;
-					Message.obtain(hnd, IDevice.RESULT_DISCONNECT_OK);
+					requestDisconnect();
 					break;
 				case IDevice.REQUEST_WRITE:
-					if (deviceState != DEVICE_CONNECTED) {
-						throw new IllegalStateException("BtDevice thread illegal state change");
-					}
-					
-					try {
-						OutputStream deviceOutput = socket.getOutputStream();
-						deviceOutput.write((byte[]) msg.obj);
-						Message.obtain(hnd, IDevice.RESULT_WRITE_DONE).sendToTarget();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						// must crash in this case imho AK
-						e.printStackTrace();
-					}
-					
+					requestWrite((byte[]) msg.obj);
 					break;
 				case IDevice.REQUEST_CLOSE:
-					if (deviceState == DEVICE_CONNECTED) {
-						try {
-							socket.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							// cannot do anything? AK
-							e.printStackTrace();
-						}
-					}
-				}			
+					requestClose();
+					break;
+				}
 			}
 		}
 		
@@ -218,7 +242,8 @@ public class BtDevice implements IDevice {
 	}
 	
 	private void write(byte[] data) {
-		threadHandler.obtainMessage(IDevice.REQUEST_WRITE, data).sendToTarget();
+		//threadHandler.obtainMessage(IDevice.REQUEST_WRITE, data).sendToTarget();
+		deviceThread.writeData(data);
 	}
 	
 	public void setName(String name) {

@@ -107,10 +107,10 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		}
 		@Override
 		protected void writeDone() {
-
-			if (needToTransmit) {
-				device.setControl(acts);
-			}
+			
+			//if (needToTransmit) {
+			//	device.setControl(acts);
+			//}
 		}
 		
 		@Override
@@ -183,7 +183,9 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		actuators(curX, curY, curZ);
 		setActuatorsView(leftImageView, acts[0]);
 		setActuatorsView(rightImageView, acts[1]);
-		
+		if (needToTransmit) {
+			device.setControl(acts);
+		}
 	}
 
 	int[] actsImages = {
