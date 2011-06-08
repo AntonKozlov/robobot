@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, robobotAndroidIface!</string>
-    <string name="app_name">iface for robobot application on android platform</string>
+    <string name="app_name">robobot-alpha</string>
     <string name="nxt_bt_name">NXT</string>
     <string name="device_extra_id_act_pass">emboxDevice</string>
 </resources>
