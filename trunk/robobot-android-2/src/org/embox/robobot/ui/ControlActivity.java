@@ -114,14 +114,12 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		@Override
 		protected void writeDone() {
 			
-			//if (needToTransmit) {
-			//	device.setControl(acts);
-			//}
 		}
 		
 		@Override
 		protected void connectError(String error) {
-			Toast.makeText(getApplicationContext(), "Connect Error: ".concat(error), Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Connect Error: ".concat(error), Toast.LENGTH_LONG).show();
+			finish();
 		}
 		
 	}

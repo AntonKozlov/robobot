@@ -87,11 +87,11 @@ public class BtDevice implements IDevice {
 				try {
 					socket.connect();
 				} catch (IOException e1) {
-					String exString = e1.toString();
+					String exString = e1.getMessage();
 					try {
 						socket.close();
 					} catch (IOException e) {
-						exString.concat(e.getMessage());
+						exString.concat(" + " + e.getMessage());
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}

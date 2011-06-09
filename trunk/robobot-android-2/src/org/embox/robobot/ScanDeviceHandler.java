@@ -20,9 +20,14 @@ public abstract class ScanDeviceHandler extends Handler {
 			case ITransport.DEVICE_NAME_USER_CHANGED:
 				deviceNameUserChanged((IDevice) msg.obj);
 				break;
+			case ITransport.REQUEST_HW_ENABLE:
+				requestHwEnable((ITransport) msg.obj);
 			default:
 				break;
 		}
+	}
+	protected void requestHwEnable(ITransport transport) {
+		
 	}
 	protected void deviceNameUserChanged(IDevice obj) {
 		
@@ -33,7 +38,6 @@ public abstract class ScanDeviceHandler extends Handler {
 	protected void deviceFound(IDevice device) {
 		
 	}
-	
 	protected void scanFinished() {
 		
 	}

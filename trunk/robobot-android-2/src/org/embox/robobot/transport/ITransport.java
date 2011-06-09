@@ -7,6 +7,7 @@ public interface ITransport {
 	int SCAN_FINISHED = 2;
 	int DEVICE_NAME_CHANGED = 3;
 	int DEVICE_NAME_USER_CHANGED = 4;
+	int REQUEST_HW_ENABLE = 5;
 
 	void startScan(BroadcastReceiver receiver);
 	

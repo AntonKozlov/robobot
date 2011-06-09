@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import org.embox.robobot.DeviceManager;
 import org.embox.robobot.IDevice;
 import org.embox.robobot.ScanDeviceHandler;
+import org.embox.robobot.transport.ITransport;
+
 import android.app.Activity;
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,11 +31,13 @@ import android.widget.ListView;
 
 
 public class SelectActivity extends Activity {
+	private static final int REQUEST_BT_ENABLE = 1;
+	
 	
 	private Button mRescanButton;
 	private ListView mFoundDevicesList;
 	private ArrayAdapter<String> mFoundDeviceAdapter;
-	private DeviceManager deviceManager = new DeviceManager((Context) this);
+	private DeviceManager deviceManager;
 	private ArrayList<IDevice> deviceList = new ArrayList<IDevice>();
 	private SharedPreferences preferences;
 	private SharedPreferences.Editor preferencesEditor;
@@ -62,6 +67,8 @@ public class SelectActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+	
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.select);
 		mFoundDevicesList = (ListView) findViewById(R.id.found_devices_list);
@@ -106,15 +113,23 @@ public class SelectActivity extends Activity {
 				preferencesEditor.commit();
 				deviceNameChanged(dev);
 			}
+			
+			@Override
+			protected void requestHwEnable(ITransport transport) {
+				Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				startActivityForResult(intent, REQUEST_BT_ENABLE);
+			}
 
 		};
-
+		
+		deviceManager = new DeviceManager((Context) this, mDeviceHandler);
+		
 		mRescanButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 
-				deviceManager.startIncrementScan(mDeviceHandler);
+				deviceManager.startIncrementScan();
 			}
 		});
 
@@ -122,9 +137,18 @@ public class SelectActivity extends Activity {
 		preferences = getPreferences(MODE_PRIVATE);
 		preferencesEditor = preferences.edit();
 		
-		deviceManager.startFullScan(mDeviceHandler);
+		deviceManager.startFullScan();
 
 	}
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == REQUEST_BT_ENABLE) {
+			if (resultCode == RESULT_OK) {
+				deviceManager.startFullScan();
+			}
+		}
+	}
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
