@@ -39,7 +39,8 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	int[] acts = new int[3];
 	int[] zeroControl = new int[3];
 	
-	boolean needToTransmit;
+	Boolean needToTransmit = new Boolean(false);
+	Boolean canToTransmit = new Boolean(false);
 	
 	private float calibrate;
 	/** Called when the activity is first created. */
@@ -69,6 +70,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 				case MotionEvent.ACTION_DOWN:
 					doCallibrate();
 					doTransmit();
+					
 					break;
 				case MotionEvent.ACTION_UP:
 					stopTransmit();
@@ -105,7 +107,9 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		@Override
 		protected void connectOk() {
 			Toast.makeText(getApplicationContext(), "Connect OK", Toast.LENGTH_SHORT).show();
-			
+			synchronized (canToTransmit) {
+				canToTransmit = true;
+			}
 		}
 		@Override
 		protected void writeDone() {
@@ -168,13 +172,29 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	}
 	
 	void doTransmit() {
-		needToTransmit = true;
-		device.setControl(acts);
+		synchronized (canToTransmit) {
+			if (canToTransmit) {
+				synchronized (needToTransmit) {
+					needToTransmit = true;
+				}
+				needToTransmit = true;
+				device.setControl(acts);
+			}
+			 
+		}
+		
 	}
 	
 	void stopTransmit() {
-		needToTransmit = false;
-		device.setControl(zeroControl);
+		synchronized (canToTransmit) {
+			if (canToTransmit) {
+				synchronized (needToTransmit) {
+					needToTransmit = false;
+				}
+				device.setControl(zeroControl);
+			}
+			 
+		}
 	}
 	
 	@Override
@@ -185,8 +205,10 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		actuators(curX, curY, curZ);
 		setActuatorsView(leftImageView, acts[0]);
 		setActuatorsView(rightImageView, acts[1]);
-		if (needToTransmit) {
-			device.setControl(acts);
+		synchronized (needToTransmit) {
+			if (needToTransmit) {
+				device.setControl(acts);
+			}	
 		}
 	}
 
