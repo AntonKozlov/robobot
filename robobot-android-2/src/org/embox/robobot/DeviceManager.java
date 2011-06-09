@@ -14,22 +14,24 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
 import android.os.Message;
 
 
 public class DeviceManager {
-	private Handler handler;
+	private ScanDeviceHandler handler;
 	private List<IDevice> deviceList;
 	Context context;
 	
 	IProtocol mNxtDirect;
-	ITransport bt = new BluetoothTransport();
+	ITransport bt;
 	
-	public DeviceManager(Context context) {
+	public DeviceManager(Context context, ScanDeviceHandler handler) {
+		this.context = context;
+		this.handler = handler;
+		
 		deviceList = new ArrayList<IDevice>();
 		mNxtDirect = new NxtDirect();
-		this.context = context;
+		bt = new BluetoothTransport(handler);
 	}
 	
 	List<IDevice> getDeviceList() {
@@ -74,18 +76,19 @@ public class DeviceManager {
     					device);
             	foundDevice.setName(device.getName());
             	Message.obtain(handler,ITransport.DEVICE_NAME_CHANGED, foundDevice).sendToTarget();
+            } else if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+            	            	
             }
         }
 	};
 	 
-	public void startFullScan(Handler handler) {
+	public void startFullScan() {
 		deviceList.clear();
-		startIncrementScan(handler);
+		startIncrementScan();
 	}
 	
-	public void startIncrementScan(Handler handler) {
-		this.handler = handler; 
-				
+	public void startIncrementScan() {
+		
 		// Register for broadcasts when a device is discovered
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         context.registerReceiver(btReceiver, filter);
@@ -96,6 +99,10 @@ public class DeviceManager {
 
         filter = new IntentFilter(BluetoothDevice.ACTION_NAME_CHANGED);
         context.registerReceiver(btReceiver, filter);
+
+        filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        context.registerReceiver(btReceiver, filter);
+
 		bt.startScan(btReceiver);
 	}
 
