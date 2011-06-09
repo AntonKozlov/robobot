@@ -2,7 +2,6 @@ package org.embox.robobot;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.embox.robobot.proto.IProtocol;
