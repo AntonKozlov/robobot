@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, robobotAndroidIface!</string>
-    <string name="app_name">robobot-alpha</string>
+	<string name="app_name">Robobot alpha</string>
+    <string name="rename_request">New name</string>
     <string name="nxt_bt_name">NXT</string>
     <string name="device_extra_id_act_pass">emboxDevice</string>
+    <string name="rename_menu_item">Rename</string>
 </resources>

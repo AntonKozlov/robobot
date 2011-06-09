@@ -245,7 +245,7 @@ public class BtDevice implements IDevice {
 		//threadHandler.obtainMessage(IDevice.REQUEST_WRITE, data).sendToTarget();
 		deviceThread.writeData(data);
 	}
-	
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
