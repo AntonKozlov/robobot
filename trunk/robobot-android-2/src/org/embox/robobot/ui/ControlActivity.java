@@ -3,6 +3,7 @@ package org.embox.robobot.ui;
 import org.embox.robobot.DeviceHandler;
 import org.embox.robobot.IDevice;
 
+import org.embox.robobot.ui.R;
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -104,6 +105,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		@Override
 		protected void connectOk() {
 			Toast.makeText(getApplicationContext(), "Connect OK", Toast.LENGTH_SHORT).show();
+			
 		}
 		@Override
 		protected void writeDone() {

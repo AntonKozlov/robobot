@@ -34,7 +34,9 @@ public interface IDevice extends IControllable {
 	void setDeviceHandler(DeviceHandler deviceHandler);
 	
 	String getName();
+	void setName(String name);
 	String getId();
 	IProtocol getProto();
+	
 	
 }

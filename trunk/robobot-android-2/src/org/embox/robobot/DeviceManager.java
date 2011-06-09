@@ -66,6 +66,14 @@ public class DeviceManager {
             // When discovery is finished, change the Activity title
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             	Message.obtain(handler,ITransport.SCAN_FINISHED).sendToTarget();
+            } else if (BluetoothDevice.ACTION_NAME_CHANGED.equals(action)) {
+            	BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            	IDevice foundDevice = createDevice(device.getAddress(), 
+    					device.getName(), 
+    					mNxtDirect,
+    					device);
+            	foundDevice.setName(device.getName());
+            	Message.obtain(handler,ITransport.DEVICE_NAME_CHANGED, foundDevice).sendToTarget();
             }
         }
 	};
@@ -86,6 +94,8 @@ public class DeviceManager {
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         context.registerReceiver(btReceiver, filter);
 
+        filter = new IntentFilter(BluetoothDevice.ACTION_NAME_CHANGED);
+        context.registerReceiver(btReceiver, filter);
 		bt.startScan(btReceiver);
 	}
 
