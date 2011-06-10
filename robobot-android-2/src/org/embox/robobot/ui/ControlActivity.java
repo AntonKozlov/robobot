@@ -3,7 +3,6 @@ package org.embox.robobot.ui;
 import org.embox.robobot.DeviceHandler;
 import org.embox.robobot.IDevice;
 
-import org.embox.robobot.ui.R;
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,16 +11,18 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ControlActivity extends Activity implements SensorEventListener{
 	private IDevice device;
-	private Button transmitButton;
 	
+	private Button transmitButton;
+	private TextView transmitTextView;
 	private SensorManager mSensorManager;
 	private Sensor mSensorAcceler;
 	
@@ -41,27 +42,20 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	
 	Boolean needToTransmit = new Boolean(false);
 	Boolean canToTransmit = new Boolean(false);
-	
+
 	private float calibrate;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	    setContentView(R.layout.control);
 	    device = SelectActivity.getChoosedDevice();
-	    Toast.makeText(getApplicationContext(),
-	    		device.getName(),Toast.LENGTH_SHORT).show();
 	    device.setDeviceHandler(new ControlDeviceHandler());
 	    device.init();
-	    transmitButton = (Button) findViewById(R.id.button_transmit);
-	    transmitButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				doCallibrate();
-			}
-		});
 	    
+	    transmitTextView = (TextView) findViewById(R.id.transmit_textview);
+	    transmitButton = (Button) findViewById(R.id.button_transmit);
 	    transmitButton.setOnTouchListener(new OnTouchListener() {
 			
 			@Override
@@ -70,10 +64,13 @@ public class ControlActivity extends Activity implements SensorEventListener{
 				case MotionEvent.ACTION_DOWN:
 					doCallibrate();
 					doTransmit();
+					setTransmitHigh();
 					
 					break;
 				case MotionEvent.ACTION_UP:
 					stopTransmit();
+					setTransmitLow();
+					
 				default:
 					break;
 				}
@@ -94,19 +91,23 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	@Override
 	protected void onStop() {
 		device.close();
-		Toast.makeText(getApplicationContext(), "Closing", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(getApplicationContext(), "Closing", Toast.LENGTH_SHORT).show();
 		super.onStop();
 	}
 	
 	private class ControlDeviceHandler extends DeviceHandler {
 		@Override
 		protected void initOk() {
-			Toast.makeText(getApplicationContext(), "Init OK", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(getApplicationContext(), "Init OK", Toast.LENGTH_SHORT).show();
+			setProgressBarIndeterminateVisibility(true);
+			setTitle(R.string.connecting_string);
 			device.connect();
 		}
 		@Override
 		protected void connectOk() {
-			Toast.makeText(getApplicationContext(), "Connect OK", Toast.LENGTH_SHORT).show();
+			setProgressBarIndeterminateVisibility(false);
+			setTitle(getString(R.string.connected_string) + " " + device.getName());
+			//Toast.makeText(getApplicationContext(), "Connect OK", Toast.LENGTH_SHORT).show();
 			synchronized (canToTransmit) {
 				canToTransmit = true;
 			}
@@ -121,6 +122,17 @@ public class ControlActivity extends Activity implements SensorEventListener{
 			Toast.makeText(getApplicationContext(), "Connect Error: ".concat(error), Toast.LENGTH_LONG).show();
 			finish();
 		}
+		
+	}
+
+	private void setTransmitHigh() {
+		//transmitTextView.setTextColor(R.color.transmit_textview_text_high);
+		transmitTextView.setBackgroundResource(R.color.transmit_textview_back_high);
+	}
+	
+	private void setTransmitLow() {
+		//transmitTextView.setTextColor(R.color.transmit_textview_text_low);
+		transmitTextView.setBackgroundResource(R.color.transmit_textview_back_low);
 		
 	}
 
@@ -175,12 +187,9 @@ public class ControlActivity extends Activity implements SensorEventListener{
 				synchronized (needToTransmit) {
 					needToTransmit = true;
 				}
-				needToTransmit = true;
-				device.setControl(acts);
 			}
 			 
 		}
-		
 	}
 	
 	void stopTransmit() {
@@ -188,8 +197,10 @@ public class ControlActivity extends Activity implements SensorEventListener{
 			if (canToTransmit) {
 				synchronized (needToTransmit) {
 					needToTransmit = false;
+					leftImageView.setImageResource(R.drawable.actuatorp0);
+			        rightImageView.setImageResource(R.drawable.actuatorp0);
+					device.setControl(zeroControl);
 				}
-				device.setControl(zeroControl);
 			}
 			 
 		}
@@ -201,13 +212,12 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		curY = (float) (arg0.values[1] * 0.1);
 		curZ = (float) (arg0.values[2] * 0.1);
 		actuators(curX, curY, curZ);
-		setActuatorsView(leftImageView, acts[0]);
-		setActuatorsView(rightImageView, acts[1]);
-		synchronized (needToTransmit) {
-			if (needToTransmit) {
-				device.setControl(acts);
-			}	
-		}
+		if (needToTransmit) {
+			setActuatorsView(leftImageView, acts[0]);
+			setActuatorsView(rightImageView, acts[1]);
+			device.setControl(acts);
+		}	
+		
 	}
 
 	int[] actsImages = {

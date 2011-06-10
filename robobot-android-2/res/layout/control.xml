@@ -15,28 +15,32 @@
 	        <FrameLayout android:layout_width="fill_parent" 
 	        	android:id="@+id/frameLayout1" 
 	        	android:layout_height="wrap_content" 
-	        	android:layout_weight="1">
-	            <TextView android:id="@+id/textViewTransmit" 
+	        	android:layout_weight="1"
+	        	android:padding="4dp">
+	            <TextView android:id="@+id/transmit_textview" 
 	            	android:text="Transmitting..." 
 	            	android:layout_height="fill_parent" 
 	            	android:layout_width="fill_parent" 
 	            	android:gravity="center" 
-	            	android:paddingTop="10dp" 
-	            	android:paddingBottom="10dip"></TextView>
+	            	android:padding="10dp"
+	            	android:textColor="@color/transmit_textview_text_low"
+	            	></TextView>
 	        </FrameLayout>
+	        <!-- 
 	        <FrameLayout android:layout_width="fill_parent"
 	        	android:id="@+id/frameLayout2" 
 	        	android:layout_height="wrap_content" 
-	        	android:layout_weight="1">
+	        	android:layout_weight="1"
+	        	android:padding="4dp">
 	            <TextView android:text="Lock" 
 	            	android:id="@+id/textViewLock" 
 	            	android:layout_width="fill_parent" 
 	            	android:layout_height="fill_parent" 
 	            	android:gravity="center"
-	           		android:paddingTop="10dp" 
-	            	android:paddingBottom="10dip"></TextView>
+	            	android:padding="10dp" 
+	            	></TextView>
 	        </FrameLayout>
-	        
+	         -->
 	    </LinearLayout>
 	    <LinearLayout android:layout_height="fill_parent" 
 	    	android:layout_width="fill_parent" 
