@@ -69,7 +69,7 @@ public class SelectActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 	
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.select);
 		mFoundDevicesList = (ListView) findViewById(R.id.found_devices_list);
 		mFoundDeviceAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
@@ -82,6 +82,11 @@ public class SelectActivity extends Activity {
 				return device.getName() + " (" + device.getId() + ")";
 			}
 
+			@Override 
+			protected void scanFinished() {
+				stopProgressBar();
+			}
+			
 			@Override
 			protected void deviceFound(IDevice device) {
 				for (IDevice dev : deviceList) {
@@ -129,7 +134,7 @@ public class SelectActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 
-				deviceManager.startIncrementScan();
+				startIncrementScan();
 			}
 		});
 
@@ -137,14 +142,34 @@ public class SelectActivity extends Activity {
 		preferences = getPreferences(MODE_PRIVATE);
 		preferencesEditor = preferences.edit();
 		
-		deviceManager.startFullScan();
+		startFullScan();
 
+	}
+	
+	private void startProgressBar() {
+		setProgressBarIndeterminateVisibility(true);
+		setTitle(R.string.scanning_string);	
+	}
+	
+	private void stopProgressBar() {
+		setProgressBarIndeterminateVisibility(false);
+		setTitle(R.string.select_string);	
+	}
+	
+	private void startFullScan() {
+		startProgressBar();
+		deviceManager.startFullScan();
+	}
+	
+	private void startIncrementScan() {
+		startProgressBar();
+		deviceManager.startIncrementScan();
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_BT_ENABLE) {
 			if (resultCode == RESULT_OK) {
-				deviceManager.startFullScan();
+				startFullScan();
 			}
 		}
 	}

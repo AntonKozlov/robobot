@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transmit_textview_back_high">#ffff0000</color>
+    <color name="transmit_textview_text_high">#ff000000</color>
+    <color name="transmit_textview_back_low">#ff000000</color>
+    <color name="transmit_textview_text_low">#ff505050</color>
+</resources>
