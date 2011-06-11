@@ -29,6 +29,10 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	ImageView leftImageView;
 	ImageView rightImageView;
 	
+	ImageView nxtLeftTrackView;
+	ImageView nxtBrickView;
+	ImageView nxtRightTrackView;
+	
 	float curX;
 	float curY;
 	float curZ;
@@ -39,6 +43,9 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	
 	int[] acts = new int[3];
 	int[] zeroControl = new int[3];
+	
+	int oldNxtLeftTrack;
+	int oldNxtRightTrack;
 	
 	Boolean needToTransmit = new Boolean(false);
 	Boolean canToTransmit = new Boolean(false);
@@ -86,6 +93,16 @@ public class ControlActivity extends Activity implements SensorEventListener{
         
         leftImageView.setImageResource(R.drawable.actuatorp0);
         rightImageView.setImageResource(R.drawable.actuatorp0);
+        
+    	nxtLeftTrackView = (ImageView) findViewById(R.id.image_nxt_left_track);
+    	nxtBrickView = (ImageView) findViewById(R.id.image_nxt_brick);
+    	nxtRightTrackView = (ImageView) findViewById(R.id.image_nxt_right_track);
+        
+    	oldNxtLeftTrack = 0;
+    	oldNxtRightTrack = 0;
+        nxtLeftTrackView.setImageResource(R.drawable.track_1);
+        nxtBrickView.setImageResource(R.drawable.nxt);
+        nxtRightTrackView.setImageResource(R.drawable.track_1);
 	}
 	
 	@Override
@@ -216,8 +233,31 @@ public class ControlActivity extends Activity implements SensorEventListener{
 			setActuatorsView(leftImageView, acts[0]);
 			setActuatorsView(rightImageView, acts[1]);
 			device.setControl(acts);
-		}	
+		}
 		
+		int nxtLeftTrack = 0;
+		int nxtRightTrack = 0;
+		if (needToTransmit) {
+			if (acts[0] > 0) {
+				nxtLeftTrack = (oldNxtLeftTrack + 1) % 3;
+			} else if (acts[0] < 0) {
+				nxtLeftTrack = (oldNxtLeftTrack + 2) % 3;
+			} else {
+				nxtLeftTrack = oldNxtLeftTrack;
+			}
+			oldNxtLeftTrack = nxtLeftTrack;
+			
+			if (acts[1] > 0) {
+				nxtRightTrack = (oldNxtRightTrack + 1) % 3;
+			} else if (acts[1] < 0) {
+				nxtRightTrack = (oldNxtRightTrack + 2) % 3;
+			} else {
+				nxtRightTrack = oldNxtRightTrack;
+			}
+			oldNxtRightTrack = nxtRightTrack;
+		}
+		setNxtTrackView(nxtLeftTrackView, nxtLeftTrack);
+		setNxtTrackView(nxtRightTrackView, nxtRightTrack);
 	}
 
 	int[] actsImages = {
@@ -237,5 +277,15 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	private void setActuatorsView(ImageView imageView, int power) {
 		imageView.setImageResource(actsImages[5 + (power / 20)]);
 		
+	}
+	
+	int [] nxtTrackImages = {
+		R.drawable.track_1,
+		R.drawable.track_2,
+		R.drawable.track_3
+	};
+	
+	private void setNxtTrackView (ImageView imageView, int imageId) {
+		imageView.setImageResource(nxtTrackImages[imageId]);
 	}
 }
