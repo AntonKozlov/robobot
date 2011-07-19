@@ -1,5 +1,6 @@
 package org.embox.robobot;
 
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -25,14 +26,14 @@ public class DeviceHandler extends Handler {
 				writeDone();
 				break;
 			case IDevice.RESULT_READ_DONE:
-				readDone((byte[]) msg.obj);
+				readDone((byte[]) msg.obj, msg.arg1);
 				break;
 			default:
 				break;
 		}
 	}
-	
-	protected void readDone(byte[] data) {
+
+	protected void readDone(byte[] data, int count) {
 		
 	}
 
