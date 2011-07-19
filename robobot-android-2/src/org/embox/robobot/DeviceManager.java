@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.embox.robobot.proto.IProtocol;
-import org.embox.robobot.proto.NxtDirect;
+import org.embox.robobot.proto.ProtocolNxtEmbox;
+import org.embox.robobot.proto.ProtocolRobobotCar;
 import org.embox.robobot.transport.BluetoothTransport;
 import org.embox.robobot.transport.ITransport;
 
@@ -16,34 +17,36 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Message;
 
-
 public class DeviceManager {
 	private ScanDeviceHandler handler;
-	private List<IDevice> deviceList;
+	private List<IDevice> deviceList = new ArrayList<IDevice>();
 	Context context;
 	
-	IProtocol mNxtDirect;
+	ProtocolNxtEmbox mNxtDirect = new ProtocolNxtEmbox();
+	
+	ProtocolRobobotCar mRobobotCar = new ProtocolRobobotCar();
+	
 	ITransport bt;
 	
 	public DeviceManager(Context context, ScanDeviceHandler handler) {
 		this.context = context;
 		this.handler = handler;
 		
-		deviceList = new ArrayList<IDevice>();
-		mNxtDirect = new NxtDirect();
 		bt = new BluetoothTransport(handler);
 	}
 	
 	List<IDevice> getDeviceList() {
 		return deviceList;
 	}
-	private IDevice createDevice(String devId, String name, IProtocol proto, BluetoothDevice device) {
+	
+	private IDevice createDevice(String devId, String name, IProtocol proto, IControllable controllable,
+			BluetoothDevice device) {
 		for (IDevice dev : deviceList) {
 			if (0 == dev.getId().compareTo(devId)) {
 				return null;
 			}
 		}
-		IDevice dev = new BtDevice(devId, name, proto, device); 
+		IDevice dev = new BtDevice(devId, name, proto, controllable, device); 
 		deviceList.add(dev);
 		return dev;
 	}
@@ -59,7 +62,7 @@ public class DeviceManager {
                 //if (0 == device.getName().compareTo(res.getString(R.string.nxt_bt_name))) {
                 	IDevice foundDevice = createDevice(device.getAddress(), 
         					device.getName(), 
-        					mNxtDirect,
+        					mRobobotCar, mRobobotCar,
         					device);
                 	if (foundDevice != null) {
                 		Message.obtain(handler,ITransport.DEVICE_FOUND, foundDevice).sendToTarget();
@@ -72,7 +75,7 @@ public class DeviceManager {
             	BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             	IDevice foundDevice = createDevice(device.getAddress(), 
     					device.getName(), 
-    					mNxtDirect,
+    					mNxtDirect, mNxtDirect,
     					device);
             	foundDevice.setName(device.getName());
             	Message.obtain(handler,ITransport.DEVICE_NAME_CHANGED, foundDevice).sendToTarget();

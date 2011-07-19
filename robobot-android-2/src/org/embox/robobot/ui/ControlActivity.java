@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import org.embox.robobot.R;
 
 public class ControlActivity extends Activity implements SensorEventListener{
 	private IDevice device;
@@ -33,16 +34,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	ImageView nxtBrickView;
 	ImageView nxtRightTrackView;
 	
-	float curX;
-	float curY;
-	float curZ;
-	
-	float callbX;
-	float callbY;
-	float callbZ;
-	
 	int[] acts = new int[3];
-	int[] zeroControl = new int[3];
 	
 	int oldNxtLeftTrack;
 	int oldNxtRightTrack;
@@ -50,7 +42,6 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	Boolean needToTransmit = new Boolean(false);
 	Boolean canToTransmit = new Boolean(false);
 
-	private float calibrate;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -170,33 +161,10 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		
 	}
 
-	static private float angle (float x, float y) {
-		return (float) Math.acos(x) * Math.signum(y); 
-	}
-	
-	private float cut(float val, float range) {
-		if (val < -range) {
-			return -range;
-		}
-		if (val > range) {
-			return range;
-		}
-		return val;
-	}
-	
 	void doCallibrate() {
-		calibrate = angle(curX, curZ);
+		device.calibrate(acts);
 	}
-	void actuators(float x, float y, float z) {
-		float fullY = (float) 0.3;
-		float fullX = (float) 0.7;
-		Float power = 100 * cut((angle(x,z) - calibrate) / fullX, 1);
-		Float mA = cut(power + 100 * (y / fullY), 100);
-		Float mB = cut(power - 100 * (y / fullY), 100);
-		acts[0] = mA.intValue();
-		acts[1] = mB.intValue();
-
-	}
+	
 	
 	void doTransmit() {
 		synchronized (canToTransmit) {
@@ -216,23 +184,23 @@ public class ControlActivity extends Activity implements SensorEventListener{
 					needToTransmit = false;
 					leftImageView.setImageResource(R.drawable.actuatorp0);
 			        rightImageView.setImageResource(R.drawable.actuatorp0);
-					device.setControl(zeroControl);
+					device.calibrate(acts);
+					device.setControl(acts);
 				}
 			}
-			 
 		}
 	}
 	
 	@Override
 	public void onSensorChanged(SensorEvent arg0) {
-		curX = (float) (arg0.values[0] * 0.1);
-		curY = (float) (arg0.values[1] * 0.1);
-		curZ = (float) (arg0.values[2] * 0.1);
-		actuators(curX, curY, curZ);
+		acts[0] = (int) (arg0.values[0] * 10);
+		acts[1] = (int) (arg0.values[1] * 10);
+		acts[2] = (int) (arg0.values[2] * 10);
 		if (needToTransmit) {
-			setActuatorsView(leftImageView, acts[0]);
-			setActuatorsView(rightImageView, acts[1]);
-			device.setControl(acts);
+			int[] feedback = device.setControl(acts); 
+			setActuatorsView(leftImageView, feedback[0]);
+			setActuatorsView(rightImageView, feedback[1]);
+			
 		}
 		
 		int nxtLeftTrack = 0;

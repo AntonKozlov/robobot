@@ -1,6 +1,8 @@
 package org.embox.robobot.ui;
 
 import org.embox.robobot.IDevice;
+import org.embox.robobot.R;
+
 import org.embox.robobot.ScanDeviceHandler;
 import org.embox.robobot.transport.ITransport;
 

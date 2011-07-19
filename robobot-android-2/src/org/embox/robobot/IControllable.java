@@ -2,6 +2,8 @@ package org.embox.robobot;
 
 public interface IControllable {
 	
-	void setControl(int[] control);
+	int[] setControl(int[] control);
+
+	void calibrate(int[] control);
 
 }

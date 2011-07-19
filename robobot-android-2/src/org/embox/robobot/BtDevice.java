@@ -1,10 +1,14 @@
 package org.embox.robobot;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import org.embox.robobot.proto.IProtocol;
+import org.embox.robobot.proto.ProtocolNxtDirect;
+import org.embox.robobot.proto.ProtocolNxtEmbox;
+import org.embox.robobot.proto.ProtocolRobobotCar;
 import org.embox.robobot.transport.BluetoothTransport;
 
 import android.bluetooth.BluetoothDevice;
@@ -13,7 +17,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-public class BtDevice implements IDevice {
+public class BtDevice implements IDevice, IControllable {
 	/**
 	 * Auto generated, doesn't know AK
 	 */
@@ -21,12 +25,14 @@ public class BtDevice implements IDevice {
 	String name;
 	
 	IProtocol proto;
+	IControllable controllable;
 	BluetoothTransport transport;
 	BluetoothDevice btDevice;
 	BluetoothSocket socket;
 	DeviceHandler deviceHandler;
 
 	DeviceThread deviceThread;
+	DeviceReadThread deviceReadThread;
 	Handler threadHandler; 
 	
 	int deviceState = DEVICE_NULL;
@@ -35,19 +41,46 @@ public class BtDevice implements IDevice {
 		return deviceState;
 	}
 
-	BtDevice(String devId, IProtocol proto, BluetoothDevice device) {
+	BtDevice(String devId, IProtocol proto, IControllable controllable, BluetoothDevice device) {
 		this.devId = devId;
 		this.proto = proto;
+		this.controllable = controllable;
 		btDevice = device;
 	}
 	
-	BtDevice(String devId, String name, IProtocol proto, BluetoothDevice device) {
-		this(devId, proto, device);
+	BtDevice(String devId, String name, IProtocol proto, IControllable controllable, BluetoothDevice device) {
+		this(devId, proto, controllable, device);
 		this.name = name;
 	}
 	
-	public void setControl(int[] control) {
-		write(proto.setControl(control));
+	public int[] setControl(int[] control) {
+		int[] ctrl = controllable.setControl(control);
+		write(proto.translateOutput(ctrl));
+		return ctrl;
+	}
+	
+	private class DeviceReadThread extends Thread {
+		private DeviceHandler handler;
+		private InputStream stream;
+		public DeviceReadThread(DeviceHandler handler, InputStream stream) {
+			this.handler = handler;
+			this.stream = stream;
+		}
+		
+		@Override
+		public void run() {
+			byte[] buff = new byte[128];
+			
+			while (true) {
+				try {
+					int count = stream.read(buff);
+					handler.obtainMessage(IDevice.RESULT_READ_DONE, count, 0, buff).sendToTarget();
+				} catch (IOException e) {
+					//disconnect();
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	private class DeviceThread extends Thread {
@@ -70,7 +103,7 @@ public class BtDevice implements IDevice {
 			
 
 			public void requestConnect() {
-				if (deviceState != DEVICE_DISCONNECTED) {
+				if (deviceState < DEVICE_DISCONNECTED) {
 					throw new IllegalStateException("BtDevice thread illegal state change");
 				}
 				try {
@@ -99,15 +132,17 @@ public class BtDevice implements IDevice {
 					Message.obtain(hnd, IDevice.RESULT_CONNECT_ERROR,exString).sendToTarget();
 					return;
 				}
-				deviceState = DEVICE_CONNECTED;
+				deviceState = DEVICE_DETERMING;
 				Message.obtain(hnd, IDevice.RESULT_CONNECT_OK).sendToTarget();
 			}
 			
 			public void requestDisconnect() {
-				if (deviceState != DEVICE_CONNECTED) {
+				if (deviceState < DEVICE_CONNECTED) {
 					throw new IllegalStateException("BtDevice thread illegal state change");
 				}
 				try {
+					deviceReadThread.stop();
+					deviceReadThread = null;
 					socket.close();
 				} catch (IOException e) {
 					Message.obtain(hnd, IDevice.RESULT_DISCONNECT_ERROR).sendToTarget();
@@ -118,7 +153,7 @@ public class BtDevice implements IDevice {
 			}
 			
 			public void requestWrite(byte[] data) {
-				if (deviceState != DEVICE_CONNECTED) {
+				if (deviceState < DEVICE_CONNECTED) {
 					throw new IllegalStateException("BtDevice thread illegal state change");
 				}
 				
@@ -136,7 +171,7 @@ public class BtDevice implements IDevice {
 			}
 			
 			public void requestClose() {
-				if (deviceState == DEVICE_CONNECTED) {
+				if (deviceState >= DEVICE_CONNECTED) {
 					try {
 						socket.close();
 					} catch (IOException e) {
@@ -183,6 +218,40 @@ public class BtDevice implements IDevice {
 		
 	}
 	
+	private void determBotSendStamp() {
+		byte stamp[] = new byte[4];
+		stamp[0] = 2;
+		stamp[1] = 0;
+		stamp[2] = 0;
+		stamp[3] = 0x0D;
+		write(stamp);
+	}
+	
+	private boolean determBotDeterm(byte[] data) {
+		if (data[2] != (byte) 0x02 || data[3] != (byte) 0x0D) {
+			return false;
+		}
+		
+		if (data[4] == 0x0) { // NXT tank
+			proto = new ProtocolNxtDirect();
+			controllable = (IControllable) proto;
+			return true;
+		}
+		
+		if (data[4] == 0x01) { // Embox tank
+			proto = new ProtocolNxtEmbox();
+			controllable = (IControllable) proto;
+			return true;
+		}
+		
+		if (data[4] == 0x02) {
+			proto = new ProtocolRobobotCar();
+			controllable = (IControllable) proto;
+			return true;
+		}
+		return false;
+	}
+	
 	private class DeviceHandlerInternal extends DeviceHandler {
 		DeviceHandler outsideHandler;
 		public DeviceHandlerInternal(DeviceHandler outsideHandler) {
@@ -197,17 +266,41 @@ public class BtDevice implements IDevice {
 		
 		@Override
 		protected void connectOk() {
-			outsideHandler.connectOk();
+			InputStream stream;
+			try {
+				stream = socket.getInputStream();
+			} catch (IOException e) {
+				// cant happened
+				e.printStackTrace();
+				return;
+			}
+			deviceReadThread = new DeviceReadThread(this, stream);
+			deviceReadThread.start();
+			if (deviceState == DEVICE_DETERMING) {
+				determBotSendStamp();
+			} else {
+				outsideHandler.connectOk();
+			}
 		}
-		
+		 
 		@Override
 		protected void connectError(String error) {
 			outsideHandler.connectError(error);
 		}
 		
 		@Override
-		protected void readDone(byte[] data) {
-			outsideHandler.readDone(proto.translateInput(data));
+		protected void readDone(byte[] data, int count) {
+			if (deviceState == DEVICE_DETERMING) {
+				if (!determBotDeterm(data)) {
+					connectError("Cannot determ bot");
+					disconnect();
+				} else {
+					deviceState = DEVICE_CONNECTED;
+					connectOk();
+				}
+			} else {
+				outsideHandler.readDone(proto.translateInput(data), count);
+			}
 		}
 		
 		@Override
@@ -224,7 +317,6 @@ public class BtDevice implements IDevice {
 		deviceThread = new DeviceThread(new DeviceHandlerInternal(deviceHandler));
 		//deviceThread = new DeviceThread(deviceHandler);
 		deviceThread.start();
-		
 		
 	}
 	@Override
@@ -269,6 +361,11 @@ public class BtDevice implements IDevice {
 	@Override
 	public void setDeviceHandler(DeviceHandler deviceHandler) {
 		this.deviceHandler = deviceHandler;
+	}
+
+	@Override
+	public void calibrate(int[] control) {
+		controllable.calibrate(control);
 	}
 	
 }
