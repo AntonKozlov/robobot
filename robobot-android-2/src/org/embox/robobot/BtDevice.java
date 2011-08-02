@@ -69,12 +69,12 @@ public class BtDevice implements IDevice, IControllable {
 		
 		@Override
 		public void run() {
-			byte[] buff = new byte[128];
-			
+			byte[] buff = new byte[5];
+			int count;
 			while (true) {
 				try {
-					int count = stream.read(buff);
-					handler.obtainMessage(IDevice.RESULT_READ_DONE, count, 0, buff).sendToTarget();
+					count = stream.read(buff);
+					handler.obtainMessage(IDevice.RESULT_READ_DONE, count, 0, buff.clone()).sendToTarget();
 				} catch (IOException e) {
 					//disconnect();
 					e.printStackTrace();
@@ -227,29 +227,40 @@ public class BtDevice implements IDevice, IControllable {
 		write(stamp);
 	}
 	
-	private boolean determBotDeterm(byte[] data) {
-		if (data[2] != (byte) 0x02 || data[3] != (byte) 0x0D) {
-			return false;
+	private byte[] botHeader = {0x03, 0x0, 0x2, 0xd}; 
+	private int headerPos = 0;
+	
+	private int determBotDeterm(byte[] data, int count) {
+		int dataPos = 0;
+		while (dataPos < count && headerPos < 4) {
+			if (data[dataPos] == botHeader[headerPos]) {
+				headerPos ++;
+			} else {
+				headerPos = 0;
+			}
+			dataPos ++;
+		} 
+		
+		if (headerPos < 4) {
+			return 1;
 		}
 		
-		if (data[4] == 0x0) { // NXT tank
+		if (data[dataPos] == 0x0) { // NXT tank
 			proto = new ProtocolNxtDirect();
 			controllable = (IControllable) proto;
-			return true;
 		}
 		
-		if (data[4] == 0x01) { // Embox tank
+		if (data[dataPos] == 0x01) { // Embox tank
 			proto = new ProtocolNxtEmbox();
 			controllable = (IControllable) proto;
-			return true;
 		}
 		
-		if (data[4] == 0x02) {
+		if (data[dataPos] == 0x02) {
 			proto = new ProtocolRobobotCar();
 			controllable = (IControllable) proto;
-			return true;
 		}
-		return false;
+		
+		return 2;
 	}
 	
 	private class DeviceHandlerInternal extends DeviceHandler {
@@ -291,10 +302,11 @@ public class BtDevice implements IDevice, IControllable {
 		@Override
 		protected void readDone(byte[] data, int count) {
 			if (deviceState == DEVICE_DETERMING) {
-				if (!determBotDeterm(data)) {
+				int status = determBotDeterm(data, count);
+				if (status == 0) {
 					connectError("Cannot determ bot");
 					disconnect();
-				} else {
+				} else if (status == 2){
 					deviceState = DEVICE_CONNECTED;
 					connectOk();
 				}
