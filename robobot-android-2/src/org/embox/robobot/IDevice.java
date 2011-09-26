@@ -19,7 +19,6 @@ public interface IDevice extends IControllable {
 	int REQUEST_CONNECT = 100;
 	int REQUEST_DISCONNECT = 101;
 	int REQUEST_WRITE = 103;
-	int REQUEST_CLOSE = 104;
 	String ANDROID_DEVICE_UNIQ_STRING = "emboxDevice";
 	
 	
@@ -32,7 +31,6 @@ public interface IDevice extends IControllable {
 	void init();
 	void connect();
 	void disconnect();
-	void close();
 	
 	void setDeviceHandler(DeviceHandler deviceHandler);
 	

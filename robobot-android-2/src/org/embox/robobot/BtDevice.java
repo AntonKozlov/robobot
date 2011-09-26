@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.embox.robobot.proto.IProtocol;
 import org.embox.robobot.proto.ProtocolNxtDirect;
@@ -62,16 +63,22 @@ public class BtDevice implements IDevice, IControllable {
 	private class DeviceReadThread extends Thread {
 		private DeviceHandler handler;
 		private InputStream stream;
+		private final AtomicBoolean aBool = new AtomicBoolean(true);
+		
 		public DeviceReadThread(DeviceHandler handler, InputStream stream) {
 			this.handler = handler;
 			this.stream = stream;
+		}
+	
+		public void setNotRun() {
+			aBool.set(false);
 		}
 		
 		@Override
 		public void run() {
 			byte[] buff = new byte[5];
 			int count;
-			while (true) {
+			while (aBool.get()) {
 				try {
 					count = stream.read(buff);
 					handler.obtainMessage(IDevice.RESULT_READ_DONE, count, 0, buff.clone()).sendToTarget();
@@ -141,7 +148,7 @@ public class BtDevice implements IDevice, IControllable {
 					throw new IllegalStateException("BtDevice thread illegal state change");
 				}
 				try {
-					deviceReadThread.stop();
+					deviceReadThread.setNotRun();
 					deviceReadThread = null;
 					socket.close();
 				} catch (IOException e) {
@@ -170,19 +177,6 @@ public class BtDevice implements IDevice, IControllable {
 				
 			}
 			
-			public void requestClose() {
-				if (deviceState >= DEVICE_CONNECTED) {
-					try {
-						socket.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						// cannot do anything? AK
-						e.printStackTrace();
-					}
-				}
-			}
-			
-			
 			@Override
 			public void handleMessage(Message msg) {
 				switch (msg.what) {
@@ -195,12 +189,10 @@ public class BtDevice implements IDevice, IControllable {
 				case IDevice.REQUEST_WRITE:
 					requestWrite((byte[]) msg.obj);
 					break;
-				case IDevice.REQUEST_CLOSE:
-					requestClose();
-					break;
 				}
 			}
 		}
+				
 		
 		public DeviceThread(DeviceHandler hnd) {
 			this.deviceHandler = hnd;
@@ -219,12 +211,20 @@ public class BtDevice implements IDevice, IControllable {
 	}
 	
 	private void determBotSendStamp() {
-		byte stamp[] = new byte[4];
+		final byte stamp[] = new byte[4];
 		stamp[0] = 2;
 		stamp[1] = 0;
 		stamp[2] = 0;
 		stamp[3] = 0x0D;
-		write(stamp);
+		threadHandler.obtainMessage(IDevice.REQUEST_WRITE, stamp).sendToTarget();
+		threadHandler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				deviceThread.writeData(stamp);
+			}
+		}, 1000);
+		//write(stamp);
 	}
 	
 	private byte[] botHeader = {0x03, 0x0, 0x2, 0xd}; 
@@ -285,9 +285,9 @@ public class BtDevice implements IDevice, IControllable {
 				e.printStackTrace();
 				return;
 			}
-			deviceReadThread = new DeviceReadThread(this, stream);
-			deviceReadThread.start();
 			if (deviceState == DEVICE_DETERMING) {
+				deviceReadThread = new DeviceReadThread(this, stream);
+				deviceReadThread.start();
 				determBotSendStamp();
 			} else {
 				outsideHandler.connectOk();
@@ -338,10 +338,6 @@ public class BtDevice implements IDevice, IControllable {
 	@Override
 	public synchronized void disconnect() {
 		threadHandler.obtainMessage(IDevice.REQUEST_DISCONNECT).sendToTarget();
-	}
-	
-	public synchronized void close() {
-		threadHandler.obtainMessage(IDevice.REQUEST_CLOSE).sendToTarget();
 	}
 	
 	private void write(byte[] data) {

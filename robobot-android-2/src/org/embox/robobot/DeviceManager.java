@@ -108,5 +108,9 @@ public class DeviceManager {
 
 		bt.startScan(btReceiver);
 	}
+	
+	public void stopScan() {
+		context.unregisterReceiver(btReceiver);
+	}
 
 }
