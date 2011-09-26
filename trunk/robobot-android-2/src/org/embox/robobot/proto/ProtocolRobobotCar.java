@@ -8,7 +8,7 @@ public class ProtocolRobobotCar extends ProtocolNxtEmbox implements IProtocol, I
 	
 	@Override
 	public byte[] translateOutput(int[] control) {
-		byte[] ret = new byte[5];
+		byte[] ret = new byte[4];
 		ret[0] = (byte) 0x42;
 		ret[1] = (byte) 0x24;
 		ret[2] = (byte) super.cut(control[0], 100);
