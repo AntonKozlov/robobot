@@ -47,7 +47,9 @@ public class SelectActivity extends Activity {
 	public static IDevice choosedDevice;
 
 	public static IDevice getChoosedDevice() {
-		return choosedDevice;
+		IDevice dev = choosedDevice;
+		choosedDevice = null;
+		return dev;
 	}
 
 	ScanDeviceHandler mDeviceHandler;	
@@ -198,5 +200,10 @@ public class SelectActivity extends Activity {
 				
 		}
 		return super.onContextItemSelected(item);
+	}
+	@Override
+	protected void onDestroy() {
+		deviceManager.stopScan();
+		super.onDestroy();
 	}
 }

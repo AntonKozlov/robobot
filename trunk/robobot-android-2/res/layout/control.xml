@@ -9,7 +9,7 @@
 	  android:layout_height="fill_parent" 
 	  android:orientation="vertical"
 	  android:layout_weight="2">
-	    <LinearLayout android:id="@+id/linearLayout1" 
+	    <LinearLayout 
 	    	android:layout_width="fill_parent" 
 	    	android:layout_height="wrap_content" >
 	        <FrameLayout android:layout_width="fill_parent" 
@@ -26,100 +26,60 @@
 	            	android:textColor="@color/transmit_textview_text_low">
 	            </TextView>
 	        </FrameLayout>
-	        <!-- 
-	        <FrameLayout android:layout_width="fill_parent"
-	        	android:id="@+id/frameLayout2" 
-	        	android:layout_height="wrap_content" 
-	        	android:layout_weight="1"
-	        	android:padding="4dp">
-	            <TextView android:text="Lock" 
-	            	android:id="@+id/textViewLock" 
-	            	android:layout_width="fill_parent" 
-	            	android:layout_height="fill_parent" 
-	            	android:gravity="center"
-	            	android:padding="10dp" 
-	            	></TextView>
-	        </FrameLayout>
-	         -->
+	        <!-- Here lies another indicators -->
 	    </LinearLayout>
-	    <LinearLayout android:layout_height="fill_parent" 
+	    
+	    <LinearLayout 
+	    	android:id="@+id/visualisation_layout" 
+	    	android:layout_height="fill_parent" 
 	    	android:layout_width="fill_parent" 
 	    	android:layout_weight="1"
-	    	android:id="@+id/linearLayout2"
 	    	android:orientation="horizontal">
-	        
-	        <FrameLayout android:id="@+id/frameLayout3"
-				android:layout_width="fill_parent"
-	        	android:layout_height="fill_parent"
-	        	android:layout_weight="4">
 	        	<ImageView android:id="@+id/image_view_left"
+	        		android:layout_weight="4"
 	        		android:layout_width="fill_parent"
 	        		android:layout_height="fill_parent"
 	        		android:layout_gravity="center"
 	        		android:scaleType="fitCenter">
 	        	</ImageView>
-			</FrameLayout>
-			
-	    	<FrameLayout android:id="@+id/frameLayout4"
-				android:layout_width="fill_parent"
-	        	android:layout_height="fill_parent"
-	        	android:layout_weight="2">
 	        	 <LinearLayout android:layout_height="fill_parent" 
 	    			android:layout_width="fill_parent" 
-	    			android:layout_weight="1"
+	    			android:layout_weight="2"
 	    			android:id="@+id/linearLayout2"
 	    			android:orientation="horizontal">
-	    			<FrameLayout android:id="@+id/frameLayout3"
-						android:layout_width="fill_parent"
-	        			android:layout_height="fill_parent"
-	        			android:layout_weight="3">
 	        			<ImageView android:id="@+id/image_nxt_left_track"
 	        				android:layout_width="fill_parent"
 	        				android:layout_height="fill_parent"
+	        				android:layout_weight="3"
 	        				android:layout_gravity="right"
 	        				android:scaleType="fitCenter">
 	        			</ImageView>
-	        		</FrameLayout>
-	        		<FrameLayout android:id="@+id/frameLayout3"
-						android:layout_width="fill_parent"
-	        			android:layout_height="fill_parent"
-	        			android:layout_weight="2">
 	        			<ImageView android:id="@+id/image_nxt_brick"
 	        				android:layout_width="fill_parent"
 	        				android:layout_height="fill_parent"
 	        				android:layout_gravity="center"
+	        				android:layout_weight="2"
 	        				android:scaleType="fitCenter">
 	        			</ImageView>
-	        		</FrameLayout>
-	        		<FrameLayout android:id="@+id/frameLayout3"
-						android:layout_width="fill_parent"
-	        			android:layout_height="fill_parent"
-	        			android:layout_weight="3">
+
 	        			<ImageView android:id="@+id/image_nxt_right_track"
 	        				android:layout_width="fill_parent"
 	        				android:layout_height="fill_parent"
+	        				android:layout_weight="3"
 	        				android:layout_gravity="left"
 	        				android:scaleType="fitCenter">
 	        			</ImageView>
-	        		</FrameLayout>
 	    		</LinearLayout>
 	        	
-			</FrameLayout>
-			
-	    	<FrameLayout android:id="@+id/frameLayout5"
-				android:layout_width="fill_parent"
-	        	android:layout_height="fill_parent"
-	        	android:layout_weight="4">
 	        	<ImageView android:id="@+id/image_view_right"
 	        		android:layout_width="fill_parent"
 	        		android:layout_height="fill_parent"
 	        		android:layout_gravity="center"
+	        		android:layout_weight="4"
 	        		android:scaleType="fitCenter">
 	        	</ImageView>
-			</FrameLayout>
-	    
-	    	
 	   	</LinearLayout>
+	   	 
 	</LinearLayout>
 	<Button android:layout_width="fill_parent" 
     	android:id="@+id/button_transmit" 

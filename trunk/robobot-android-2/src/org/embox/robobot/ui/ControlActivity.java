@@ -2,6 +2,7 @@ package org.embox.robobot.ui;
 
 import org.embox.robobot.DeviceHandler;
 import org.embox.robobot.IDevice;
+import org.embox.robobot.R;
 
 import android.app.Activity;
 import android.hardware.Sensor;
@@ -11,13 +12,14 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import org.embox.robobot.R;
 
 public class ControlActivity extends Activity implements SensorEventListener{
 	private IDevice device;
@@ -27,12 +29,16 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	private SensorManager mSensorManager;
 	private Sensor mSensorAcceler;
 	
+	LinearLayout visualisationLayout;
+	
 	ImageView leftImageView;
 	ImageView rightImageView;
 	
 	ImageView nxtLeftTrackView;
 	ImageView nxtBrickView;
 	ImageView nxtRightTrackView;
+	
+	
 	
 	int[] acts = new int[3];
 	
@@ -42,6 +48,14 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	Boolean needToTransmit = new Boolean(false);
 	Boolean canToTransmit = new Boolean(false);
 
+	OnClickListener showSensorsListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			visualisationLayout.setVisibility(View.INVISIBLE);
+		}
+	}; 
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,7 +89,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 				return false;
 			}
 		});
-	    
+
 	    mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorAcceler = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         
@@ -88,7 +102,15 @@ public class ControlActivity extends Activity implements SensorEventListener{
     	nxtLeftTrackView = (ImageView) findViewById(R.id.image_nxt_left_track);
     	nxtBrickView = (ImageView) findViewById(R.id.image_nxt_brick);
     	nxtRightTrackView = (ImageView) findViewById(R.id.image_nxt_right_track);
-        
+
+    	visualisationLayout = (LinearLayout) findViewById(R.id.visualisation_layout);
+    	
+    	leftImageView.setOnClickListener(showSensorsListener);
+    	rightImageView.setOnClickListener(showSensorsListener);
+    	nxtLeftTrackView.setOnClickListener(showSensorsListener);
+    	nxtRightTrackView.setOnClickListener(showSensorsListener);
+    	nxtBrickView.setOnClickListener(showSensorsListener);
+    	
     	oldNxtLeftTrack = 0;
     	oldNxtRightTrack = 0;
         nxtLeftTrackView.setImageResource(R.drawable.track_1);
@@ -98,7 +120,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	
 	@Override
 	protected void onStop() {
-		device.close();
+		device.disconnect();
 		//Toast.makeText(getApplicationContext(), "Closing", Toast.LENGTH_SHORT).show();
 		super.onStop();
 	}
