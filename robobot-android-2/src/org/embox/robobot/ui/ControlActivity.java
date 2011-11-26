@@ -44,8 +44,8 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	
 	int[] acts = new int[3];
 
-	int oldNxtLeftTrack;
-	int oldNxtRightTrack;
+	private int oldNxtLeftTrack = 0;
+	private int oldNxtRightTrack = 0;
 	
 	private Boolean needToTransmit = new Boolean(false); // synchronization variable for pressing button controlling
 	private Boolean canToTransmit = new Boolean(false); // synchronization variable for connection
@@ -113,8 +113,6 @@ public class ControlActivity extends Activity implements SensorEventListener{
     	nxtRightTrackView.setOnClickListener(showSensorsListener);
     	nxtBrickView.setOnClickListener(showSensorsListener);
     	
-    	oldNxtLeftTrack = 0;
-    	oldNxtRightTrack = 0;
         nxtLeftTrackView.setImageResource(R.drawable.track_1);
         nxtBrickView.setImageResource(R.drawable.nxt);
         nxtRightTrackView.setImageResource(R.drawable.track_1);
@@ -227,30 +225,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 			setActuatorsView(rightImageView, feedback[1]);
 			
 		}
-		//TODO bad code
-		int nxtLeftTrack = 0;
-		int nxtRightTrack = 0;
-		if (needToTransmit) {
-			if (acts[0] > 0) {
-				nxtLeftTrack = (oldNxtLeftTrack + 1) % 3;
-			} else if (acts[0] < 0) {
-				nxtLeftTrack = (oldNxtLeftTrack + 2) % 3;
-			} else {
-				nxtLeftTrack = oldNxtLeftTrack;
-			}
-			oldNxtLeftTrack = nxtLeftTrack;
-			
-			if (acts[1] > 0) {
-				nxtRightTrack = (oldNxtRightTrack + 1) % 3;
-			} else if (acts[1] < 0) {
-				nxtRightTrack = (oldNxtRightTrack + 2) % 3;
-			} else {
-				nxtRightTrack = oldNxtRightTrack;
-			}
-			oldNxtRightTrack = nxtRightTrack;
-		}
-		setNxtTrackView(nxtLeftTrackView, nxtLeftTrack);
-		setNxtTrackView(nxtRightTrackView, nxtRightTrack);
+		drawTracks();
 	}
 
 	//TODO constant images?
@@ -277,9 +252,34 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		R.drawable.track_1,
 		R.drawable.track_2,
 		R.drawable.track_3
-	};
-	
+	};	
 	private void setNxtTrackView (ImageView imageView, int imageId) {
 		imageView.setImageResource(nxtTrackImages[imageId]);
+	}
+	private void drawTracks() {
+		//TODO bad code
+		int nxtLeftTrack = 0;
+		int nxtRightTrack = 0;
+		if (needToTransmit) {
+			if (acts[0] > 0) {
+				nxtLeftTrack = (oldNxtLeftTrack + 1) % nxtTrackImages.length();
+			} else if (acts[0] < 0) {
+				nxtLeftTrack = (oldNxtLeftTrack + 2) % nxtTrackImages.length();
+			} else {
+				nxtLeftTrack = oldNxtLeftTrack;
+			}
+			oldNxtLeftTrack = nxtLeftTrack;
+			
+			if (acts[1] > 0) {
+				nxtRightTrack = (oldNxtRightTrack + 1) % nxtTrackImages.length();
+			} else if (acts[1] < 0) {
+				nxtRightTrack = (oldNxtRightTrack + 2) % nxtTrackImages.length();
+			} else {
+				nxtRightTrack = oldNxtRightTrack;
+			}
+			oldNxtRightTrack = nxtRightTrack;
+		}
+		setNxtTrackView(nxtLeftTrackView, nxtLeftTrack);
+		setNxtTrackView(nxtRightTrackView, nxtRightTrack);		
 	}
 }
