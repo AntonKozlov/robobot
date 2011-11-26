@@ -22,31 +22,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ControlActivity extends Activity implements SensorEventListener{
-	private IDevice device;
-	
 	private Button transmitButton;
 	private TextView transmitTextView;
+
+	private LinearLayout visualisationLayout;
+	
+	private ImageView leftImageView;
+	private ImageView rightImageView;
+	
+	private ImageView nxtLeftTrackView;
+	private ImageView nxtBrickView;
+	private ImageView nxtRightTrackView;
+	
+	//sensors
 	private SensorManager mSensorManager;
 	private Sensor mSensorAcceler;
 	
-	LinearLayout visualisationLayout;
-	
-	ImageView leftImageView;
-	ImageView rightImageView;
-	
-	ImageView nxtLeftTrackView;
-	ImageView nxtBrickView;
-	ImageView nxtRightTrackView;
-	
+	//robobot item
+	private IDevice device;
 	
 	
 	int[] acts = new int[3];
-	
+
 	int oldNxtLeftTrack;
 	int oldNxtRightTrack;
 	
-	Boolean needToTransmit = new Boolean(false);
-	Boolean canToTransmit = new Boolean(false);
+	private Boolean needToTransmit = new Boolean(false); // synchronization variable for pressing button controlling
+	private Boolean canToTransmit = new Boolean(false); // synchronization variable for connection
 
 	OnClickListener showSensorsListener = new OnClickListener() {
 		
@@ -187,7 +189,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		device.calibrate(acts);
 	}
 	
-	
+	//TODO very bad synchronization
 	void doTransmit() {
 		synchronized (canToTransmit) {
 			if (canToTransmit) {
@@ -215,6 +217,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	
 	@Override
 	public void onSensorChanged(SensorEvent arg0) {
+		//TODO define constant? may be calibrate sensitivity?
 		acts[0] = (int) (arg0.values[0] * 10);
 		acts[1] = (int) (arg0.values[1] * 10);
 		acts[2] = (int) (arg0.values[2] * 10);
@@ -224,7 +227,7 @@ public class ControlActivity extends Activity implements SensorEventListener{
 			setActuatorsView(rightImageView, feedback[1]);
 			
 		}
-		
+		//TODO bad code
 		int nxtLeftTrack = 0;
 		int nxtRightTrack = 0;
 		if (needToTransmit) {
@@ -250,7 +253,8 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		setNxtTrackView(nxtRightTrackView, nxtRightTrack);
 	}
 
-	int[] actsImages = {
+	//TODO constant images?
+	private int[] actsImages = {
 			R.drawable.actuatorm5,
 			R.drawable.actuatorm4,
 			R.drawable.actuatorm3,
@@ -268,8 +272,8 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		imageView.setImageResource(actsImages[5 + (power / 20)]);
 		
 	}
-	
-	int [] nxtTrackImages = {
+	//TODO constant images?
+	private int [] nxtTrackImages = {
 		R.drawable.track_1,
 		R.drawable.track_2,
 		R.drawable.track_3
