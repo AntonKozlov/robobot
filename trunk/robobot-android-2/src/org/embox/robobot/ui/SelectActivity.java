@@ -35,24 +35,30 @@ import android.widget.ListView;
 public class SelectActivity extends Activity {
 	private static final int REQUEST_BT_ENABLE = 1;
 	
-	
+	//view items
 	private Button mRescanButton;
 	private ListView mFoundDevicesList;
 	private ArrayAdapter<String> mFoundDeviceAdapter;
-	private DeviceManager deviceManager;
-	private ArrayList<IDevice> deviceList = new ArrayList<IDevice>();
+
+	//
 	private SharedPreferences preferences;
 	private SharedPreferences.Editor preferencesEditor;
 	
+	//robobot items
+	private DeviceManager deviceManager;
+	private ScanDeviceHandler mDeviceHandler;
+	private ArrayList<IDevice> deviceList = new ArrayList<IDevice>();
+	
+	
+	//TODO move to device manager?
 	public static IDevice choosedDevice;
-
 	public static IDevice getChoosedDevice() {
 		IDevice dev = choosedDevice;
 		choosedDevice = null;
 		return dev;
 	}
 
-	ScanDeviceHandler mDeviceHandler;	
+	
 	private class DeviceListClickListener implements OnItemClickListener {
 
 		@Override
