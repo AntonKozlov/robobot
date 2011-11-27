@@ -262,18 +262,18 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		int nxtRightTrack = 0;
 		if (needToTransmit) {
 			if (acts[0] > 0) {
-				nxtLeftTrack = (oldNxtLeftTrack + 1) % nxtTrackImages.length();
+				nxtLeftTrack = (oldNxtLeftTrack + 1) % nxtTrackImages.length;
 			} else if (acts[0] < 0) {
-				nxtLeftTrack = (oldNxtLeftTrack + 2) % nxtTrackImages.length();
+				nxtLeftTrack = (oldNxtLeftTrack + 2) % nxtTrackImages.length;
 			} else {
 				nxtLeftTrack = oldNxtLeftTrack;
 			}
 			oldNxtLeftTrack = nxtLeftTrack;
 			
 			if (acts[1] > 0) {
-				nxtRightTrack = (oldNxtRightTrack + 1) % nxtTrackImages.length();
+				nxtRightTrack = (oldNxtRightTrack + 1) % nxtTrackImages.length;
 			} else if (acts[1] < 0) {
-				nxtRightTrack = (oldNxtRightTrack + 2) % nxtTrackImages.length();
+				nxtRightTrack = (oldNxtRightTrack + 2) % nxtTrackImages.length;
 			} else {
 				nxtRightTrack = oldNxtRightTrack;
 			}
