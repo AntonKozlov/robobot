@@ -69,7 +69,7 @@ public class ProtocolNxtEmbox implements IControllable, IProtocol {
 		
 		control[0] = mA;
 		control[1] = mB;
-		
+
 		return this.control;
 	}
 	
