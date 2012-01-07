@@ -11,13 +11,14 @@
     	android:layout_width="fill_parent"
     	android:layout_weight="1">
     </ListView>
+    <!--  
     <com.google.ads.AdView android:id="@+id/adView"
                          android:layout_width="fill_parent"
                          android:layout_height="wrap_content"
-                         ads:adUnitId="XXXXXXXXXX"
+                         ads:adUnitId="xxx"
                          ads:adSize="BANNER"
                          ads:loadAdOnCreate="true"/>
-    
+    -->
     <Button android:text="ReScan" 
     	android:id="@+id/button_scan"
         android:layout_width="fill_parent" 

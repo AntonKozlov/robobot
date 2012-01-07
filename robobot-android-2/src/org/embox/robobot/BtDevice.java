@@ -144,9 +144,9 @@ public class BtDevice implements IDevice, IControllable {
 			}
 			
 			public void requestDisconnect() {
-				if (deviceState < DEVICE_CONNECTED) {
-					throw new IllegalStateException("BtDevice thread illegal state change");
-				}
+		//		if (deviceState < DEVICE_CONNECTED) {
+			//		throw new IllegalStateException("BtDevice thread illegal state change");
+		//		}
 				try {
 					deviceReadThread.setNotRun();
 					deviceReadThread = null;
@@ -217,13 +217,13 @@ public class BtDevice implements IDevice, IControllable {
 		stamp[2] = 0;
 		stamp[3] = 0x0D;
 		threadHandler.obtainMessage(IDevice.REQUEST_WRITE, stamp).sendToTarget();
-		threadHandler.postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {
-				deviceThread.writeData(stamp);
-			}
-		}, 1000);
+//		threadHandler.postDelayed(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				deviceThread.writeData(stamp);
+//			}
+//		}, 1000);
 		//write(stamp);
 	}
 	
