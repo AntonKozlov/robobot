@@ -187,30 +187,18 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		device.calibrate(acts);
 	}
 	
-	//TODO very bad synchronization
 	void doTransmit() {
-		synchronized (canToTransmit) {
-			if (canToTransmit) {
-				synchronized (needToTransmit) {
-					needToTransmit = true;
-				}
-			}
-			 
+		if (canToTransmit) {
+			needToTransmit = true;
 		}
 	}
 	
 	void stopTransmit() {
-		synchronized (canToTransmit) {
-			if (canToTransmit) {
-				synchronized (needToTransmit) {
-					needToTransmit = false;
-					leftImageView.setImageResource(R.drawable.actuatorp0);
-			        rightImageView.setImageResource(R.drawable.actuatorp0);
-					device.calibrate(acts);
-					device.setControl(acts);
-				}
-			}
-		}
+		needToTransmit = false;
+		leftImageView.setImageResource(R.drawable.actuatorp0);
+        rightImageView.setImageResource(R.drawable.actuatorp0);
+		device.calibrate(acts);
+		device.setControl(acts);
 	}
 	
 	@Override
@@ -223,9 +211,9 @@ public class ControlActivity extends Activity implements SensorEventListener{
 			int[] feedback = device.setControl(acts); 
 			setActuatorsView(leftImageView, feedback[0]);
 			setActuatorsView(rightImageView, feedback[1]);
-			
+			drawTracks(feedback);	
 		}
-		drawTracks();
+		
 	}
 
 	//TODO constant images?
@@ -253,33 +241,19 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		R.drawable.track_2,
 		R.drawable.track_3
 	};	
-	private void setNxtTrackView (ImageView imageView, int imageId) {
-		imageView.setImageResource(nxtTrackImages[imageId]);
+	
+	private int setNxtTrackView (ImageView imageView, int old, int feedback) {
+		int diff = feedback > 0 ? 1 : (feedback < 0 ? -1 : 0);
+		int n = (old + diff) % nxtTrackImages.length;
+		imageView.setImageResource(nxtTrackImages[n]);
+		return n;
 	}
-	private void drawTracks() {
-		//TODO bad code
-		int nxtLeftTrack = 0;
-		int nxtRightTrack = 0;
-		if (needToTransmit) {
-			if (acts[0] > 0) {
-				nxtLeftTrack = (oldNxtLeftTrack + 1) % nxtTrackImages.length;
-			} else if (acts[0] < 0) {
-				nxtLeftTrack = (oldNxtLeftTrack + 2) % nxtTrackImages.length;
-			} else {
-				nxtLeftTrack = oldNxtLeftTrack;
-			}
-			oldNxtLeftTrack = nxtLeftTrack;
-			
-			if (acts[1] > 0) {
-				nxtRightTrack = (oldNxtRightTrack + 1) % nxtTrackImages.length;
-			} else if (acts[1] < 0) {
-				nxtRightTrack = (oldNxtRightTrack + 2) % nxtTrackImages.length;
-			} else {
-				nxtRightTrack = oldNxtRightTrack;
-			}
-			oldNxtRightTrack = nxtRightTrack;
-		}
-		setNxtTrackView(nxtLeftTrackView, nxtLeftTrack);
-		setNxtTrackView(nxtRightTrackView, nxtRightTrack);		
+	
+	private void drawTracks(int[] feedback) {
+		oldNxtLeftTrack = setNxtTrackView(nxtLeftTrackView, 
+				oldNxtLeftTrack, feedback[0]);
+		oldNxtRightTrack = setNxtTrackView(nxtRightTrackView, 
+				oldNxtRightTrack, feedback[1]);
+							
 	}
 }
