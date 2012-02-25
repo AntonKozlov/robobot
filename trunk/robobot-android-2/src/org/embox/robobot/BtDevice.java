@@ -229,13 +229,14 @@ public class BtDevice implements IDevice, IControllable {
 		//write(stamp);
 	}
 	
-	private byte[] botHeader = {0x03, 0x0, 0x2, 0xd}; 
+	private byte[] botHeader = {0x0, 0x2, 0xd};
+	private int botHeaderLen = botHeader.length;
 	private int headerPos = 0;
 	
 	private int determBotDeterm(byte[] data, int count) {
 		int dataPos = 0;
 		
-		while (dataPos < count && headerPos < 4) {
+		while (dataPos < count && headerPos < botHeaderLen) {
 			if (data[dataPos] == botHeader[headerPos]) {
 				headerPos ++;
 			} else {
@@ -244,7 +245,7 @@ public class BtDevice implements IDevice, IControllable {
 			dataPos ++;
 		} 
 		
-		if (headerPos < 4) {
+		if (headerPos < botHeaderLen) {
 			return 1;
 		}
 		
