@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.embox.robobot.proto.IProtocol;
@@ -17,6 +18,7 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 public class BtDevice implements IDevice, IControllable {
 	/**
@@ -216,14 +218,14 @@ public class BtDevice implements IDevice, IControllable {
 		stamp[1] = 0;
 		stamp[2] = 0;
 		stamp[3] = 0x0D;
-		threadHandler.obtainMessage(IDevice.REQUEST_WRITE, stamp).sendToTarget();
-//		threadHandler.postDelayed(new Runnable() {
-//			
-//			@Override
-//			public void run() {
-//				deviceThread.writeData(stamp);
-//			}
-//		}, 1000);
+//		threadHandler.obtainMessage(IDevice.REQUEST_WRITE, stamp).sendToTarget();
+		threadHandler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				deviceThread.writeData(stamp);
+			}
+		}, 1000);
 		//write(stamp);
 	}
 	
@@ -232,6 +234,7 @@ public class BtDevice implements IDevice, IControllable {
 	
 	private int determBotDeterm(byte[] data, int count) {
 		int dataPos = 0;
+		
 		while (dataPos < count && headerPos < 4) {
 			if (data[dataPos] == botHeader[headerPos]) {
 				headerPos ++;
@@ -301,6 +304,7 @@ public class BtDevice implements IDevice, IControllable {
 		
 		@Override
 		protected void readDone(byte[] data, int count) {
+			Log.d("robobot", Integer.toString(count)+ Arrays.toString(data));
 			if (deviceState == DEVICE_DETERMING) {
 				int status = determBotDeterm(data, count);
 				if (status == 0) {

@@ -54,7 +54,8 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		
 		@Override
 		public void onClick(View v) {
-			visualisationLayout.setVisibility(View.INVISIBLE);
+			//visualisationLayout.setVisibility(View.INVISIBLE);
+			return;
 		}
 	}; 
 	
@@ -242,9 +243,11 @@ public class ControlActivity extends Activity implements SensorEventListener{
 		R.drawable.track_3
 	};	
 	
+	int nxtTrackImagesLen = nxtTrackImages.length;
+	
 	private int setNxtTrackView (ImageView imageView, int old, int feedback) {
 		int diff = feedback > 0 ? 1 : (feedback < 0 ? -1 : 0);
-		int n = (old + diff) % nxtTrackImages.length;
+		int n = (old + diff + nxtTrackImagesLen) % nxtTrackImagesLen;
 		imageView.setImageResource(nxtTrackImages[n]);
 		return n;
 	}
