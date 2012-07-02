@@ -13,6 +13,11 @@ namespace robobot_winphone.Model
 {
     public class LogManager
     {
-
+        public static void Log(string message)
+        {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine(message);
+#endif
+        }
     }
 }
