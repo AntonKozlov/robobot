@@ -1,0 +1,7 @@
+= Устанавливаем необходимое =
+
+Чтобы разрабатывать приложения под WinPhone 7 необходимо установить следующие компоненты:
+# *Visual Studio 10*
+# *Service Pack for Visual Studio 10* http://www.microsoft.com/en-us/download/details.aspx?id=23691
+# *Windows Phone SDK 7.1* http://www.microsoft.com/en-us/download/details.aspx?id=27570
+# И можно обновить *SDK* до *7.1.1* http://www.microsoft.com/en-us/download/details.aspx?id=29233
