@@ -10,15 +10,28 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
+using robobot_winphone.ViewModel;
 
 namespace robobot_winphone
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        // Constructor
         public MainPage()
         {
             InitializeComponent();
+            this.DataContext = new MainPageViewModel();
+        }
+
+        protected override void OnOrientationChanged(OrientationChangedEventArgs e)
+        {
+            if (e.Orientation == PageOrientation.LandscapeRight)
+            {
+                this.Orientation = PageOrientation.LandscapeLeft;
+            }
+            else
+            {
+                base.OnOrientationChanged(e);
+            }
         }
     }
 }
