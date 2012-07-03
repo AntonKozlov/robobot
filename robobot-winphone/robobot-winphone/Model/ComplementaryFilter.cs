@@ -38,6 +38,7 @@ namespace robobot_winphone.Model
             float heading = (float)Math.Atan2(-(compassData.X * Math.Cos(roll) + compassData.Z * Math.Sin(roll)),
                 compassData.X * Math.Sin(pitch) * Math.Sin(roll) + compassData.Y * Math.Cos(pitch) -
                 compassData.Z * Math.Sin(pitch) * Math.Cos(roll));
+
             Vector3 correction = new Vector3(roll, pitch, heading);
 
             Vector3 integratedGyro = gyroscopeData * timeSinceLastUpdate;

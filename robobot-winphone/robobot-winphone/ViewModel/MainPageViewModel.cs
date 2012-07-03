@@ -72,6 +72,7 @@ namespace robobot_winphone.ViewModel
 
         public MainPageViewModel()
         {
+            // ToDo: Fabric Method
             if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
             {
                 filter = new ComplementaryFilter((float)0.01);
@@ -129,7 +130,7 @@ namespace robobot_winphone.ViewModel
             }
             catch (Exception)
             {
-                LogManager.Log("Sensor reading error");
+                LogManager.Log("Sensors reading error");
             }
         }
 
