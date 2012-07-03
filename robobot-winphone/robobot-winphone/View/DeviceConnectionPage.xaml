@@ -1,16 +1,16 @@
 ﻿<phone:PhoneApplicationPage 
-    x:Class="robobot_winphone.MainPage"
+    x:Class="robobot_winphone.View.DeviceConnectionPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="656" d:DesignHeight="480"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Landscape" Orientation="Landscape"
+    mc:Ignorable="d" d:DesignHeight="480" d:DesignWidth="728"
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -27,17 +27,33 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Line x:Name="xLine" X1="240" Y1="100" X2="{Binding Path=XLineX, Mode=TwoWay}" Y2="{Binding Path=XLineY, Mode=TwoWay}" Stroke="Red" StrokeThickness="14"></Line>
-            <Line x:Name="yLine" X1="240" Y1="100" X2="{Binding Path=YLineX, Mode=TwoWay}" Y2="{Binding Path=YLineY, Mode=TwoWay}" Stroke="Green" StrokeThickness="14"></Line>
-            <Line x:Name="zLine" X1="240" Y1="100" X2="{Binding Path=ZLineX, Mode=TwoWay}" Y2="{Binding Path=ZLineY, Mode=TwoWay}" Stroke="Blue" StrokeThickness="14"></Line>
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Port" Width="50" VerticalAlignment="Center"/>
+                    <TextBox Width="300" VerticalAlignment="Center" Text="{Binding Port, Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="IP" Width="50" VerticalAlignment="Center"/>
+                    <TextBox Width="300" VerticalAlignment="Center" Text="{Binding IP, Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Connect"
+                            Command="{Binding ConnectCommand}"/>
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
  
     <!--Sample code showing usage of ApplicationBar-->
-    <phone:PhoneApplicationPage.ApplicationBar>
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Connect" Click="Connect_Click"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+            </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
 
 </phone:PhoneApplicationPage>

@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using robobot_winphone.ViewModel;
+using robobot_winphone.Model;
 
 namespace robobot_winphone
 {
@@ -32,6 +33,11 @@ namespace robobot_winphone
             {
                 base.OnOrientationChanged(e);
             }
+        }
+
+        private void Connect_Click(object sender, EventArgs e)
+        {
+            NavigationManager.Instance.NavigateToDeviceConnectionPage();
         }
     }
 }
