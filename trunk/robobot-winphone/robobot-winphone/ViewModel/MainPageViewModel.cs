@@ -11,10 +11,8 @@ using System.ComponentModel;
 
 namespace robobot_winphone.ViewModel
 {
-    public class MainPageViewModel : INotifyPropertyChanged
+    public class MainPageViewModel : BaseViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private Gyroscope gyroscope;
         private Accelerometer accelerometer;
         private Compass compass;
@@ -72,7 +70,6 @@ namespace robobot_winphone.ViewModel
 
         public MainPageViewModel()
         {
-            // ToDo: Fabric Method
             if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
             {
                 filter = new ComplementaryFilter((float)0.01);
@@ -131,14 +128,6 @@ namespace robobot_winphone.ViewModel
             catch (Exception)
             {
                 LogManager.Log("Sensors reading error");
-            }
-        }
-
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
