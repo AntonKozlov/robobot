@@ -8,7 +8,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Windows.Navigation;
 using robobot_winphone.Model;
+using System.Text;
 
 namespace robobot_winphone.ViewModel
 {
@@ -23,6 +25,8 @@ namespace robobot_winphone.ViewModel
         public DeviceConnectionPageViewModel()
         {
             ConnectCommand = new ButtonCommand(Connect);
+            IP = "192.168.0.100";
+            Port = "43214";
         }
        
         private void Connect(object p)
@@ -35,7 +39,7 @@ namespace robobot_winphone.ViewModel
                 }
             }
 
-            //ToDo: Connect
+            SocketClient.Instance.ConnectToDevice(address, Convert.ToInt32(Port));
         }
     }
 }

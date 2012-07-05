@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework;
 using System.Windows.Threading;
 using robobot_winphone.Model;
 using System.ComponentModel;
+using System.Windows.Shapes;
+using System.Windows.Input;
+using System.Text;
 
 namespace robobot_winphone.ViewModel
 {
@@ -24,6 +27,9 @@ namespace robobot_winphone.ViewModel
         private double yLineY = 0;
         private double zLineX = 240;
         private double zLineY = 0;
+
+
+        public ICommand DisconnectCommand { get; private set; }
 
         public double XLineX
         {
@@ -70,6 +76,9 @@ namespace robobot_winphone.ViewModel
 
         public MainPageViewModel()
         {
+
+            DisconnectCommand = new ButtonCommand(Disconnect);
+
             if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
             {
                 filter = new ComplementaryFilter((float)0.01);
@@ -111,6 +120,9 @@ namespace robobot_winphone.ViewModel
                 NotifyPropertyChanged("YLineY");
                 NotifyPropertyChanged("ZLineX");
                 NotifyPropertyChanged("ZLineY");
+
+                SendMessage(String.Format("x: {0}, x: {1}, x: {2}", filter.CummulativeValue.X, 
+                    filter.CummulativeValue.Y, filter.CummulativeValue.Z));
             }
             catch (Exception)
             {
@@ -129,6 +141,16 @@ namespace robobot_winphone.ViewModel
             {
                 LogManager.Log("Sensors reading error");
             }
+        }
+
+        private void Disconnect(object p)
+        {
+            SocketClient.Instance.Disconnect();
+        }
+
+        private void SendMessage(string message)
+        {
+            SocketClient.Instance.SendData(Encoding.UTF8.GetBytes(String.Format("{0}\n", message)));
         }
     }
 }
