@@ -31,5 +31,17 @@ namespace robobot_winphone.View
             deviceConnectionPageViewModel.nService = this.NavigationService;
             base.OnNavigatedTo(e);
         }
+
+        protected override void OnOrientationChanged(OrientationChangedEventArgs e)
+        {
+            if (e.Orientation == PageOrientation.LandscapeRight)
+            {
+                this.Orientation = PageOrientation.LandscapeLeft;
+            }
+            else
+            {
+                base.OnOrientationChanged(e);
+            }
+        }
     }
 }

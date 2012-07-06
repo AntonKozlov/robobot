@@ -14,70 +14,79 @@ using System.Text;
 
 namespace robobot_winphone.ViewModel
 {
+    public enum ConnectionStatus : int
+    {
+        Connected = 0,
+        Disconnected = 1
+    }
+
+    public enum SendingStatus : int
+    {
+        StartSending = 0,
+        StopSending = 1
+    }
+
     public class MainPageViewModel : BaseViewModel
     {
         private Gyroscope gyroscope;
         private Accelerometer accelerometer;
         private Compass compass;
         private ComplementaryFilter filter;
+        private ConnectionStatus connectionStatus;
+        private SendingStatus sendingStatus;
 
-        private double xLineX = 240;
-        private double xLineY = 0;
-        private double yLineX = 240;
-        private double yLineY = 0;
-        private double zLineX = 240;
-        private double zLineY = 0;
-
+        public double XLineX { get; private set; }
+        public double XLineY { get; private set; }
+        public double YLineX { get; private set; }
+        public double YLineY { get; private set; }
+        public double ZLineX { get; private set; }
+        public double ZLineY { get; private set; }
 
         public ICommand DisconnectCommand { get; private set; }
+        public ICommand SendingCommand { get; private set; }
 
-        public double XLineX
+        public ConnectionStatus ConnectionStatus
         {
             get
             {
-                return this.xLineX;
+                return connectionStatus;
+            }
+            set
+            {
+                if (value != connectionStatus)
+                {
+                    connectionStatus = value;
+                    NotifyPropertyChanged("ConnectionStatus");
+                }
             }
         }
-        public double XLineY
+
+        public SendingStatus SendingStatus
         {
             get
             {
-                return this.xLineY;
+                return sendingStatus;
             }
-        }
-        public double YLineX
-{
-            get
+            set
             {
-                return this.yLineX;
-            }
-        }
-        public double YLineY
-        {
-            get
-            {
-                return this.yLineY;
-            }
-        }
-        public double ZLineX
-        {
-            get
-            {
-                return this.zLineX;
-            }
-        }
-        public double ZLineY
-        {
-            get
-            {
-                return this.zLineY;
+                if (value != sendingStatus)
+                {
+                    sendingStatus = value;
+                    NotifyPropertyChanged("SendingStatus");
+                }
             }
         }
 
         public MainPageViewModel()
         {
-
+            XLineX = 240;
+            XLineY = 0;
+            YLineX = 240;
+            YLineY = 0;
+            ZLineX = 240;
+            ZLineY = 0;
             DisconnectCommand = new ButtonCommand(Disconnect);
+            SendingCommand = new ButtonCommand(SendOrStopSend);
 
             if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
             {
@@ -107,12 +116,12 @@ namespace robobot_winphone.ViewModel
         {
             try
             {
-                xLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.X);
-                xLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.X);
-                yLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.Y);
-                yLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.Y);
-                zLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.Z);
-                zLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.Z);
+                XLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.X);
+                XLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.X);
+                YLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.Y);
+                YLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.Y);
+                ZLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.Z);
+                ZLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.Z);
 
                 NotifyPropertyChanged("XLineX");
                 NotifyPropertyChanged("XLineY");
@@ -121,14 +130,57 @@ namespace robobot_winphone.ViewModel
                 NotifyPropertyChanged("ZLineX");
                 NotifyPropertyChanged("ZLineY");
 
-                SendMessage(String.Format("x: {0}, x: {1}, x: {2}", filter.CummulativeValue.X, 
-                    filter.CummulativeValue.Y, filter.CummulativeValue.Z));
+                if (SocketClient.Instance.IsConnected())
+                {
+                    ConnectionStatus = ViewModel.ConnectionStatus.Connected;
+                    if (SendingStatus == ViewModel.SendingStatus.StopSending)
+                    {
+                        SendMessage(String.Format("Speed: {0}, Turn: {1}", CalculateSpeed((double)filter.CummulativeValue.X),
+                            CalculateTurn((double)filter.CummulativeValue.Y)));
+                    }
+                }
+                else
+                {
+                    ConnectionStatus = ViewModel.ConnectionStatus.Disconnected;
+                    SendingStatus = ViewModel.SendingStatus.StartSending;
+                }
             }
             catch (Exception)
             {
                 LogManager.Log("Update cummulative value error");
             }
         }
+
+        #region SensorDataCalculationTest
+        private int CalculateSpeed(double value)
+        {
+
+            int speed = (int)(value * 60);
+            if (speed >= 90)
+            {
+                return 90;
+            }
+            if (speed <= -90)
+            {
+                return -90;
+            }
+            return speed;
+        }
+
+        private int CalculateTurn(double value)
+        {
+            int turn = (int)(value * 120);
+            if (turn >= 100)
+            {
+                return 100;
+            }
+            if (turn <= -100)
+            {
+                return -100;
+            }
+            return turn;
+        }
+        #endregion
 
         void gyroscope_CurrentValueChanged(object sender, SensorReadingEventArgs<GyroscopeReading> e)
         {
@@ -151,6 +203,17 @@ namespace robobot_winphone.ViewModel
         private void SendMessage(string message)
         {
             SocketClient.Instance.SendData(Encoding.UTF8.GetBytes(String.Format("{0}\n", message)));
+        }
+        private void SendOrStopSend(object p)
+        {
+            if (SendingStatus == ViewModel.SendingStatus.StartSending)
+            {
+                SendingStatus = ViewModel.SendingStatus.StopSending;
+            }
+            else
+            {
+                SendingStatus = ViewModel.SendingStatus.StartSending;
+            }
         }
     }
 }
