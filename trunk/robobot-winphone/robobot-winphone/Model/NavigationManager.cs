@@ -41,9 +41,15 @@ namespace robobot_winphone.Model
             frame.Navigate(new Uri(uri, UriKind.RelativeOrAbsolute));
 
         }
+
         public void NavigateToDeviceConnectionPage()
         {
             this.Navigate("//View/DeviceConnectionPage.xaml");
+        }
+
+        public void NavigateToSettingsPage()
+        {
+            this.Navigate("//View/SettingsPage.xaml");
         }
     }
 }
