@@ -1,5 +1,5 @@
 ﻿<phone:PhoneApplicationPage 
-    x:Class="robobot_winphone.View.DeviceConnectionPage"
+    x:Class="robobot_winphone.View.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -23,23 +23,29 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
             <TextBlock x:Name="ApplicationTitle" Text="ROBOBOT" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="PageTitle" Text="connection" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock x:Name="PageTitle" Text="settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Port" Width="50" VerticalAlignment="Center" FontSize="24"/>
+                    <TextBlock Text="Use gyroscope" Width="160" FontSize="24" VerticalAlignment="Center"/>
+                    <RadioButton Content="Yes" GroupName="IsUseGyro"/>
+                    <RadioButton Content="No" GroupName="IsUseGyro"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Turn method" Width="160" FontSize="24" VerticalAlignment="Center"/>
+                    <RadioButton Content="Rotation" GroupName="TurnMethod"/>
+                    <RadioButton Content="Inclination" GroupName="TurnMethod"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Default port" Width="160" VerticalAlignment="Center" FontSize="24"/>
                     <TextBox Width="300" VerticalAlignment="Center" Text="{Binding Port, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="IP" Width="50" VerticalAlignment="Center" FontSize="24"/>
+                    <TextBlock Text="Default IP" Width="160" VerticalAlignment="Center" FontSize="24"/>
                     <TextBox Width="300" VerticalAlignment="Center" Text="{Binding IP, Mode=TwoWay}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="Connect"
-                            Command="{Binding ConnectCommand}"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
