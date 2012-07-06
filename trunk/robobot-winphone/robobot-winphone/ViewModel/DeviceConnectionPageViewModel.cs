@@ -18,6 +18,7 @@ namespace robobot_winphone.ViewModel
     {
         private IPAddress address;
 
+        public NavigationService nService { get; set; }
         public string Port { get; set; }
         public string IP { get; set; }
         public ICommand ConnectCommand { get; private set; }
@@ -40,6 +41,11 @@ namespace robobot_winphone.ViewModel
             }
 
             SocketClient.Instance.ConnectToDevice(address, Convert.ToInt32(Port));
+
+            if (nService != null)
+            {
+                nService.GoBack();
+            }
         }
     }
 }

@@ -17,10 +17,19 @@ namespace robobot_winphone.View
 {
     public partial class DeviceConnectionPage : PhoneApplicationPage
     {
+        DeviceConnectionPageViewModel deviceConnectionPageViewModel;
+
         public DeviceConnectionPage()
         {
             InitializeComponent();
-            this.DataContext = new DeviceConnectionPageViewModel();
+            deviceConnectionPageViewModel = new DeviceConnectionPageViewModel();
+            this.DataContext = deviceConnectionPageViewModel;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            deviceConnectionPageViewModel.nService = this.NavigationService;
+            base.OnNavigatedTo(e);
         }
     }
 }
