@@ -52,6 +52,7 @@
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -66,17 +67,18 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\AccelerometerProcessor.cs" />
     <Compile Include="Model\ButtonCommand.cs" />
     <Compile Include="Model\ComplementaryFilter.cs" />
     <Compile Include="Model\Converters\ConnectionStatusConverter.cs" />
     <Compile Include="Model\NavigationManager.cs" />
+    <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\SocketClient.cs" />
     <Compile Include="Model\LogManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\DeviceConnectionPageViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel.cs" />
     <Compile Include="View\DeviceConnectionPage.xaml.cs">
       <DependentUpon>DeviceConnectionPage.xaml</DependentUpon>
     </Compile>

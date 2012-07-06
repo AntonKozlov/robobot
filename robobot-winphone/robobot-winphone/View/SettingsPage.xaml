@@ -31,13 +31,13 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Use gyroscope" Width="160" FontSize="24" VerticalAlignment="Center"/>
-                    <RadioButton Content="Yes" GroupName="IsUseGyro"/>
-                    <RadioButton Content="No" GroupName="IsUseGyro"/>
+                    <RadioButton Content="Yes" GroupName="IsUseGyro" IsChecked="{Binding IsUseGyroYes, Mode=TwoWay}" Command="{Binding IsUseGyroYesCommand}"/>
+                    <RadioButton Content="No" GroupName="IsUseGyro" IsChecked="{Binding IsUseGyroNo, Mode=TwoWay}" Command="{Binding IsUseGyroNoCommand}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Turn method" Width="160" FontSize="24" VerticalAlignment="Center"/>
-                    <RadioButton Content="Rotation" GroupName="TurnMethod"/>
-                    <RadioButton Content="Inclination" GroupName="TurnMethod"/>
+                    <RadioButton Content="Rotation" GroupName="TurnMethod" IsChecked="{Binding IsRotationTurnMethod, Mode=TwoWay}" Command="{Binding IsRotationTurnMethodCommand}"/>
+                    <RadioButton Content="Inclination" GroupName="TurnMethod" IsChecked="{Binding IsInclinationTurnMethod, Mode=TwoWay}" Command="{Binding IsInclinationTurnMethodCommand}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Default port" Width="160" VerticalAlignment="Center" FontSize="24"/>

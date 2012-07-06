@@ -25,9 +25,10 @@ namespace robobot_winphone.ViewModel
 
         public DeviceConnectionPageViewModel()
         {
+            Settings settings = new Settings();
             ConnectCommand = new ButtonCommand(Connect);
-            IP = "192.168.0.100";
-            Port = "43214";
+            IP = settings.IP;
+            Port = settings.Port;
         }
        
         private void Connect(object p)
