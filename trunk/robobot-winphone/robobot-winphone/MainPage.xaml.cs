@@ -23,6 +23,11 @@ namespace robobot_winphone
             this.DataContext = new MainPageViewModel();
         }
 
+        private void Connect_Click(object sender, EventArgs e)
+        {
+            NavigationManager.Instance.NavigateToDeviceConnectionPage();
+        }
+
         protected override void OnOrientationChanged(OrientationChangedEventArgs e)
         {
             if (e.Orientation == PageOrientation.LandscapeRight)
@@ -33,11 +38,6 @@ namespace robobot_winphone
             {
                 base.OnOrientationChanged(e);
             }
-        }
-
-        private void Connect_Click(object sender, EventArgs e)
-        {
-            NavigationManager.Instance.NavigateToDeviceConnectionPage();
         }
     }
 }

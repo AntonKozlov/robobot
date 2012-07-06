@@ -112,6 +112,14 @@ namespace robobot_winphone.Model
             }
         }
 
+        public bool IsConnected()
+        {
+            if ((socket != null) && (socket.Connected))
+            {
+                return true;
+            }
+            return false;
+        }
         //Not tested
 
         //public Byte[] ReceiveData()

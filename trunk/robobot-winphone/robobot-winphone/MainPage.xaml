@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:c="clr-namespace:robobot_winphone.Model.Converters"
     mc:Ignorable="d" d:DesignWidth="656" d:DesignHeight="480"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -15,6 +16,9 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.Resources>
+            <c:ConnectionStatusConverter x:Key="ConnectionStatusConverter" x:Name="ConnectionStatusConverter"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -30,7 +34,17 @@
             <Line x:Name="xLine" X1="240" Y1="100" X2="{Binding Path=XLineX, Mode=TwoWay}" Y2="{Binding Path=XLineY, Mode=TwoWay}" Stroke="Red" StrokeThickness="14"></Line>
             <Line x:Name="yLine" X1="240" Y1="100" X2="{Binding Path=YLineX, Mode=TwoWay}" Y2="{Binding Path=YLineY, Mode=TwoWay}" Stroke="Green" StrokeThickness="14"></Line>
             <Line x:Name="zLine" X1="240" Y1="100" X2="{Binding Path=ZLineX, Mode=TwoWay}" Y2="{Binding Path=ZLineY, Mode=TwoWay}" Stroke="Blue" StrokeThickness="14"></Line>
-            <Button Content="Disconnect" Command="{Binding DisconnectCommand}" Height="80" Width="200" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+            
+            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Connection status: " Height="40" Width="Auto" FontSize="24"/>
+                    <TextBlock Text="{Binding ConnectionStatus}" Height="40" Width="Auto" FontSize="24"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Disconnect" Command="{Binding DisconnectCommand}" IsEnabled="{Binding ConnectionStatus, Converter={StaticResource ConnectionStatusConverter}}" Height="80" Width="200"/>
+                    <Button Content="{Binding SendingStatus}" Command="{Binding SendingCommand}" IsEnabled="{Binding ConnectionStatus, Converter={StaticResource ConnectionStatusConverter}}" Height="80" Width="200"/>
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
  
