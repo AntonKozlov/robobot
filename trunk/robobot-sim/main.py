@@ -4,6 +4,8 @@ import sys
 import socket
 import logging
 
+import getopt
+
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.DEBUG)
 root_logger.addHandler(logging.StreamHandler(sys.stderr))
@@ -47,8 +49,16 @@ def echo_server(host, port):
         sock.close()
 
 if __name__ == '__main__':
-    host = "localhost"
-    port = 100000
-    print "starting robobot simulator at \'%s:%d\'" % (host, port)
-    echo_server(host, 10000)
+    try:
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 'p:')
+    except getopt.GetoptError, err:
+        print str(err)
+    host = "" # represents INADDR_ANY
+    port = 10000
+    for o, a in opts:
+        if o == '-p':
+            port = int(a)
+    log.info("starting robobot simulator at \'%s:%d\'" % (host, port))
+
+    echo_server(host, port)
 
