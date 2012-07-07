@@ -10,13 +10,13 @@ root_logger.addHandler(logging.StreamHandler(sys.stderr))
 
 log = logging.getLogger(__name__)
 
-def echo_server(port):
+def echo_server(host, port):
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
         # Bind the socket to the port
-        server_address = ('localhost', port)
+        server_address = (host, port)
         log.info('starting up on %s port %s', *server_address)
         sock.bind(server_address)
 
@@ -47,5 +47,8 @@ def echo_server(port):
         sock.close()
 
 if __name__ == '__main__':
-    echo_server(10000)
+    host = "localhost"
+    port = 100000
+    print "starting robobot simulator at \'%s:%d\'" % (host, port)
+    echo_server(host, 10000)
 
