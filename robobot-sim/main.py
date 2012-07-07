@@ -53,11 +53,20 @@ if __name__ == '__main__':
         opts, args = getopt.gnu_getopt(sys.argv[1:], 'p:')
     except getopt.GetoptError, err:
         print str(err)
+    params = ["host", "port"]
     host = "" # represents INADDR_ANY
     port = 10000
-    for o, a in opts:
-        if o == '-p':
-            port = int(a)
+    #for o, a in opts:
+    #    if o == '-p':
+    #        port = int(a)
+    
+
+    with open('connection.conf') as f:
+        for line in f:
+            all = line.split('=', 1)
+            if all[0] in params:
+                exec(line)
+
     log.info("starting robobot simulator at \'%s:%d\'" % (host, port))
 
     echo_server(host, port)
