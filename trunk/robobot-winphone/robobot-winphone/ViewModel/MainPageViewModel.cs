@@ -135,8 +135,8 @@ namespace robobot_winphone.ViewModel
                     ConnectionStatus = ViewModel.ConnectionStatus.Connected;
                     if (SendingStatus == ViewModel.SendingStatus.StopSending)
                     {
-                        SendMessage(String.Format("Speed: {0}, Turn: {1}", CalculateSpeed((double)filter.CummulativeValue.X),
-                            CalculateTurn((double)filter.CummulativeValue.Y)));
+                        SendMessage(CalculateValue((double)filter.CummulativeValue.X),
+                            CalculateValue((double)filter.CummulativeValue.Y));
                     }
                 }
                 else
@@ -152,33 +152,20 @@ namespace robobot_winphone.ViewModel
         }
 
         #region SensorDataCalculationTest
-        private int CalculateSpeed(double value)
-        {
+        private const int MaxValue = 100;
 
-            int speed = (int)(value * 60);
-            if (speed >= 90)
+        private int CalculateValue(double value)
+        {
+            int speed = (int)(value * MaxValue);
+            if (speed >= MaxValue)
             {
-                return 90;
+                return MaxValue;
             }
-            if (speed <= -90)
+            if (speed <= -MaxValue)
             {
-                return -90;
+                return -MaxValue;
             }
             return speed;
-        }
-
-        private int CalculateTurn(double value)
-        {
-            int turn = (int)(value * 120);
-            if (turn >= 100)
-            {
-                return 100;
-            }
-            if (turn <= -100)
-            {
-                return -100;
-            }
-            return turn;
         }
         #endregion
 
@@ -200,9 +187,9 @@ namespace robobot_winphone.ViewModel
             SocketClient.Instance.Disconnect();
         }
 
-        private void SendMessage(string message)
+        private void SendMessage(int turn, int speed)
         {
-            SocketClient.Instance.SendData(Encoding.UTF8.GetBytes(String.Format("{0}\n", message)));
+            SocketClient.Instance.SendData(Encoding.UTF8.GetBytes(String.Format("{0} {1}\n", turn, speed)));
         }
         private void SendOrStopSend(object p)
         {
