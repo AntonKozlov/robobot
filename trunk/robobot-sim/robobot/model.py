@@ -21,6 +21,12 @@ class model:
         self.spd = control.spd
         #print "speed updated to %s", str(control.spd)
 
+class ball_model(model):
+	def __init__(self, ball):
+	    self.ball = ball	
+	def update_control(self, control):
+	    self.ball.post_set_speed(float(control.spd[0])/100, float(control.spd[1])/100)
+
 # Control passed
 class control:
     def __init__(self, spd=[0, 0]):
@@ -73,7 +79,7 @@ def car_proto_map(str):
 
 class car_proto(proto):
     def start(self):
-        return yield car_proto_map(nsplit(self.socket))
+        yield car_proto_map(nsplit(self.socket))
 
 class robot:
     def __init__(self, model, proto):
