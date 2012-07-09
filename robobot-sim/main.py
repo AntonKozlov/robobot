@@ -6,6 +6,7 @@ import logging
 from threading import Thread
 from robobot.graphics import BounceBall
 
+import robobot.model
 import getopt
 
 root_logger = logging.getLogger()
@@ -40,18 +41,23 @@ class EchoServer(Thread):
                 connection, client_address = sock.accept()
                 try:
                     log.info('connection from %s', client_address)
+                   
+                    mod = robobot.model.ball_model(self.ball)
+                    prot = robobot.model.proto(connection)
+                    robot = robobot.model.robot(mod, prot)
 
+                    robot.start()
                     # Receive the data in small chunks and retransmit it
-                    while True:
-                        data = connection.recv(16)
-                        log.info('received "%s"', data)
-                        if data:
-                            log.info('sending data back to the client')
-                            self.ball.post_invert_speed(len(data) % 2)
-                            connection.sendall(data)
-                        else:
-                            log.info('no more data from %s', client_address)
-                            break
+                    #while True:
+                        #data = connection.recv(16)
+                        #log.info('received "%s"', data)
+                        #if data:
+                            #log.info('sending data back to the client')
+                            #self.ball.post_invert_speed(len(data) % 2)
+                            #connection.sendall(data)
+                        #else:
+                            #log.info('no more data from %s', client_address)
+                            #break
 
                 finally:
                     print 'closing connection'
@@ -60,9 +66,6 @@ class EchoServer(Thread):
         finally:
             print 'closing socket'
             sock.close()
-
-host = "localhost"
-port = 10001
 
 if __name__ == '__main__':
     try:
