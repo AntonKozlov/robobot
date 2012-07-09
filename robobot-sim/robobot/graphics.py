@@ -35,13 +35,14 @@ class BounceBall(Thread):
         fastevent.init()
 
         self.width, self.height = width, height
-        self.speed = [0.5, 0.5]
+        self.speed = [0, 0]
 	self.speed_state = [0, 0]
 
         self.screen = display.set_mode((width, height))
 
         self.ball = image.load("robobot/ball.gif")
         self.ballrect = self.ball.get_rect()
+	self.ballrect = self.ballrect.move(width/2, height/2)
 
     def post_set_speed(self, x=1, y=1):
         args = {"x" : x, "y" : y}
