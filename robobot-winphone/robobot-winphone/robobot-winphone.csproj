@@ -71,6 +71,7 @@
     <Compile Include="Model\ComplementaryFilter.cs" />
     <Compile Include="Model\Converters\ConnectionStatusConverter.cs" />
     <Compile Include="Model\NavigationManager.cs" />
+    <Compile Include="Model\SensorHandler\ISensorHandler.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\SocketClient.cs" />
     <Compile Include="Model\LogManager.cs" />
