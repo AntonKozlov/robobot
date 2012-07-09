@@ -135,8 +135,8 @@ namespace robobot_winphone.ViewModel
                     ConnectionStatus = ViewModel.ConnectionStatus.Connected;
                     if (SendingStatus == ViewModel.SendingStatus.StopSending)
                     {
-                        SendMessage(CalculateValue((double)filter.CummulativeValue.X),
-                            CalculateValue((double)filter.CummulativeValue.Y));
+                        SendMessage(CalculateValue((double)filter.CummulativeValue.Y),
+                            CalculateValue((double)(-filter.CummulativeValue.X)));
                     }
                 }
                 else
