@@ -77,6 +77,7 @@
     <Compile Include="Model\SensorHandler\AGSensorHandler.cs" />
     <Compile Include="Model\SensorHandler\ASensorHandler.cs" />
     <Compile Include="Model\SensorHandler\ISensorHandler.cs" />
+    <Compile Include="Model\SensorHandler\SensorHandlerManager.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\SocketClient.cs" />
     <Compile Include="Model\LogManager.cs" />

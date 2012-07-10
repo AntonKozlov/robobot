@@ -11,8 +11,14 @@ using System.Windows.Shapes;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class ACSensorHandler
+    public class ACSensorHandler : ISensorHandler
     {
+        public ACSensorHandler (double frequency, ISensorView sensorView)
+        {
+        }
 
+        public void Start() { }
+
+        public void Stop() { }
     }
 }

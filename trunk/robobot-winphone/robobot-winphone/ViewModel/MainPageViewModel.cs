@@ -32,7 +32,7 @@ namespace robobot_winphone.ViewModel
     {
         private ConnectionStatus connectionStatus;
         private SendingStatus sendingStatus;
-        private AGSensorHandler handler;
+        private ISensorHandler handler;
 
         public double XLineX { get; private set; }
         public double XLineY { get; private set; }
@@ -90,27 +90,9 @@ namespace robobot_winphone.ViewModel
             ConnectionStatus = ViewModel.ConnectionStatus.Disconnected;
             sendingStatus = ViewModel.SendingStatus.StartSending;
 
-            handler = new AGSensorHandler(0.01, this);
+            handler = SensorHandlerManager.GetSensorHandler(0.01, this);
             handler.Start();
         }
-
-        #region SensorDataCalculationTest
-        private const int MaxValue = 100;
-
-        private int CalculateValue(double value)
-        {
-            int outPutValue = (int)(value * MaxValue);
-            if (outPutValue >= MaxValue)
-            {
-                return MaxValue;
-            }
-            if (outPutValue <= -MaxValue)
-            {
-                return -MaxValue;
-            }
-            return outPutValue;
-        }
-        #endregion
 
         private void Disconnect(object p)
         {
@@ -168,6 +150,21 @@ namespace robobot_winphone.ViewModel
             catch (Exception)
             {
                 LogManager.Log("Update cummulative value error");
+            }
+        }
+
+        public void ResetSensorHandler()
+        {
+            if (handler == null)
+            {
+                handler = SensorHandlerManager.GetSensorHandler(0.01, this);
+                handler.Start();
+            }
+            else
+            {
+                handler.Stop();
+                handler = SensorHandlerManager.GetSensorHandler(0.01, this);
+                handler.Start();
             }
         }
     }
