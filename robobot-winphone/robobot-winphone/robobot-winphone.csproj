@@ -70,7 +70,13 @@
     <Compile Include="Model\ButtonCommand.cs" />
     <Compile Include="Model\ComplementaryFilter.cs" />
     <Compile Include="Model\Converters\ConnectionStatusConverter.cs" />
+    <Compile Include="Model\ISensorView.cs" />
     <Compile Include="Model\NavigationManager.cs" />
+    <Compile Include="Model\SensorHandler\ACGSensorHandler.cs" />
+    <Compile Include="Model\SensorHandler\ACSensorHandler.cs" />
+    <Compile Include="Model\SensorHandler\AGSensorHandler.cs" />
+    <Compile Include="Model\SensorHandler\ASensorHandler.cs" />
+    <Compile Include="Model\SensorHandler\ISensorHandler.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\SocketClient.cs" />
     <Compile Include="Model\LogManager.cs" />
@@ -118,9 +124,7 @@
     <Content Include="Resources\Icons\settings.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\SensorHandler\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
