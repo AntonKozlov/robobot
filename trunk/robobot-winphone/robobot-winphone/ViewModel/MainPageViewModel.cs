@@ -6,11 +6,13 @@ using Microsoft.Phone.Controls;
 using Microsoft.Devices.Sensors;
 using Microsoft.Xna.Framework;
 using System.Windows.Threading;
-using robobot_winphone.Model;
 using System.ComponentModel;
 using System.Windows.Shapes;
 using System.Windows.Input;
 using System.Text;
+
+using robobot_winphone.Model;
+using robobot_winphone.Model.SensorHandler;
 
 namespace robobot_winphone.ViewModel
 {
@@ -26,14 +28,11 @@ namespace robobot_winphone.ViewModel
         StopSending = 1
     }
 
-    public class MainPageViewModel : BaseViewModel
+    public class MainPageViewModel : BaseViewModel, ISensorView
     {
-        private Gyroscope gyroscope;
-        private Accelerometer accelerometer;
-        private Compass compass;
-        private ComplementaryFilter filter;
         private ConnectionStatus connectionStatus;
         private SendingStatus sendingStatus;
+        private AGSensorHandler handler;
 
         public double XLineX { get; private set; }
         public double XLineY { get; private set; }
@@ -88,67 +87,11 @@ namespace robobot_winphone.ViewModel
             DisconnectCommand = new ButtonCommand(Disconnect);
             SendingCommand = new ButtonCommand(SendOrStopSend);
 
-            if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
-            {
-                filter = new ComplementaryFilter((float)0.01);
-                gyroscope = new Gyroscope();
-                accelerometer = new Accelerometer();
-                compass = new Compass();
+            ConnectionStatus = ViewModel.ConnectionStatus.Disconnected;
+            sendingStatus = ViewModel.SendingStatus.StartSending;
 
-                accelerometer.TimeBetweenUpdates = TimeSpan.FromMilliseconds(1);
-                compass.TimeBetweenUpdates = TimeSpan.FromMilliseconds(1);
-                gyroscope.TimeBetweenUpdates = TimeSpan.FromMilliseconds(1);
-
-                gyroscope.CurrentValueChanged += gyroscope_CurrentValueChanged;
-
-                accelerometer.Start();
-                compass.Start();
-                gyroscope.Start();
-
-                DispatcherTimer timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromMilliseconds(10);
-                timer.Tick += new EventHandler(timer_Tick);
-                timer.Start();
-            }
-        }
-
-        void timer_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                XLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.X);
-                XLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.X);
-                YLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.Y);
-                YLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.Y);
-                ZLineX = 240 - 100 * Math.Sin((double)filter.CummulativeValue.Z);
-                ZLineY = 100 - 100 * Math.Cos((double)filter.CummulativeValue.Z);
-
-                NotifyPropertyChanged("XLineX");
-                NotifyPropertyChanged("XLineY");
-                NotifyPropertyChanged("YLineX");
-                NotifyPropertyChanged("YLineY");
-                NotifyPropertyChanged("ZLineX");
-                NotifyPropertyChanged("ZLineY");
-
-                if (SocketClient.Instance.IsConnected())
-                {
-                    ConnectionStatus = ViewModel.ConnectionStatus.Connected;
-                    if (SendingStatus == ViewModel.SendingStatus.StopSending)
-                    {
-                        SendMessage(CalculateValue((double)filter.CummulativeValue.Y),
-                            CalculateValue((double)(-filter.CummulativeValue.X)));
-                    }
-                }
-                else
-                {
-                    ConnectionStatus = ViewModel.ConnectionStatus.Disconnected;
-                    SendingStatus = ViewModel.SendingStatus.StartSending;
-                }
-            }
-            catch (Exception)
-            {
-                LogManager.Log("Update cummulative value error");
-            }
+            handler = new AGSensorHandler(0.01, this);
+            handler.Start();
         }
 
         #region SensorDataCalculationTest
@@ -156,31 +99,18 @@ namespace robobot_winphone.ViewModel
 
         private int CalculateValue(double value)
         {
-            int speed = (int)(value * MaxValue);
-            if (speed >= MaxValue)
+            int outPutValue = (int)(value * MaxValue);
+            if (outPutValue >= MaxValue)
             {
                 return MaxValue;
             }
-            if (speed <= -MaxValue)
+            if (outPutValue <= -MaxValue)
             {
                 return -MaxValue;
             }
-            return speed;
+            return outPutValue;
         }
         #endregion
-
-        void gyroscope_CurrentValueChanged(object sender, SensorReadingEventArgs<GyroscopeReading> e)
-        {
-            try
-            {
-                filter.UpdateCummulativeValue(e.SensorReading.RotationRate, accelerometer.CurrentValue.Acceleration,
-                    compass.CurrentValue.MagnetometerReading, e.SensorReading.Timestamp);
-            }
-            catch (Exception)
-            {
-                LogManager.Log("Sensors reading error");
-            }
-        }
 
         private void Disconnect(object p)
         {
@@ -200,6 +130,44 @@ namespace robobot_winphone.ViewModel
             else
             {
                 SendingStatus = ViewModel.SendingStatus.StartSending;
+            }
+        }
+
+        public void ProcessSensorData(int turn, int speed)
+        {
+            //XLineX = 240 - 100 * Math.Sin((double)data.X);
+            //XLineY = 100 - 100 * Math.Cos((double)data.X);
+            //YLineX = 240 - 100 * Math.Sin((double)data.Y);
+            //YLineY = 100 - 100 * Math.Cos((double)data.Y);
+            //ZLineX = 240 - 100 * Math.Sin((double)data.Z);
+            //ZLineY = 100 - 100 * Math.Cos((double)data.Z);
+
+            //NotifyPropertyChanged("XLineX");
+            //NotifyPropertyChanged("XLineY");
+            //NotifyPropertyChanged("YLineX");
+            //NotifyPropertyChanged("YLineY");
+            //NotifyPropertyChanged("ZLineX");
+            //NotifyPropertyChanged("ZLineY");
+
+            try
+            {
+                if (SocketClient.Instance.IsConnected())
+                {
+                    ConnectionStatus = ViewModel.ConnectionStatus.Connected;
+                    if (sendingStatus == ViewModel.SendingStatus.StopSending)
+                    {
+                        SendMessage(turn, speed);
+                    }
+                }
+                else
+                {
+                    ConnectionStatus = ViewModel.ConnectionStatus.Disconnected;
+                    SendingStatus = ViewModel.SendingStatus.StartSending;
+                }
+            }
+            catch (Exception)
+            {
+                LogManager.Log("Update cummulative value error");
             }
         }
     }
