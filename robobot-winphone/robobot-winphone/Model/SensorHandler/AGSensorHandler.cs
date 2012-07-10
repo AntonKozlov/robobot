@@ -16,7 +16,7 @@ using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class AGSensorHandler
+    public class AGSensorHandler : ISensorHandler
     {
         private Gyroscope gyroscope;
         private Accelerometer accelerometer;

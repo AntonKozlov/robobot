@@ -16,8 +16,14 @@ using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class ACGSensorHandler
+    public class ACGSensorHandler : ISensorHandler
     {
-        
+        public ACGSensorHandler (double frequency, ISensorView sensorView)
+        {
+        }
+
+        public void Start() { }
+
+        public void Stop() { }
     }
 }

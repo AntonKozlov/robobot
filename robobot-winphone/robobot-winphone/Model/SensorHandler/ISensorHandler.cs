@@ -5,7 +5,9 @@ using System.Text;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    interface ISensorHandler
+    public interface ISensorHandler
     {
+        void Start();
+        void Stop();
     }
 }

@@ -17,10 +17,13 @@ namespace robobot_winphone
 {
     public partial class MainPage : PhoneApplicationPage
     {
+        MainPageViewModel viewModel;
+
         public MainPage()
         {
             InitializeComponent();
-            this.DataContext = new MainPageViewModel();
+            viewModel = new MainPageViewModel();
+            this.DataContext = viewModel;
         }
 
         private void Connect_Click(object sender, EventArgs e)
@@ -43,6 +46,12 @@ namespace robobot_winphone
         private void Settings_Click(object sender, EventArgs e)
         {
             NavigationManager.Instance.NavigateToSettingsPage();
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            viewModel.ResetSensorHandler();
+            base.OnNavigatedTo(e);
         }
     }
 }
