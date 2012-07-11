@@ -102,6 +102,7 @@ namespace robobot_winphone.ViewModel
         private void SendMessage(int turn, int speed)
         {
             SocketClient.Instance.SendData(Encoding.UTF8.GetBytes(String.Format("{0} {1}\n", turn, speed)));
+            LogManager.Log(String.Format("{0} {1}\n", turn, speed));
         }
         private void SendOrStopSend(object p)
         {

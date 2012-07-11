@@ -24,7 +24,7 @@ namespace robobot_winphone.Model.SensorHandler
 
         public ASensorHandler(double frequency, ISensorView sensorView)
         {
-            if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
+            if (Accelerometer.IsSupported)
             {
                 accelerometer = new Accelerometer();
                 this.sensorView = sensorView;
@@ -55,7 +55,7 @@ namespace robobot_winphone.Model.SensorHandler
         private void TimerTick(object sender, EventArgs e)
         {
             sensorView.ProcessSensorData(CalculateValue((double)accelerometer.CurrentValue.Acceleration.Y),
-                            CalculateValue((double)(accelerometer.CurrentValue.Acceleration.X)));
+                            CalculateValue((double)(-accelerometer.CurrentValue.Acceleration.X)));
         }
 
         private const int MaxValue = 100;

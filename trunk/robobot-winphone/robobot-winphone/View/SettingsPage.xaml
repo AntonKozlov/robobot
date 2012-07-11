@@ -36,7 +36,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Turn method" Width="160" FontSize="24" VerticalAlignment="Center"/>
-                    <RadioButton Content="Rotation" GroupName="TurnMethod" IsChecked="{Binding IsRotationTurnMethod, Mode=TwoWay}" Command="{Binding IsRotationTurnMethodCommand}" IsEnabled="False"/>
+                    <RadioButton Content="Rotation" GroupName="TurnMethod" IsChecked="{Binding IsRotationTurnMethod, Mode=TwoWay}" Command="{Binding IsRotationTurnMethodCommand}"/>
                     <RadioButton Content="Inclination" GroupName="TurnMethod" IsChecked="{Binding IsInclinationTurnMethod, Mode=TwoWay}" Command="{Binding IsInclinationTurnMethodCommand}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
