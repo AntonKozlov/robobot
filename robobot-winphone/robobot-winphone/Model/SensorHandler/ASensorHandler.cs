@@ -54,7 +54,7 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            sensorView.ProcessSensorData(CalculateValue((double)accelerometer.CurrentValue.Acceleration.Y),
+            sensorView.ProcessSensorData(CalculateValue((double)-accelerometer.CurrentValue.Acceleration.Y),
                             CalculateValue((double)(-accelerometer.CurrentValue.Acceleration.X)));
         }
 
