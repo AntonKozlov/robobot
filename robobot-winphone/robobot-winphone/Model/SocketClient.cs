@@ -94,11 +94,7 @@ namespace robobot_winphone.Model
 
                 socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(delegate(object s, SocketAsyncEventArgs e)
                 {
-                    if (e.SocketError == SocketError.Success)
-                    {
-                        LogManager.Log("Message sent");
-                    }
-                    else
+                    if (e.SocketError != SocketError.Success)
                     {
                         LogManager.Log(String.Format("Send error: {0}", e.SocketError));
                     }
