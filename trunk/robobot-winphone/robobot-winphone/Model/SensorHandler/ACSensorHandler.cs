@@ -36,6 +36,8 @@ namespace robobot_winphone.Model.SensorHandler
 
                 this.sensorView = sensorView;
 
+                compass.Calibrate += new EventHandler<CalibrationEventArgs>(CompassCalibrate);
+
                 accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
                 compass.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
 
@@ -62,6 +64,12 @@ namespace robobot_winphone.Model.SensorHandler
             compass.Stop();
             accelerometer.Stop();
             timer.Stop();
+        }
+
+        private void CompassCalibrate(object sender, CalibrationEventArgs e)
+        {
+            Stop();
+            NavigationManager.Instance.NavigateToCalibrationPage();
         }
 
         private void TimerTick(object sender, EventArgs e)

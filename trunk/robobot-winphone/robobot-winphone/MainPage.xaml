@@ -31,9 +31,7 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Line x:Name="xLine" X1="240" Y1="100" X2="{Binding Path=XLineX, Mode=TwoWay}" Y2="{Binding Path=XLineY, Mode=TwoWay}" Stroke="Red" StrokeThickness="14"></Line>
-            <Line x:Name="yLine" X1="240" Y1="100" X2="{Binding Path=YLineX, Mode=TwoWay}" Y2="{Binding Path=YLineY, Mode=TwoWay}" Stroke="Green" StrokeThickness="14"></Line>
-            <Line x:Name="zLine" X1="240" Y1="100" X2="{Binding Path=ZLineX, Mode=TwoWay}" Y2="{Binding Path=ZLineY, Mode=TwoWay}" Stroke="Blue" StrokeThickness="14"></Line>
+            <TextBlock Text="Soon there will be a movable car" HorizontalAlignment="Center"/>
             
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
                 <StackPanel Orientation="Horizontal">

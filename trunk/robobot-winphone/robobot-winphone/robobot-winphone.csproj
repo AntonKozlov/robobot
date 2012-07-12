@@ -86,6 +86,9 @@
     <Compile Include="ViewModel\DeviceConnectionPageViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
     <Compile Include="ViewModel\SettingsPageViewModel.cs" />
+    <Compile Include="View\CalibrationPage.xaml.cs">
+      <DependentUpon>CalibrationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DeviceConnectionPage.xaml.cs">
       <DependentUpon>DeviceConnectionPage.xaml</DependentUpon>
     </Compile>
@@ -99,6 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CalibrationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
