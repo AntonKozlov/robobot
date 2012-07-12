@@ -13,7 +13,7 @@ namespace robobot_winphone.Model.SensorHandler
 {
     public class SensorHandlerManager
     {
-        public static ISensorHandler GetSensorHandler(double frequency, ISensorView sensorView)
+        public static AbstractSensorHandler GetSensorHandler(double frequency, ISensorView sensorView)
         {
             Settings settings = new Settings();
             switch (settings.IsUseGyro)

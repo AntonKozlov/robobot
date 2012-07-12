@@ -16,7 +16,7 @@ using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class ACGSensorHandler : ISensorHandler
+    public class ACGSensorHandler : AbstractSensorHandler
     {
         private Gyroscope gyroscope;
         private Accelerometer accelerometer;
@@ -25,7 +25,9 @@ namespace robobot_winphone.Model.SensorHandler
         private ISensorView sensorView;
         private DispatcherTimer timer;
 
+        private DateTime startTime;
         private int fixCompassData;
+        private bool isFixComassDataDetected;
 
         public ACGSensorHandler(double frequency, ISensorView sensorView)
         {
@@ -40,7 +42,7 @@ namespace robobot_winphone.Model.SensorHandler
                 accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
                 compass.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
                 gyroscope.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
-               
+
                 accelerometer.CurrentValueChanged += accelerometer_CurrentValueChanged;
 
                 timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(frequency) };
@@ -49,18 +51,20 @@ namespace robobot_winphone.Model.SensorHandler
             else
             {
                 LogManager.Log("Some sensor is not supported on this device");
-            }            
+            }
         }
 
-        public void Start()
+        public override void Start()
         {
             compass.Start();
             gyroscope.Start();
             accelerometer.Start();
             timer.Start();
+            startTime = DateTime.Now;
+            isFixComassDataDetected = false;
         }
 
-        public void Stop()
+        public override void Stop()
         {
             compass.Stop();
             gyroscope.Stop();
@@ -74,7 +78,6 @@ namespace robobot_winphone.Model.SensorHandler
             {
                 filter.UpdateCummulativeValue(gyroscope.CurrentValue.RotationRate, e.SensorReading.Acceleration,
                     compass.CurrentValue.MagnetometerReading, e.SensorReading.Timestamp);
-                fixCompassData = (int)compass.CurrentValue.TrueHeading;
             }
             catch (Exception)
             {
@@ -84,9 +87,16 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            int temporaryRotationValue = (int)(filter.CummulativeValue.Z * 100);
-            sensorView.ProcessSensorData(CalculateTurn(temporaryRotationValue), 
-                CalculateSpeed((double)(-filter.CummulativeValue.X)));
+            if (isFixComassDataDetected)
+            {
+                sensorView.ProcessSensorData(CalculateTurn((int)compass.CurrentValue.TrueHeading),
+                    CalculateSpeed((double)(-filter.CummulativeValue.X)));
+            }
+            else if ((DateTime.Now - startTime).Seconds > 1)
+            {
+                fixCompassData = (int)compass.CurrentValue.TrueHeading;
+                isFixComassDataDetected = true;
+            }
         }
 
         private const int MaxValue = 100;
@@ -107,14 +117,13 @@ namespace robobot_winphone.Model.SensorHandler
 
         private int CalculateTurn(int value)
         {
-            if (value > 300) value = 300;
-            if (value < -300) value = -299;
-            int outPutValue = (value + 300 - 170) % 600;
+            int outPutValue = (value + (180 - fixCompassData)) % 360;
             if (outPutValue < 0)
             {
-                outPutValue += 600;
+                outPutValue += 360;
             }
-            outPutValue -= 300;
+            outPutValue -= 180;
+            outPutValue *= 2;
             if (outPutValue >= MaxValue)
             {
                 return MaxValue;
