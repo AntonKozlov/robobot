@@ -43,6 +43,8 @@ namespace robobot_winphone.Model.SensorHandler
                 compass.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
                 gyroscope.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
 
+                compass.Calibrate += new EventHandler<CalibrationEventArgs>(CompassCalibrate);
+
                 accelerometer.CurrentValueChanged += accelerometer_CurrentValueChanged;
 
                 timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(frequency) };
@@ -83,6 +85,12 @@ namespace robobot_winphone.Model.SensorHandler
             {
                 LogManager.Log("Sensors reading error");
             }
+        }
+
+        private void CompassCalibrate(object sender, CalibrationEventArgs e)
+        {
+            Stop();
+            NavigationManager.Instance.NavigateToCalibrationPage();
         }
 
         private void TimerTick(object sender, EventArgs e)

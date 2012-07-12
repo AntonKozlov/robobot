@@ -38,6 +38,7 @@ namespace robobot_winphone.Model
             {
                 return;
             }
+
             frame.Navigate(new Uri(uri, UriKind.RelativeOrAbsolute));
 
         }
@@ -50,6 +51,11 @@ namespace robobot_winphone.Model
         public void NavigateToSettingsPage()
         {
             this.Navigate("//View/SettingsPage.xaml");
+        }
+
+        public void NavigateToCalibrationPage()
+        {
+            this.Navigate("//View/CalibrationPage.xaml");
         }
     }
 }

@@ -22,6 +22,8 @@ namespace robobot_winphone.Model
         private Socket socket;
         private IPEndPoint endPoint;
 
+        public ISensorView Subscriber { get; set; }
+
         public static SocketClient Instance
         {
             get

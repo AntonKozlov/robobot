@@ -53,5 +53,11 @@ namespace robobot_winphone
             viewModel.ResetSensorHandler();
             base.OnNavigatedTo(e);
         }
+
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            viewModel.StopSensorHandler();
+            base.OnNavigatingFrom(e);
+        }
     }
 }
