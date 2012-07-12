@@ -16,7 +16,7 @@ using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class ASensorHandler : ISensorHandler
+    public class ASensorHandler : AbstractSensorHandler
     {
         private Accelerometer accelerometer;
         private ISensorView sensorView;
@@ -40,13 +40,13 @@ namespace robobot_winphone.Model.SensorHandler
             }            
         }
 
-        public void Start()
+        public override void Start()
         {
             accelerometer.Start();
             timer.Start();
         }
 
-        public void Stop()
+        public override void Stop()
         {
             accelerometer.Stop();
             timer.Stop();

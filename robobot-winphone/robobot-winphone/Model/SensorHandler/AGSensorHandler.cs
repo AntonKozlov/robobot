@@ -16,7 +16,7 @@ using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class AGSensorHandler : ISensorHandler
+    public class AGSensorHandler : AbstractSensorHandler
     {
         private Gyroscope gyroscope;
         private Accelerometer accelerometer;
@@ -24,6 +24,7 @@ namespace robobot_winphone.Model.SensorHandler
         private ComplementaryFilter filter;
         private ISensorView sensorView;
         private DispatcherTimer timer;
+        private DateTime startTime;
 
         public AGSensorHandler(double frequency, ISensorView sensorView)
         {
@@ -50,15 +51,16 @@ namespace robobot_winphone.Model.SensorHandler
             }            
         }
 
-        public void Start()
+        public override void Start()
         {
             compass.Start();
             gyroscope.Start();
             accelerometer.Start();
             timer.Start();
+            startTime = DateTime.Now;
         }
 
-        public void Stop()
+        public override void Stop()
         {
             compass.Stop();
             gyroscope.Stop();
@@ -81,8 +83,11 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            sensorView.ProcessSensorData(CalculateValue((double)filter.CummulativeValue.Y),
-                            CalculateValue((double)(-filter.CummulativeValue.X)));
+            if ((DateTime.Now - startTime).Seconds > 1)
+            {
+                sensorView.ProcessSensorData(CalculateValue((double)filter.CummulativeValue.Y),
+                                CalculateValue((double)(-filter.CummulativeValue.X)));
+            }
         }
 
         private const int MaxValue = 100;

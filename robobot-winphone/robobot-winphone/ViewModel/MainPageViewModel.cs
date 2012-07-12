@@ -32,7 +32,7 @@ namespace robobot_winphone.ViewModel
     {
         private ConnectionStatus connectionStatus;
         private SendingStatus sendingStatus;
-        private ISensorHandler handler;
+        private AbstractSensorHandler handler;
 
         public double XLineX { get; private set; }
         public double XLineY { get; private set; }

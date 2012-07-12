@@ -16,12 +16,16 @@ using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class ACSensorHandler : ISensorHandler
+    public class ACSensorHandler : AbstractSensorHandler
     {
         private Accelerometer accelerometer;
         private Compass compass;
         private ISensorView sensorView;
         private DispatcherTimer timer;
+
+        private DateTime startTime;
+        private int fixCompassData;
+        private bool isFixComassDataDetected;
 
         public ACSensorHandler(double frequency, ISensorView sensorView)
         {
@@ -44,14 +48,16 @@ namespace robobot_winphone.Model.SensorHandler
             }            
         }
 
-        public void Start()
+        public override void Start()
         {
             compass.Start();
             accelerometer.Start();
             timer.Start();
+            startTime = DateTime.Now;
+            isFixComassDataDetected = false;
         }
 
-        public void Stop()
+        public override void Stop()
         {
             compass.Stop();
             accelerometer.Stop();
@@ -60,10 +66,17 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            sensorView.ProcessSensorData(CalculateTurn((int)compass.CurrentValue.TrueHeading),
-                            CalculateValue((double)(-accelerometer.CurrentValue.Acceleration.X)));
+            if (isFixComassDataDetected)
+            {
+                sensorView.ProcessSensorData(CalculateTurn((int)compass.CurrentValue.TrueHeading),
+                                CalculateValue((double)(-accelerometer.CurrentValue.Acceleration.X)));
+            }
+            else if ((DateTime.Now - startTime).Seconds > 1)
+            {
+                fixCompassData = (int)compass.CurrentValue.TrueHeading;
+                isFixComassDataDetected = true;
+            }
         }
-
         private const int MaxValue = 100;
 
         private int CalculateValue(double value)
@@ -82,7 +95,7 @@ namespace robobot_winphone.Model.SensorHandler
 
         private int CalculateTurn(int value)
         {
-            int outPutValue = (value + (180 - 100)) % 360;
+            int outPutValue = (value + (180 - fixCompassData)) % 360;
             if (outPutValue < 0)
             {
                 outPutValue += 360;
