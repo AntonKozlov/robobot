@@ -17,7 +17,7 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.Resources>
-            <c:ConnectionStatusConverter x:Key="ConnectionStatusConverter" x:Name="ConnectionStatusConverter"/>
+            <c:ConnectionStatusConverter x:Key="StatusConverter" x:Name="StatusConverter"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -25,27 +25,48 @@
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="0,15,0,15">
             <TextBlock x:Name="ApplicationTitle" Text="ROBOBOT" Style="{StaticResource PhoneTextNormalStyle}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <TextBlock Text="Soon there will be a movable car" HorizontalAlignment="Center"/>
-            
-            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Connection status: " Height="40" Width="Auto" FontSize="24"/>
-                    <TextBlock Text="{Binding ConnectionStatus}" Height="40" Width="Auto" FontSize="24"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="Disconnect" Command="{Binding DisconnectCommand}" IsEnabled="{Binding ConnectionStatus, Converter={StaticResource ConnectionStatusConverter}}" Height="80" Width="200"/>
-                    <Button Content="{Binding SendingStatus}" Command="{Binding SendingCommand}" IsEnabled="{Binding ConnectionStatus, Converter={StaticResource ConnectionStatusConverter}}" Height="80" Width="200"/>
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="320" />
+                        <ColumnDefinition Width="320"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="300"/>
+                    </Grid.RowDefinitions>
+                    <Image Source="/Resources/Images/speed.png" Width="300" Grid.Column="0" HorizontalAlignment="Center"></Image>
+                    <Image Source="/Resources/Images/arrow.png" Height="140" Grid.Column="0" HorizontalAlignment="Center">
+                        <Image.RenderTransform>
+                            <CompositeTransform TranslateY="-55" TranslateX="-0.25" Rotation="{Binding SpeedRotation}"  CenterY="135" CenterX="5"/>
+                        </Image.RenderTransform>
+                    </Image>
+                    <Image Source="/Resources/Images/turn.png" Width="300" Grid.Column="1" HorizontalAlignment="Center"></Image>
+                    <Image Source="/Resources/Images/arrow.png" Height="140" Grid.Column="1" HorizontalAlignment="Center">
+                        <Image.RenderTransform>
+                            <CompositeTransform TranslateY="-55" TranslateX="-0.25" Rotation="{Binding TurnRotation}" CenterY="135" CenterX="5"/>
+                        </Image.RenderTransform>
+                    </Image>
+                </Grid>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Connection status: " Height="40" Width="Auto" FontSize="22"/>
+                        <TextBlock Text="{Binding ConnectionStatus}" Height="40" Width="Auto" FontSize="24"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Height="80">
+                        <Button Content="Disconnect" Command="{Binding DisconnectCommand}" IsEnabled="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}" Height="70" Width="200" FontSize="22"/>
+                        <Button Content="{Binding SendingStatus}" Command="{Binding SendingCommand}" IsEnabled="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}" Height="70" Width="200" FontSize="22"/>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>
- 
+
     <!--Sample code showing usage of ApplicationBar-->
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
