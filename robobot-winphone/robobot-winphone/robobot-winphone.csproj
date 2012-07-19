@@ -68,7 +68,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\ButtonCommand.cs" />
-    <Compile Include="Model\ComplementaryFilter.cs" />
+    <Compile Include="Model\Utils\ComplementaryFilter.cs" />
     <Compile Include="Model\Converters\ConnectionStatusConverter.cs" />
     <Compile Include="Model\ISensorView.cs" />
     <Compile Include="Model\NavigationManager.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\SocketClient.cs" />
     <Compile Include="Model\LogManager.cs" />
+    <Compile Include="Model\Utils\SmoothValueManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\DeviceConnectionPageViewModel.cs" />
