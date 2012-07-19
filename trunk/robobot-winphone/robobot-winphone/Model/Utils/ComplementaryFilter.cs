@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Media;
-
 using Microsoft.Xna.Framework;
 
-namespace robobot_winphone.Model
+namespace robobot_winphone.Model.Utils
 {
     public class ComplementaryFilter
     {
         
-        private const float timeToDeviceNormalization = (float)0.1;
+        private const float timeToDeviceNormalization = 0.1f;
 
         private float delta;
         private DateTimeOffset lastUpdateTime = DateTimeOffset.MinValue;

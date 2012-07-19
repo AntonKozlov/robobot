@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using Microsoft.Xna.Framework;
 using System.Text;
 using Microsoft.Devices.Sensors;
+using robobot_winphone.Model.Utils;
 using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
