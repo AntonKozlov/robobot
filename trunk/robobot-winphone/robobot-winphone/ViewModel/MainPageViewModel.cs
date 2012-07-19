@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Media;
-using Microsoft.Phone.Controls;
-
-using Microsoft.Devices.Sensors;
-using Microsoft.Xna.Framework;
 using System.Windows.Threading;
-using System.ComponentModel;
-using System.Windows.Shapes;
 using System.Windows.Input;
 using System.Text;
 
@@ -33,6 +25,8 @@ namespace robobot_winphone.ViewModel
         private ConnectionStatus connectionStatus;
         private SendingStatus sendingStatus;
         private AbstractSensorHandler handler;
+        private double speedRotation;
+        private double turnRotation;
 
         public ICommand DisconnectCommand { get; private set; }
         public ICommand SendingCommand { get; private set; }
@@ -45,11 +39,12 @@ namespace robobot_winphone.ViewModel
             }
             set
             {
-                if (value != connectionStatus)
+                if (value == connectionStatus)
                 {
-                    connectionStatus = value;
-                    NotifyPropertyChanged("ConnectionStatus");
+                    return;
                 }
+                connectionStatus = value;
+                NotifyPropertyChanged("ConnectionStatus");
             }
         }
 
@@ -61,11 +56,37 @@ namespace robobot_winphone.ViewModel
             }
             set
             {
-                if (value != sendingStatus)
+                if (value == sendingStatus)
                 {
-                    sendingStatus = value;
-                    NotifyPropertyChanged("SendingStatus");
+                    return;
                 }
+                sendingStatus = value;
+                NotifyPropertyChanged("SendingStatus");
+            }
+        }
+
+        public double SpeedRotation
+        {
+            get
+            {
+                return speedRotation;
+            }
+            set
+            {
+                speedRotation = value;
+                NotifyPropertyChanged("SpeedRotation");
+            }
+        }
+        public double TurnRotation
+        {
+            get
+            {
+                return turnRotation;
+            }
+            set
+            {
+                turnRotation = value;
+                NotifyPropertyChanged("TurnRotation");
             }
         }
 
@@ -74,23 +95,23 @@ namespace robobot_winphone.ViewModel
             DisconnectCommand = new ButtonCommand(Disconnect);
             SendingCommand = new ButtonCommand(SendOrStopSend);
 
-            ConnectionStatus = ViewModel.ConnectionStatus.Disconnected;
-            sendingStatus = ViewModel.SendingStatus.StartSending;
+            ConnectionStatus = ConnectionStatus.Disconnected;
+            sendingStatus = SendingStatus.StartSending;
 
             SocketClient.Instance.Subscriber = this;
 
-            DispatcherTimer timer = new DispatcherTimer();
+            var timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(5);
             timer.Tick += (sender, e) =>
                 {
                     if (SocketClient.Instance.IsConnected())
                     {
-                        ConnectionStatus = ViewModel.ConnectionStatus.Connected;
+                        ConnectionStatus = ConnectionStatus.Connected;
                     }
                     else
                     {
-                        ConnectionStatus = ViewModel.ConnectionStatus.Disconnected;
-                        SendingStatus = ViewModel.SendingStatus.StartSending;
+                        ConnectionStatus = ConnectionStatus.Disconnected;
+                        SendingStatus = SendingStatus.StartSending;
                     }
                 };
             timer.Start();
@@ -111,20 +132,22 @@ namespace robobot_winphone.ViewModel
 
         private void SendOrStopSend(object p)
         {
-            if (SendingStatus == ViewModel.SendingStatus.StartSending)
+            if (SendingStatus == SendingStatus.StartSending)
             {
-                SendingStatus = ViewModel.SendingStatus.StopSending;
+                SendingStatus = SendingStatus.StopSending;
                 handler.Start();
             }
             else
             {
-                SendingStatus = ViewModel.SendingStatus.StartSending;
+                SendingStatus = SendingStatus.StartSending;
                 handler.Stop();
             }
         }
 
         public void ProcessSensorData(int turn, int speed)
         {
+            SpeedRotation = speed * 1.5;
+            TurnRotation = turn * 1.5;
             SendMessage(turn, speed);
         }
 
@@ -136,7 +159,7 @@ namespace robobot_winphone.ViewModel
         public void StopSensorHandler()
         {
             handler.Stop();
-            SendingStatus = ViewModel.SendingStatus.StartSending;
+            SendingStatus = SendingStatus.StartSending;
         }
     }
 }

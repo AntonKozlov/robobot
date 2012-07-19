@@ -130,6 +130,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Icons\settings.png" />
+    <Content Include="Resources\Images\arrow.png" />
+    <Content Include="Resources\Images\speed.png" />
+    <Content Include="Resources\Images\turn.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup />
