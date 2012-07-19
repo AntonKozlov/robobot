@@ -130,6 +130,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Icons\connection.png" />
     <Content Include="Resources\Icons\settings.png" />
     <Content Include="Resources\Images\arrow.png" />
     <Content Include="Resources\Images\speed.png" />
