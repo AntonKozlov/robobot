@@ -36,6 +36,7 @@ namespace robobot_winphone.Model.Utils
 
         private void CalculateGoalDirection(double newValue)
         {
+            newValue = NormalizeValue(newValue);
             var difference = newValue - goalDirection;
             difference = NormalizeValue(difference);
 
