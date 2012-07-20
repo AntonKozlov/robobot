@@ -7,24 +7,24 @@ namespace robobot_winphone.Model.SensorHandler
 {
     public class ASensorHandler : AbstractSensorHandler
     {
-        private Accelerometer accelerometer;
-        private ISensorView sensorView;
-        private DispatcherTimer timer;
-        private SmoothValueManager speedSmoothValueManager;
-        private SmoothValueManager turnSmoothValueManager;
-
         public ASensorHandler(double frequency, ISensorView sensorView)
         {
             if (Accelerometer.IsSupported)
             {
-                accelerometer = new Accelerometer();
+                accelerometer = new Accelerometer
+                                    {
+                                        TimeBetweenUpdates = TimeSpan.FromMilliseconds(frequency)
+                                    };
+
                 this.sensorView = sensorView;
-                speedSmoothValueManager = new SmoothValueManager();
+
                 turnSmoothValueManager = new SmoothValueManager();
+                speedSmoothValueManager = new SmoothValueManager();
 
-                accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
-
-                timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(frequency) };
+                timer = new DispatcherTimer
+                            {
+                                Interval = TimeSpan.FromMilliseconds(frequency)
+                            };
                 timer.Tick += TimerTick;
             }
             else
@@ -47,29 +47,8 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            sensorView.ProcessSensorData(CalculateValue(-accelerometer.CurrentValue.Acceleration.Y, turnSmoothValueManager),
-                            CalculateValue(-accelerometer.CurrentValue.Acceleration.X, speedSmoothValueManager));
-        }
-
-        private const int MaxValue = 100;
-
-        private int CalculateValue(double value, SmoothValueManager manager)
-        {
-            var outPutValue = (int)(value * MaxValue * 1.8);
-
-            outPutValue = (int)manager.GetSmoothValue(outPutValue);
-
-            if (outPutValue >= MaxValue)
-            {
-                return MaxValue;
-            }
-
-            if (outPutValue <= -MaxValue)
-            {
-                return -MaxValue;
-            }
-
-            return outPutValue;
+            sensorView.ProcessSensorData(CalculateTurn(-accelerometer.CurrentValue.Acceleration.Y * 180),
+                            CalculateSpeed(-accelerometer.CurrentValue.Acceleration.X * 180));
         }
     }
 }
