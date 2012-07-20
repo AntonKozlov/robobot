@@ -7,7 +7,7 @@ namespace robobot_winphone.Model.SensorHandler
 {
     public class ASensorHandler : AbstractSensorHandler
     {
-        public ASensorHandler(double frequency, ISensorView sensorView)
+        public ASensorHandler(double frequency, ISensorExecutor sensorView)
         {
             if (Accelerometer.IsSupported)
             {

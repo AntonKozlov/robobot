@@ -72,7 +72,7 @@
     <Compile Include="Model\SensorHandler\AbstractTurnCompassSensorHandler.cs" />
     <Compile Include="Model\Utils\ComplementaryFilter.cs" />
     <Compile Include="Model\Converters\ConnectionStatusConverter.cs" />
-    <Compile Include="Model\ISensorView.cs" />
+    <Compile Include="Model\ISensorExecutor.cs" />
     <Compile Include="Model\NavigationManager.cs" />
     <Compile Include="Model\SensorHandler\ACGSensorHandler.cs" />
     <Compile Include="Model\SensorHandler\ACSensorHandler.cs" />

@@ -2,7 +2,7 @@
 {
     public class SensorHandlerManager
     {
-        public static AbstractSensorHandler GetSensorHandler(double frequency, ISensorView sensorView)
+        public static AbstractSensorHandler GetSensorHandler(double frequency, ISensorExecutor sensorView)
         {
             var settings = new Settings();
             switch (settings.IsUseGyro)

@@ -8,42 +8,44 @@ namespace robobot_winphone.Model.Utils
         private const double LeavedEps = 2.5;
         private const double SpeedEps = 0.55;
 
-        private double goalDirection;
-        private double needleDirection;
+        private double goalValue;
+        private double oldValue;
         private double speed;
 
-        private bool isArrived; // The needle has not arrived the goalDirection
+        private bool isArrived; // The needle has not arrived the goalValue
 
         public double GetSmoothValue(double newValue)
         {
-            CalculateGoalDirection(newValue);
+            CalculateGoalValue(newValue);
+
             if (IsNeedPainting())
             {
                 isArrived = false;
-                var difference = CalculateNormalDifference(needleDirection, goalDirection);
+                var difference = CalculateNormalDifference(oldValue, goalValue);
                 speed = CalculateSpeed(difference, speed);
-                needleDirection = needleDirection + speed;
+                oldValue = oldValue + speed;
 
-                return needleDirection;
+                return oldValue;
             }
             else
             {
                 isArrived = true;
-                return needleDirection;
+                return oldValue;
             }
 
         }
 
-        private void CalculateGoalDirection(double newValue)
+        private void CalculateGoalValue(double newValue)
         {
             newValue = NormalizeValue(newValue);
-            var difference = newValue - goalDirection;
+
+            var difference = newValue - goalValue;
             difference = NormalizeValue(difference);
 
-            newValue = goalDirection + difference / 4;
+            newValue = goalValue + difference / 4;
             newValue = NormalizeValue(newValue);
 
-            goalDirection = newValue;
+            goalValue = newValue;
         }
 
         private static double CalculateSpeed(double difference, double oldSpeed)
@@ -59,11 +61,11 @@ namespace robobot_winphone.Model.Utils
         {
             if (isArrived)
             {
-                return Math.Abs(needleDirection - goalDirection) > LeavedEps;
+                return Math.Abs(oldValue - goalValue) > LeavedEps;
             }
             else
             {
-                return Math.Abs(needleDirection - goalDirection) > ArrivedEps || Math.Abs(speed) > SpeedEps;
+                return Math.Abs(oldValue - goalValue) > ArrivedEps || Math.Abs(speed) > SpeedEps;
             }
         }
 
@@ -76,10 +78,12 @@ namespace robobot_winphone.Model.Utils
         public static double NormalizeValue(double value)
         {
             value %= 360;
+
             if (value < -180)
             {
                 value += 360;
             }
+
             if (value > 180)
             {
                 value -= 360;

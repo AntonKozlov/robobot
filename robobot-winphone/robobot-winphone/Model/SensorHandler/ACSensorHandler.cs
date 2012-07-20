@@ -9,7 +9,7 @@ namespace robobot_winphone.Model.SensorHandler
     {
         private DateTime startTime;
 
-        public ACSensorHandler(double frequency, ISensorView sensorView)
+        public ACSensorHandler(double frequency, ISensorExecutor sensorView)
         {
             if (Accelerometer.IsSupported && Compass.IsSupported)
             {
