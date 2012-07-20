@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Microsoft.Xna.Framework;
-using System.Text;
 using Microsoft.Devices.Sensors;
 using robobot_winphone.Model.Utils;
-using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
 {
@@ -27,7 +15,9 @@ namespace robobot_winphone.Model.SensorHandler
         private DispatcherTimer timer;
 
         private DateTime startTime;
-        private int fixCompassData;
+        private SmoothValueManager turnSmoothValueManager;
+        private SmoothValueManager speedSmoothValueManager;
+        private double fixCompassData;
         private bool isFixComassDataDetected;
 
         public ACGSensorHandler(double frequency, ISensorView sensorView)
@@ -38,6 +28,8 @@ namespace robobot_winphone.Model.SensorHandler
                 gyroscope = new Gyroscope();
                 accelerometer = new Accelerometer();
                 compass = new Compass();
+                turnSmoothValueManager = new SmoothValueManager();
+                speedSmoothValueManager = new SmoothValueManager();
                 this.sensorView = sensorView;
 
                 accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
@@ -98,12 +90,13 @@ namespace robobot_winphone.Model.SensorHandler
         {
             if (isFixComassDataDetected)
             {
-                sensorView.ProcessSensorData(CalculateTurn((int)compass.CurrentValue.TrueHeading),
-                    CalculateSpeed((double)(-filter.CummulativeValue.X)));
+                sensorView.ProcessSensorData(CalculateTurn(compass.CurrentValue.TrueHeading),
+                    CalculateSpeed(-filter.CummulativeValue.X));
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
             {
-                fixCompassData = (int)compass.CurrentValue.TrueHeading;
+                //fixCompassData = filter.CummulativeValue.Z;
+                fixCompassData = compass.CurrentValue.TrueHeading;
                 isFixComassDataDetected = true;
             }
         }
@@ -112,7 +105,10 @@ namespace robobot_winphone.Model.SensorHandler
 
         private int CalculateSpeed(double value)
         {
-            int outPutValue = (int)(value * MaxValue);
+            var outPutValue = value * 60;
+
+            outPutValue = speedSmoothValueManager.GetSmoothValue(outPutValue);
+
             if (outPutValue >= MaxValue)
             {
                 return MaxValue;
@@ -121,18 +117,15 @@ namespace robobot_winphone.Model.SensorHandler
             {
                 return -MaxValue;
             }
-            return outPutValue;
+            return (int)outPutValue;
         }
 
-        private int CalculateTurn(int value)
+        private int CalculateTurn(double value)
         {
-            int outPutValue = (value + (180 - fixCompassData)) % 360;
-            if (outPutValue < 0)
-            {
-                outPutValue += 360;
-            }
-            outPutValue -= 180;
-            outPutValue *= 2;
+            var outPutValue = value - fixCompassData;
+
+            outPutValue = turnSmoothValueManager.GetSmoothValue(outPutValue);
+
             if (outPutValue >= MaxValue)
             {
                 return MaxValue;
@@ -141,7 +134,7 @@ namespace robobot_winphone.Model.SensorHandler
             {
                 return -MaxValue;
             }
-            return outPutValue;
+            return (int)outPutValue;
         }
     }
 }
