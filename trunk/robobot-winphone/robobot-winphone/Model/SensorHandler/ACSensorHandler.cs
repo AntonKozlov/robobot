@@ -13,21 +13,21 @@ namespace robobot_winphone.Model.SensorHandler
         {
             if (Accelerometer.IsSupported && Compass.IsSupported)
             {
-                accelerometer = new Accelerometer();
-                compass = new Compass();
+                Accelerometer = new Accelerometer();
+                Compass = new Compass();
 
-                turnSmoothValueManager = new SmoothValueManager();
-                speedSmoothValueManager = new SmoothValueManager();
+                TurnSmoothValueManager = new SmoothValueManager();
+                SpeedSmoothValueManager = new SmoothValueManager();
 
-                this.sensorView = sensorView;
+                this.SensorView = sensorView;
 
-                compass.Calibrate += CompassCalibrate;
+                Compass.Calibrate += CompassCalibrate;
 
-                accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
-                compass.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
+                Accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
+                Compass.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
 
-                timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(frequency) };
-                timer.Tick += TimerTick;
+                Timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(frequency) };
+                Timer.Tick += TimerTick;
             }
             else
             {
@@ -37,30 +37,32 @@ namespace robobot_winphone.Model.SensorHandler
 
         public override void Start()
         {
-            compass.Start();
-            accelerometer.Start();
-            timer.Start();
+            Compass.Start();
+            Accelerometer.Start();
+            Timer.Start();
             startTime = DateTime.Now;
             isFixComassDataDetected = false;
         }
 
         public override void Stop()
         {
-            compass.Stop();
-            accelerometer.Stop();
-            timer.Stop();
+            Compass.Stop();
+            Accelerometer.Stop();
+            Timer.Stop();
         }
+
+        private const double CompassValueFactor = 3;
 
         private void TimerTick(object sender, EventArgs e)
         {
             if (isFixComassDataDetected)
             {
-                sensorView.ProcessSensorData(CalculateTurn(compass.CurrentValue.TrueHeading),
-                                CalculateSpeed(-accelerometer.CurrentValue.Acceleration.X * 180));
+                SensorView.ProcessSensorData(CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
+                                CalculateSpeed(-Accelerometer.CurrentValue.Acceleration.X * 180));
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
             {
-                fixCompassData = compass.CurrentValue.TrueHeading;
+                fixCompassData = Compass.CurrentValue.TrueHeading;
                 isFixComassDataDetected = true;
             }
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Threading;
+﻿using System.Windows.Threading;
 using Microsoft.Devices.Sensors;
 using robobot_winphone.Model.Utils;
 
@@ -10,33 +6,43 @@ namespace robobot_winphone.Model.SensorHandler
 {
     public abstract class AbstractSensorHandler
     {
-        protected Accelerometer accelerometer;
-        protected DispatcherTimer timer;
-        protected ISensorView sensorView;
+        protected Accelerometer Accelerometer;
+        protected DispatcherTimer Timer;
+        protected ISensorView SensorView;
 
-        protected SmoothValueManager turnSmoothValueManager;
-        protected SmoothValueManager speedSmoothValueManager;
+        protected SmoothValueManager TurnSmoothValueManager;
+        protected SmoothValueManager SpeedSmoothValueManager;
 
         private const int MaxValue = 100;
 
         public abstract void Start();
         public abstract void Stop();
 
+        protected virtual int CalculateSpeed(double value, double factor)
+        {
+            return CalculateValue(value, SpeedSmoothValueManager, factor);
+        }
+
+        protected virtual int CalculateTurn(double value, double factor)
+        {
+            return CalculateValue(value, TurnSmoothValueManager, factor);
+        }
+
         protected virtual int CalculateSpeed(double value)
         {
-            return CalculateValue(value, speedSmoothValueManager);
+            return CalculateValue(value, SpeedSmoothValueManager, 1);
         }
 
         protected virtual int CalculateTurn(double value)
         {
-            return CalculateValue(value, turnSmoothValueManager);
+            return CalculateValue(value, TurnSmoothValueManager, 1);
         }
 
-        protected int CalculateValue(double value, SmoothValueManager smoothValueManager)
+        protected int CalculateValue(double value, SmoothValueManager smoothValueManager, double factor)
         {
             var outPutValue = value;
 
-            outPutValue = smoothValueManager.GetSmoothValue(outPutValue);
+            outPutValue = smoothValueManager.GetSmoothValue(outPutValue) * factor;
 
             if (outPutValue >= MaxValue)
             {
