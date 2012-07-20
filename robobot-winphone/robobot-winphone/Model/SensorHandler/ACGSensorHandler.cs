@@ -23,29 +23,29 @@ namespace robobot_winphone.Model.SensorHandler
                                 {
                                     TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
                                 };
-                accelerometer = new Accelerometer
+                Accelerometer = new Accelerometer
                                 {
                                     TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
                                 };
-                compass = new Compass
+                Compass = new Compass
                                 {
                                     TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
                                 };
 
-                turnSmoothValueManager = new SmoothValueManager();
-                speedSmoothValueManager = new SmoothValueManager();
+                TurnSmoothValueManager = new SmoothValueManager();
+                SpeedSmoothValueManager = new SmoothValueManager();
 
-                this.sensorView = sensorView;
+                this.SensorView = sensorView;
 
-                compass.Calibrate += CompassCalibrate;
+                Compass.Calibrate += CompassCalibrate;
 
-                accelerometer.CurrentValueChanged += AccelerometerCurrentValueChanged;
+                Accelerometer.CurrentValueChanged += AccelerometerCurrentValueChanged;
 
-                timer = new DispatcherTimer
+                Timer = new DispatcherTimer
                             {
                                 Interval = TimeSpan.FromMilliseconds(frequency)
                             };
-                timer.Tick += TimerTick;
+                Timer.Tick += TimerTick;
             }
             else
             {
@@ -57,10 +57,10 @@ namespace robobot_winphone.Model.SensorHandler
         {
             try
             {
-                compass.Start();
+                Compass.Start();
                 gyroscope.Start();
-                accelerometer.Start();
-                timer.Start();
+                Accelerometer.Start();
+                Timer.Start();
             }
             catch (Exception)
             {
@@ -75,10 +75,10 @@ namespace robobot_winphone.Model.SensorHandler
         {
             try
             {
-                compass.Stop();
+                Compass.Stop();
                 gyroscope.Stop();
-                accelerometer.Stop();
-                timer.Stop();
+                Accelerometer.Stop();
+                Timer.Stop();
             }
             catch (Exception)
             {
@@ -91,7 +91,7 @@ namespace robobot_winphone.Model.SensorHandler
             try
             {
                 filter.UpdateCummulativeValue(gyroscope.CurrentValue.RotationRate, e.SensorReading.Acceleration,
-                    compass.CurrentValue.MagnetometerReading, e.SensorReading.Timestamp);
+                    Compass.CurrentValue.MagnetometerReading, e.SensorReading.Timestamp);
             }
             catch (Exception)
             {
@@ -99,16 +99,19 @@ namespace robobot_winphone.Model.SensorHandler
             }
         }
 
+        private const double GyroscopeValueFactor = 3.2;
+        private const double CompassValueFactor = 3;
+
         private void TimerTick(object sender, EventArgs e)
         {
             if (isFixComassDataDetected)
             {
-                sensorView.ProcessSensorData(CalculateTurn(compass.CurrentValue.TrueHeading),
-                    CalculateSpeed(-filter.CummulativeValue.X * 60));
+                SensorView.ProcessSensorData(CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
+                    CalculateSpeed(-filter.CummulativeValue.X * 60, GyroscopeValueFactor));
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
             {
-                fixCompassData = compass.CurrentValue.TrueHeading;
+                fixCompassData = Compass.CurrentValue.TrueHeading;
                 isFixComassDataDetected = true;
             }
         }

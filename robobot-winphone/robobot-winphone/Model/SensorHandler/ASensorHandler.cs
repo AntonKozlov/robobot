@@ -11,21 +11,21 @@ namespace robobot_winphone.Model.SensorHandler
         {
             if (Accelerometer.IsSupported)
             {
-                accelerometer = new Accelerometer
+                Accelerometer = new Accelerometer
                                     {
                                         TimeBetweenUpdates = TimeSpan.FromMilliseconds(frequency)
                                     };
 
-                this.sensorView = sensorView;
+                this.SensorView = sensorView;
 
-                turnSmoothValueManager = new SmoothValueManager();
-                speedSmoothValueManager = new SmoothValueManager();
+                TurnSmoothValueManager = new SmoothValueManager();
+                SpeedSmoothValueManager = new SmoothValueManager();
 
-                timer = new DispatcherTimer
+                Timer = new DispatcherTimer
                             {
                                 Interval = TimeSpan.FromMilliseconds(frequency)
                             };
-                timer.Tick += TimerTick;
+                Timer.Tick += TimerTick;
             }
             else
             {
@@ -35,20 +35,20 @@ namespace robobot_winphone.Model.SensorHandler
 
         public override void Start()
         {
-            accelerometer.Start();
-            timer.Start();
+            Accelerometer.Start();
+            Timer.Start();
         }
 
         public override void Stop()
         {
-            accelerometer.Stop();
-            timer.Stop();
+            Accelerometer.Stop();
+            Timer.Stop();
         }
 
         private void TimerTick(object sender, EventArgs e)
         {
-            sensorView.ProcessSensorData(CalculateTurn(-accelerometer.CurrentValue.Acceleration.Y * 180),
-                            CalculateSpeed(-accelerometer.CurrentValue.Acceleration.X * 180));
+            SensorView.ProcessSensorData(CalculateTurn(-Accelerometer.CurrentValue.Acceleration.Y * 180),
+                            CalculateSpeed(-Accelerometer.CurrentValue.Acceleration.X * 180));
         }
     }
 }

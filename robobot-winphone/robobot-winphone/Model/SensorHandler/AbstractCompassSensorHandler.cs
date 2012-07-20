@@ -4,7 +4,7 @@ namespace robobot_winphone.Model.SensorHandler
 {
     public abstract class AbstractCompassSensorHandler : AbstractSensorHandler
     {
-        protected Compass compass;
+        protected Compass Compass;
 
         protected void CompassCalibrate(object sender, CalibrationEventArgs e)
         {
