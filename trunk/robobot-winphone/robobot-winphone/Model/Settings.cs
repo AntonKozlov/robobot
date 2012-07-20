@@ -1,13 +1,10 @@
 ﻿using System;
 using System.IO.IsolatedStorage;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Device.Location;
 
 
 namespace robobot_winphone.Model
 {
-    public enum TurnMethod : int
+    public enum TurnMethod
     {
         Rotation = 0,
         Inclination = 1
@@ -25,7 +22,7 @@ namespace robobot_winphone.Model
 
         // The default value of our settings
         const bool IsUseGyroDefault = true;
-        const int TurnMethodDefault = (int)Model.TurnMethod.Inclination;
+        const int TurnMethodDefault = (int)TurnMethod.Inclination;
         const string PortDefault = "43214";
         const string IPDefault = "192.168.0.100";
 
@@ -34,33 +31,33 @@ namespace robobot_winphone.Model
             settings = IsolatedStorageSettings.ApplicationSettings;
         }
 
-        public bool AddOrUpdateValue(string Key, Object value)
+        public bool AddOrUpdateValue(string key, Object value)
         {
-            bool valueChanged = false;
+            var valueChanged = false;
 
-            if (settings.Contains(Key))
+            if (settings.Contains(key))
             {
-                if (settings[Key] != value)
+                if (settings[key] != value)
                 {
-                    settings[Key] = value;
+                    settings[key] = value;
                     valueChanged = true;
                 }
             }
             else
             {
-                settings.Add(Key, value);
+                settings.Add(key, value);
                 valueChanged = true;
             }
             return valueChanged;
         }
 
-        public T GetValueOrDefault<T>(string Key, T defaultValue)
+        public T GetValueOrDefault<T>(string key, T defaultValue)
         {
             T value;
 
-            if (settings.Contains(Key))
+            if (settings.Contains(key))
             {
-                value = (T)settings[Key];
+                value = (T)settings[key];
             }
             else
             {
@@ -79,7 +76,7 @@ namespace robobot_winphone.Model
         {
             get
             {
-                return GetValueOrDefault<bool>(IsUseGyroKeyName, IsUseGyroDefault);
+                return GetValueOrDefault(IsUseGyroKeyName, IsUseGyroDefault);
             }
             set
             {
@@ -90,11 +87,11 @@ namespace robobot_winphone.Model
             }
         }
 
-        public Model.TurnMethod TurnMethod
+        public TurnMethod TurnMethod
         {
             get
             {
-                return (Model.TurnMethod)GetValueOrDefault<int>(TurnMethodKeyName, TurnMethodDefault);
+                return (TurnMethod)GetValueOrDefault(TurnMethodKeyName, TurnMethodDefault);
             }
             set
             {
@@ -109,7 +106,7 @@ namespace robobot_winphone.Model
         {
             get
             {
-                return GetValueOrDefault<string>(PortKeyName, PortDefault);
+                return GetValueOrDefault(PortKeyName, PortDefault);
             }
             set
             {
@@ -124,7 +121,7 @@ namespace robobot_winphone.Model
         {
             get
             {
-                return GetValueOrDefault<string>(IPKeyName, IPDefault);
+                return GetValueOrDefault(IPKeyName, IPDefault);
             }
             set
             {

@@ -8,19 +8,19 @@ using robobot_winphone.Model.SensorHandler;
 
 namespace robobot_winphone.ViewModel
 {
-    public enum ConnectionStatus : int
+    public enum ConnectionStatus
     {
         Connected = 0,
         Disconnected = 1
     }
 
-    public enum SendingStatus : int
+    public enum SendingStatus
     {
         StartSending = 0,
         StopSending = 1
     }
 
-    public class MainPageViewModel : BaseViewModel, ISensorView
+    public class MainPageViewModel : BaseViewModel, ISensorExecutor
     {
         private ConnectionStatus connectionStatus;
         private SendingStatus sendingStatus;
@@ -77,6 +77,7 @@ namespace robobot_winphone.ViewModel
                 NotifyPropertyChanged("SpeedRotation");
             }
         }
+
         public double TurnRotation
         {
             get
@@ -100,8 +101,11 @@ namespace robobot_winphone.ViewModel
 
             SocketClient.Instance.Subscriber = this;
 
-            var timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(5);
+            var timer = new DispatcherTimer
+                            {
+                                Interval = TimeSpan.FromMilliseconds(5)
+                            };
+
             timer.Tick += (sender, e) =>
                 {
                     if (SocketClient.Instance.IsConnected())
@@ -111,7 +115,7 @@ namespace robobot_winphone.ViewModel
                     else
                     {
                         ConnectionStatus = ConnectionStatus.Disconnected;
-                        SendingStatus = SendingStatus.StartSending;
+                        StopSensorHandler();
                     }
                 };
             timer.Start();
@@ -134,13 +138,11 @@ namespace robobot_winphone.ViewModel
         {
             if (SendingStatus == SendingStatus.StartSending)
             {
-                SendingStatus = SendingStatus.StopSending;
-                handler.Start();
+                StartSensorHandler();
             }
             else
             {
-                SendingStatus = SendingStatus.StartSending;
-                handler.Stop();
+                StopSensorHandler();
             }
         }
 
@@ -160,6 +162,12 @@ namespace robobot_winphone.ViewModel
         {
             handler.Stop();
             SendingStatus = SendingStatus.StartSending;
+        }
+
+        public void StartSensorHandler()
+        {
+            handler.Start();
+            SendingStatus = SendingStatus.StopSending;
         }
     }
 }

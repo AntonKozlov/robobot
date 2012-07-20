@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 
 namespace robobot_winphone.Model
 {
@@ -29,7 +21,11 @@ namespace robobot_winphone.Model
 
         public void Execute(object parameter)
         {
-            this.executeAction(parameter);
+            if (executeAction == null)
+            {
+                return;
+            }
+            executeAction(parameter);
         }
     }
 }

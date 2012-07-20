@@ -1,16 +1,6 @@
 ﻿using System;
 using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Net.Sockets;
-using System.Threading;
-using System.Text;
 
 namespace robobot_winphone.Model
 {
@@ -22,35 +12,36 @@ namespace robobot_winphone.Model
         private Socket socket;
         private IPEndPoint endPoint;
 
-        public ISensorView Subscriber { get; set; }
+        public ISensorExecutor Subscriber { get; set; }
 
         public static SocketClient Instance
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new SocketClient();
-                }
-                return instance;
-            }
+            get { return instance ?? (instance = new SocketClient()); }
         }
 
         private SocketClient() { }
 
         public void ConnectToDevice(IPAddress address, int port)
         {
+            if (socket != null)
+            {
+                socket.Dispose();
+            }
+
             endPoint = new IPEndPoint(address, port);  
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            var socketEventArg = new SocketAsyncEventArgs();
-            socketEventArg.RemoteEndPoint = endPoint;
-            socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(delegate(object s, SocketAsyncEventArgs e)
-            {
-                if (e.SocketError == SocketError.Success)
-                {
-                    LogManager.Log("Socket connected");
-                }
-            });
+
+            var socketEventArg = new SocketAsyncEventArgs
+                                     {
+                                         RemoteEndPoint = endPoint
+                                     };
+            socketEventArg.Completed += delegate(object s, SocketAsyncEventArgs e)
+                                            {
+                                                if (e.SocketError == SocketError.Success)
+                                                {
+                                                    LogManager.Log("Socket connected");
+                                                }
+                                            };
 
             try
             {
@@ -58,7 +49,7 @@ namespace robobot_winphone.Model
             }
             catch (SocketException)
             {
-                LogManager.Log("Connection error");
+                LogManager.Log("ConnectAsync error");
             }
         }
 
@@ -72,6 +63,7 @@ namespace robobot_winphone.Model
             if (socket.Connected)
             {
                 socket.Close();
+                socket.Dispose();
                 socket = null;
                 LogManager.Log("Socket closed");
             }
@@ -90,19 +82,29 @@ namespace robobot_winphone.Model
 
             if (socket.Connected)
             {
-                var socketEventArg = new SocketAsyncEventArgs();
-                socketEventArg.RemoteEndPoint = endPoint;
+                var socketEventArg = new SocketAsyncEventArgs
+                                         {
+                                             RemoteEndPoint = endPoint
+                                         };
+
                 socketEventArg.SetBuffer(data, 0, data.Length);
 
-                socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(delegate(object s, SocketAsyncEventArgs e)
-                {
-                    if (e.SocketError != SocketError.Success)
-                    {
-                        LogManager.Log(String.Format("Send error: {0}", e.SocketError));
-                    }
-                });
+                socketEventArg.Completed += delegate(object s, SocketAsyncEventArgs e)
+                                                {
+                                                    if (e.SocketError != SocketError.Success)
+                                                    {
+                                                        LogManager.Log(String.Format("Send error: {0}", e.SocketError));
+                                                    }
+                                                };
 
-                socket.SendAsync(socketEventArg);          
+                try
+                {
+                    socket.SendAsync(socketEventArg);   
+                }
+                catch (SocketException)
+                {
+                    LogManager.Log("SendAsync error");
+                }        
             }
             else
             {
@@ -112,12 +114,9 @@ namespace robobot_winphone.Model
 
         public bool IsConnected()
         {
-            if ((socket != null) && (socket.Connected))
-            {
-                return true;
-            }
-            return false;
+            return (socket != null) && (socket.Connected);
         }
+
         //Not tested
 
         //public Byte[] ReceiveData()

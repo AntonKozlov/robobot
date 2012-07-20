@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 
 namespace robobot_winphone.Model
@@ -18,21 +10,14 @@ namespace robobot_winphone.Model
 
         public static NavigationManager Instance
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new NavigationManager();
-                }
-                return instance;
-            }
+            get { return instance ?? (instance = new NavigationManager()); }
         }
 
         private NavigationManager() { }
 
-        private void Navigate(string uri)
+        private static void Navigate(string uri)
         {
-            PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+            var frame = Application.Current.RootVisual as PhoneApplicationFrame;
             
             if (frame == null)
             {
@@ -45,17 +30,17 @@ namespace robobot_winphone.Model
 
         public void NavigateToDeviceConnectionPage()
         {
-            this.Navigate("//View/DeviceConnectionPage.xaml");
+            Navigate("//View/DeviceConnectionPage.xaml");
         }
 
         public void NavigateToSettingsPage()
         {
-            this.Navigate("//View/SettingsPage.xaml");
+            Navigate("//View/SettingsPage.xaml");
         }
 
         public void NavigateToCalibrationPage()
         {
-            this.Navigate("//View/CalibrationPage.xaml");
+            Navigate("//View/CalibrationPage.xaml");
         }
     }
 }

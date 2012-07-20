@@ -13,7 +13,7 @@ namespace robobot_winphone.Model.SensorHandler
 
         private DateTime startTime;
 
-        public ACGSensorHandler(double frequency, ISensorView sensorView)
+        public ACGSensorHandler(double frequency, ISensorExecutor sensorView)
         {
             if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
             {

@@ -4,21 +4,13 @@ using Microsoft.Xna.Framework;
 namespace robobot_winphone.Model.Utils
 {
     public class ComplementaryFilter
-    {
-        
+    {      
         private const float timeToDeviceNormalization = 0.1f;
 
         private float delta;
         private DateTimeOffset lastUpdateTime = DateTimeOffset.MinValue;
-        private Vector3 cummulativeValue;
 
-        public Vector3 CummulativeValue
-        {
-            get
-            {
-                return this.cummulativeValue;
-            }
-        }
+        public Vector3 CummulativeValue { get; private set; }
 
         public ComplementaryFilter(float timeBetweenUpdates)
         {
@@ -40,9 +32,7 @@ namespace robobot_winphone.Model.Utils
 
             var integratedGyro = gyroscopeData * timeSinceLastUpdate;
 
-            cummulativeValue.X = (1 - delta) * (cummulativeValue.X + integratedGyro.X) + delta * correction.X;
-            cummulativeValue.Y = (1 - delta) * (cummulativeValue.Y + integratedGyro.Y) + delta * correction.Y;
-            cummulativeValue.Z = (1 - delta) * (cummulativeValue.Z + integratedGyro.Z) + delta * correction.Z;
+            CummulativeValue = (1 - delta) * (CummulativeValue + integratedGyro) + delta * correction;
 
             lastUpdateTime = currentUpdateTime;
         }
