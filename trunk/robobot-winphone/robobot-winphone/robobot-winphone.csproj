@@ -68,6 +68,8 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\ButtonCommand.cs" />
+    <Compile Include="Model\SensorHandler\AbstractCompassSensorHandler.cs" />
+    <Compile Include="Model\SensorHandler\AbstractTurnCompassSensorHandler.cs" />
     <Compile Include="Model\Utils\ComplementaryFilter.cs" />
     <Compile Include="Model\Converters\ConnectionStatusConverter.cs" />
     <Compile Include="Model\ISensorView.cs" />

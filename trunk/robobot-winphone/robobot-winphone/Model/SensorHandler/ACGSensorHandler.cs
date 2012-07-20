@@ -5,42 +5,46 @@ using robobot_winphone.Model.Utils;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class ACGSensorHandler : AbstractSensorHandler
+    public class ACGSensorHandler : AbstractTurnCompassSensorHandler
     {
         private Gyroscope gyroscope;
-        private Accelerometer accelerometer;
-        private Compass compass;
+
         private ComplementaryFilter filter;
-        private ISensorView sensorView;
-        private DispatcherTimer timer;
 
         private DateTime startTime;
-        private SmoothValueManager turnSmoothValueManager;
-        private SmoothValueManager speedSmoothValueManager;
-        private double fixCompassData;
-        private bool isFixComassDataDetected;
 
         public ACGSensorHandler(double frequency, ISensorView sensorView)
         {
             if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
             {
                 filter = new ComplementaryFilter((float)frequency);
-                gyroscope = new Gyroscope();
-                accelerometer = new Accelerometer();
-                compass = new Compass();
+
+                gyroscope = new Gyroscope
+                                {
+                                    TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
+                                };
+                accelerometer = new Accelerometer
+                                {
+                                    TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
+                                };
+                compass = new Compass
+                                {
+                                    TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
+                                };
+
                 turnSmoothValueManager = new SmoothValueManager();
                 speedSmoothValueManager = new SmoothValueManager();
+
                 this.sensorView = sensorView;
 
-                accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
-                compass.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
-                gyroscope.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
+                compass.Calibrate += CompassCalibrate;
 
-                compass.Calibrate += new EventHandler<CalibrationEventArgs>(CompassCalibrate);
+                accelerometer.CurrentValueChanged += AccelerometerCurrentValueChanged;
 
-                accelerometer.CurrentValueChanged += accelerometer_CurrentValueChanged;
-
-                timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(frequency) };
+                timer = new DispatcherTimer
+                            {
+                                Interval = TimeSpan.FromMilliseconds(frequency)
+                            };
                 timer.Tick += TimerTick;
             }
             else
@@ -51,23 +55,38 @@ namespace robobot_winphone.Model.SensorHandler
 
         public override void Start()
         {
-            compass.Start();
-            gyroscope.Start();
-            accelerometer.Start();
-            timer.Start();
+            try
+            {
+                compass.Start();
+                gyroscope.Start();
+                accelerometer.Start();
+                timer.Start();
+            }
+            catch (Exception)
+            {
+                LogManager.Log("Some sensor or compass isn't initializated");
+            }
+
             startTime = DateTime.Now;
             isFixComassDataDetected = false;
         }
 
         public override void Stop()
         {
-            compass.Stop();
-            gyroscope.Stop();
-            accelerometer.Stop();
-            timer.Stop();
+            try
+            {
+                compass.Stop();
+                gyroscope.Stop();
+                accelerometer.Stop();
+                timer.Stop();
+            }
+            catch (Exception)
+            {
+                LogManager.Log("Some sensor or compass trouble");
+            }
         }
 
-        private void accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
+        private void AccelerometerCurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
             try
             {
@@ -80,61 +99,18 @@ namespace robobot_winphone.Model.SensorHandler
             }
         }
 
-        private void CompassCalibrate(object sender, CalibrationEventArgs e)
-        {
-            Stop();
-            NavigationManager.Instance.NavigateToCalibrationPage();
-        }
-
         private void TimerTick(object sender, EventArgs e)
         {
             if (isFixComassDataDetected)
             {
                 sensorView.ProcessSensorData(CalculateTurn(compass.CurrentValue.TrueHeading),
-                    CalculateSpeed(-filter.CummulativeValue.X));
+                    CalculateSpeed(-filter.CummulativeValue.X * 60));
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
             {
-                //fixCompassData = filter.CummulativeValue.Z;
                 fixCompassData = compass.CurrentValue.TrueHeading;
                 isFixComassDataDetected = true;
             }
-        }
-
-        private const int MaxValue = 100;
-
-        private int CalculateSpeed(double value)
-        {
-            var outPutValue = value * 60;
-
-            outPutValue = speedSmoothValueManager.GetSmoothValue(outPutValue);
-
-            if (outPutValue >= MaxValue)
-            {
-                return MaxValue;
-            }
-            if (outPutValue <= -MaxValue)
-            {
-                return -MaxValue;
-            }
-            return (int)outPutValue;
-        }
-
-        private int CalculateTurn(double value)
-        {
-            var outPutValue = value - fixCompassData;
-
-            outPutValue = turnSmoothValueManager.GetSmoothValue(outPutValue);
-
-            if (outPutValue >= MaxValue)
-            {
-                return MaxValue;
-            }
-            if (outPutValue <= -MaxValue)
-            {
-                return -MaxValue;
-            }
-            return (int)outPutValue;
         }
     }
 }

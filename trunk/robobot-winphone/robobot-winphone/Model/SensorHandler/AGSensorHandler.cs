@@ -1,30 +1,14 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Microsoft.Xna.Framework;
-using System.Text;
 using Microsoft.Devices.Sensors;
 using robobot_winphone.Model.Utils;
-using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.Model.SensorHandler
 {
-    public class AGSensorHandler : AbstractSensorHandler
+    public class AGSensorHandler : AbstractCompassSensorHandler
     {
         private Gyroscope gyroscope;
-        private Accelerometer accelerometer;
-        private Compass compass;
         private ComplementaryFilter filter;
-        private ISensorView sensorView;
-        private DispatcherTimer timer;
         private DateTime startTime;
 
         public AGSensorHandler(double frequency, ISensorView sensorView)
@@ -32,20 +16,33 @@ namespace robobot_winphone.Model.SensorHandler
             if (Gyroscope.IsSupported && Accelerometer.IsSupported && Compass.IsSupported)
             {
                 filter = new ComplementaryFilter((float)frequency);
-                gyroscope = new Gyroscope();
-                accelerometer = new Accelerometer();
-                compass = new Compass();
+
+                gyroscope = new Gyroscope
+                {
+                    TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
+                };
+                accelerometer = new Accelerometer
+                {
+                    TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
+                };
+                compass = new Compass
+                {
+                    TimeBetweenUpdates = TimeSpan.FromSeconds(frequency)
+                };
+
+                turnSmoothValueManager = new SmoothValueManager();
+                speedSmoothValueManager = new SmoothValueManager();
+
                 this.sensorView = sensorView;
 
-                compass.Calibrate +=new EventHandler<CalibrationEventArgs>(CompassCalibrate);
-
-                accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
-                compass.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
-                gyroscope.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
+                compass.Calibrate += CompassCalibrate;
                
-                accelerometer.CurrentValueChanged += accelerometer_CurrentValueChanged;
+                accelerometer.CurrentValueChanged += AccelerometerCurrentValueChanged;
 
-                timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(frequency) };
+                timer = new DispatcherTimer
+                            {
+                                Interval = TimeSpan.FromMilliseconds(frequency)
+                            };
                 timer.Tick += TimerTick;
             }
             else
@@ -71,13 +68,7 @@ namespace robobot_winphone.Model.SensorHandler
             timer.Stop();
         }
 
-        private void CompassCalibrate(object sender, CalibrationEventArgs e)
-        {
-            Stop();
-            NavigationManager.Instance.NavigateToCalibrationPage();
-        }
-
-        private void accelerometer_CurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
+        private void AccelerometerCurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
             try
             {
@@ -94,25 +85,9 @@ namespace robobot_winphone.Model.SensorHandler
         {
             if ((DateTime.Now - startTime).Seconds > 1)
             {
-                sensorView.ProcessSensorData(CalculateValue((double)filter.CummulativeValue.Y),
-                                CalculateValue((double)(-filter.CummulativeValue.X)));
+                sensorView.ProcessSensorData(CalculateSpeed(filter.CummulativeValue.Y * 60),
+                                CalculateTurn(-filter.CummulativeValue.X * 60));
             }
-        }
-
-        private const int MaxValue = 100;
-
-        private int CalculateValue(double value)
-        {
-            int outPutValue = (int)(value * MaxValue);
-            if (outPutValue >= MaxValue)
-            {
-                return MaxValue;
-            }
-            if (outPutValue <= -MaxValue)
-            {
-                return -MaxValue;
-            }
-            return outPutValue;
         }
     }
 }
