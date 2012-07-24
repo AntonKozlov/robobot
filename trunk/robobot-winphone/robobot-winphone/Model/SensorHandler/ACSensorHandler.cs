@@ -19,7 +19,7 @@ namespace robobot_winphone.Model.SensorHandler
                 TurnSmoothValueManager = new SmoothValueManager();
                 SpeedSmoothValueManager = new SmoothValueManager();
 
-                this.SensorExecutor = sensorView;
+                SensorExecutor = sensorView;
 
                 Compass.Calibrate += CompassCalibrate;
 
@@ -32,23 +32,45 @@ namespace robobot_winphone.Model.SensorHandler
             else
             {
                 LogManager.Log("Some sensor is not supported on this device");
-            }            
+            }
         }
 
         public override void Start()
         {
-            Compass.Start();
-            Accelerometer.Start();
-            Timer.Start();
+            try
+            {       
+                if (SensorExecutor != null)
+                {
+                    Compass.Start();
+                    Accelerometer.Start();
+                    Timer.Start();
+                }
+                else
+                {
+                    LogManager.Log("SensorExecutor isn't initializated");
+                }
+            }
+            catch (Exception)
+            {
+                LogManager.Log("Start sensor or timer trouble");
+            }
+
             startTime = DateTime.Now;
             isFixComassDataDetected = false;
         }
 
         public override void Stop()
         {
-            Compass.Stop();
-            Accelerometer.Stop();
-            Timer.Stop();
+            try
+            {
+                Compass.Stop();
+                Accelerometer.Stop();
+                Timer.Stop();
+            }
+            catch (Exception)
+            {
+                LogManager.Log("Stop sensor or timer trouble");
+            }
         }
 
         private const double CompassValueFactor = 3;

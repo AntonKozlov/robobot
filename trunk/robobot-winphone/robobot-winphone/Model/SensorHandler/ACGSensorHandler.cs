@@ -35,7 +35,7 @@ namespace robobot_winphone.Model.SensorHandler
                 TurnSmoothValueManager = new SmoothValueManager();
                 SpeedSmoothValueManager = new SmoothValueManager();
 
-                this.SensorExecutor = sensorView;
+                SensorExecutor = sensorView;
 
                 Compass.Calibrate += CompassCalibrate;
 
@@ -57,14 +57,21 @@ namespace robobot_winphone.Model.SensorHandler
         {
             try
             {
-                Compass.Start();
-                gyroscope.Start();
-                Accelerometer.Start();
-                Timer.Start();
+                if (SensorExecutor != null && filter != null)
+                {
+                    Compass.Start();
+                    gyroscope.Start();
+                    Accelerometer.Start();
+                    Timer.Start();
+                }
+                else
+                {
+                    LogManager.Log("SensorExecutor of Filter isn't initializated");
+                }
             }
             catch (Exception)
             {
-                LogManager.Log("Some sensor or compass isn't initializated");
+                LogManager.Log("Start sensor or timer trouble");
             }
 
             startTime = DateTime.Now;
@@ -82,7 +89,7 @@ namespace robobot_winphone.Model.SensorHandler
             }
             catch (Exception)
             {
-                LogManager.Log("Some sensor or compass trouble");
+                LogManager.Log("Stop sensor or timer trouble");
             }
         }
 
