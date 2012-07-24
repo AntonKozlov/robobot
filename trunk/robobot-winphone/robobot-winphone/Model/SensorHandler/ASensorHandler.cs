@@ -16,7 +16,7 @@ namespace robobot_winphone.Model.SensorHandler
                                         TimeBetweenUpdates = TimeSpan.FromMilliseconds(frequency)
                                     };
 
-                this.SensorView = sensorView;
+                SensorExecutor = sensorView;
 
                 TurnSmoothValueManager = new SmoothValueManager();
                 SpeedSmoothValueManager = new SmoothValueManager();
@@ -47,7 +47,7 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            SensorView.ProcessSensorData(CalculateTurn(-Accelerometer.CurrentValue.Acceleration.Y * 180),
+            SensorExecutor.ProcessSensorData(CalculateTurn(-Accelerometer.CurrentValue.Acceleration.Y * 180),
                             CalculateSpeed(-Accelerometer.CurrentValue.Acceleration.X * 180));
         }
     }

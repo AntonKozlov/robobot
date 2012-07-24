@@ -35,7 +35,7 @@ namespace robobot_winphone.Model.SensorHandler
                 TurnSmoothValueManager = new SmoothValueManager();
                 SpeedSmoothValueManager = new SmoothValueManager();
 
-                this.SensorView = sensorView;
+                this.SensorExecutor = sensorView;
 
                 Compass.Calibrate += CompassCalibrate;
 
@@ -106,7 +106,7 @@ namespace robobot_winphone.Model.SensorHandler
         {
             if (isFixComassDataDetected)
             {
-                SensorView.ProcessSensorData(CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
+                SensorExecutor.ProcessSensorData(CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
                     CalculateSpeed(-filter.CummulativeValue.X * 60, GyroscopeValueFactor));
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
