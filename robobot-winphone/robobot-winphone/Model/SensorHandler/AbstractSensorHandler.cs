@@ -42,6 +42,11 @@ namespace robobot_winphone.Model.SensorHandler
         {
             var outPutValue = value;
 
+            if (smoothValueManager == null)
+            {
+                return 0;
+            }
+
             outPutValue = smoothValueManager.GetSmoothValue(outPutValue) * factor;
 
             if (outPutValue >= MaxValue)

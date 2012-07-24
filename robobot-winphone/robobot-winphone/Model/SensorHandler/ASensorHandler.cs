@@ -35,14 +35,35 @@ namespace robobot_winphone.Model.SensorHandler
 
         public override void Start()
         {
-            Accelerometer.Start();
-            Timer.Start();
+            try
+            {
+                if (SensorExecutor != null)
+                {
+                    Accelerometer.Start();
+                    Timer.Start();
+                }
+                else
+                {
+                    LogManager.Log("SensorExecutor isn't initializated");
+                }
+            }
+            catch (Exception)
+            {
+                LogManager.Log("Start sensor or timer trouble");
+            }
         }
 
         public override void Stop()
         {
-            Accelerometer.Stop();
-            Timer.Stop();
+            try
+            {
+                Accelerometer.Stop();
+                Timer.Stop();
+            }
+            catch (Exception)
+            {
+                LogManager.Log("Stop sensor or timer trouble");
+            }
         }
 
         private void TimerTick(object sender, EventArgs e)
