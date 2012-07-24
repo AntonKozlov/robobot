@@ -116,6 +116,7 @@ namespace robobot_winphone.ViewModel
                     {
                         ConnectionStatus = ConnectionStatus.Disconnected;
                         StopSensorHandler();
+                        //SendingStatus = SendingStatus.StartSending;
                     }
                 };
             timer.Start();
@@ -149,7 +150,7 @@ namespace robobot_winphone.ViewModel
         public void ProcessSensorData(int turn, int speed)
         {
             SpeedRotation = speed * 1.5;
-            TurnRotation = turn * 1.5;
+            TurnRotation = turn * 0.75;
             SendMessage(turn, speed);
         }
 

@@ -8,7 +8,7 @@ namespace robobot_winphone.Model.SensorHandler
     {
         protected Accelerometer Accelerometer;
         protected DispatcherTimer Timer;
-        protected ISensorExecutor SensorView;
+        protected ISensorExecutor SensorExecutor;
 
         protected SmoothValueManager TurnSmoothValueManager;
         protected SmoothValueManager SpeedSmoothValueManager;

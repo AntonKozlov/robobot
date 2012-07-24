@@ -8,8 +8,8 @@ namespace robobot_winphone.Model.SensorHandler
 
         protected void CompassCalibrate(object sender, CalibrationEventArgs e)
         {
-            Stop();
-            NavigationManager.Instance.NavigateToCalibrationPage();
+            //Stop();
+            //NavigationManager.Instance.NavigateToCalibrationPage();
         }
     }
 }
