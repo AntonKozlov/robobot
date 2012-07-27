@@ -5,7 +5,8 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"   
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -23,34 +24,53 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="0,15,0,15">
             <TextBlock x:Name="ApplicationTitle" Text="ROBOBOT" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="PageTitle" Text="settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Use gyroscope" Width="160" FontSize="24" VerticalAlignment="Center"/>
-                    <RadioButton Content="Yes" GroupName="IsUseGyro" IsChecked="{Binding IsUseGyroYes, Mode=TwoWay}" Command="{Binding IsUseGyroYesCommand}"/>
-                    <RadioButton Content="No" GroupName="IsUseGyro" IsChecked="{Binding IsUseGyroNo, Mode=TwoWay}" Command="{Binding IsUseGyroNoCommand}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Turn method" Width="160" FontSize="24" VerticalAlignment="Center"/>
-                    <RadioButton Content="Rotation" GroupName="TurnMethod" IsChecked="{Binding IsRotationTurnMethod, Mode=TwoWay}" Command="{Binding IsRotationTurnMethodCommand}"/>
-                    <RadioButton Content="Inclination" GroupName="TurnMethod" IsChecked="{Binding IsInclinationTurnMethod, Mode=TwoWay}" Command="{Binding IsInclinationTurnMethodCommand}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Default port" Width="160" VerticalAlignment="Center" FontSize="24"/>
-                    <TextBox Width="300" VerticalAlignment="Center" Text="{Binding Port, Mode=TwoWay}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Default IP" Width="160" VerticalAlignment="Center" FontSize="24"/>
-                    <TextBox Width="300" VerticalAlignment="Center" Text="{Binding IP, Mode=TwoWay}"/>
-                </StackPanel>
-            </StackPanel>
+
+            <controls:Pivot>
+                <controls:PivotItem x:Name="ControlPivotItem">
+                    <controls:PivotItem.Header>
+                        <Grid>
+                            <TextBlock FontSize="50" Text="Control"/>  
+                        </Grid>
+                    </controls:PivotItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Use gyroscope" Width="160" FontSize="24" VerticalAlignment="Center"/>
+                            <RadioButton Content="Yes" GroupName="IsUseGyro" IsChecked="{Binding IsUseGyroYes, Mode=TwoWay}" Command="{Binding IsUseGyroYesCommand}"/>
+                            <RadioButton Content="No" GroupName="IsUseGyro" IsChecked="{Binding IsUseGyroNo, Mode=TwoWay}" Command="{Binding IsUseGyroNoCommand}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Turn method" Width="160" FontSize="24" VerticalAlignment="Center"/>
+                            <RadioButton Content="Rotation" GroupName="TurnMethod" IsChecked="{Binding IsRotationTurnMethod, Mode=TwoWay}" Command="{Binding IsRotationTurnMethodCommand}"/>
+                            <RadioButton Content="Inclination" GroupName="TurnMethod" IsChecked="{Binding IsInclinationTurnMethod, Mode=TwoWay}" Command="{Binding IsInclinationTurnMethodCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </controls:PivotItem>
+
+                <controls:PivotItem x:Name="ConnectionPivotItem">
+                    <controls:PivotItem.Header>
+                        <Grid>
+                            <TextBlock FontSize="50" Text="Connection"/>
+                        </Grid>
+                    </controls:PivotItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Default port" Width="160" VerticalAlignment="Center" FontSize="24"/>
+                            <TextBox Width="300" VerticalAlignment="Center" Text="{Binding Port, Mode=TwoWay}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Default IP" Width="160" VerticalAlignment="Center" FontSize="24"/>
+                            <TextBox Width="300" VerticalAlignment="Center" Text="{Binding IP, Mode=TwoWay}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </controls:PivotItem>
+            </controls:Pivot>          
         </Grid>
     </Grid>
- 
+
     <!--Sample code showing usage of ApplicationBar-->
     <!--<phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
