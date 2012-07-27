@@ -68,7 +68,7 @@
 
     <!--Sample code showing usage of ApplicationBar-->
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" >
             <shell:ApplicationBarIconButton IconUri="/Resources/Icons/connection.png" Text="Connect" Click="ConnectClick"/>
             <shell:ApplicationBarIconButton IconUri="/Resources/Icons/settings.png" Text="Settings" Click="SettingsClick"/>
         </shell:ApplicationBar>
