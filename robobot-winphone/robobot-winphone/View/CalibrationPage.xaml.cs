@@ -1,4 +1,5 @@
 ﻿using Microsoft.Phone.Controls;
+using robobot_winphone.ViewModel;
 
 namespace robobot_winphone.View
 {
@@ -7,6 +8,7 @@ namespace robobot_winphone.View
         public CalibrationPage()
         {
             InitializeComponent();
+            DataContext = new CalibrationPageViewModel();
         }
 
         protected override void OnOrientationChanged(OrientationChangedEventArgs e)

@@ -37,8 +37,6 @@ namespace robobot_winphone.Model.SensorHandler
 
                 SensorExecutor = sensorView;
 
-                Compass.Calibrate += CompassCalibrate;
-
                 Accelerometer.CurrentValueChanged += AccelerometerCurrentValueChanged;
 
                 Timer = new DispatcherTimer
@@ -63,6 +61,8 @@ namespace robobot_winphone.Model.SensorHandler
                     gyroscope.Start();
                     Accelerometer.Start();
                     Timer.Start();
+                    TurnSmoothValueManager.Start();
+                    SpeedSmoothValueManager.Start();
                 }
                 else
                 {
@@ -86,6 +86,8 @@ namespace robobot_winphone.Model.SensorHandler
                 gyroscope.Stop();
                 Accelerometer.Stop();
                 Timer.Stop();
+                TurnSmoothValueManager.Stop();
+                SpeedSmoothValueManager.Stop();
             }
             catch (Exception)
             {
@@ -98,7 +100,7 @@ namespace robobot_winphone.Model.SensorHandler
             try
             {
                 filter.UpdateCummulativeValue(gyroscope.CurrentValue.RotationRate, e.SensorReading.Acceleration,
-                    Compass.CurrentValue.MagnetometerReading, e.SensorReading.Timestamp);
+                                                                  Compass.CurrentValue.MagnetometerReading, e.SensorReading.Timestamp);
             }
             catch (Exception)
             {
@@ -113,8 +115,16 @@ namespace robobot_winphone.Model.SensorHandler
         {
             if (isFixComassDataDetected)
             {
-                SensorExecutor.ProcessSensorData(CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
-                    CalculateSpeed(-filter.CummulativeValue.X * 60, GyroscopeValueFactor));
+                if (Compass.CurrentValue.HeadingAccuracy > 20)
+                {
+                    CompassCalibrate();
+                }
+                else
+                {
+                    SensorExecutor.ProcessSensorData(
+                        CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
+                        CalculateSpeed(-filter.CummulativeValue.X * 60, GyroscopeValueFactor));
+                }
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
             {

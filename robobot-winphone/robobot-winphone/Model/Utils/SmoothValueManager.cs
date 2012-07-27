@@ -1,38 +1,69 @@
 ﻿using System;
+using System.Windows.Threading;
+using robobot_winphone.Model;
 
 namespace robobot_winphone.Model.Utils
 {
     public class SmoothValueManager
     {
+        private const int LongSleep = 10;
+        private const int DefaultSleep = 5;
+
         private const double ArrivedEps = 0.65;
         private const double LeavedEps = 2.5;
         private const double SpeedEps = 0.55;
 
+        private DispatcherTimer timer;
+
         private double goalValue;
-        private double oldValue;
+        private double value;
         private double speed;
 
         private bool isArrived; // The needle has not arrived the goalValue
+
+        public SmoothValueManager()
+        {
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(DefaultSleep)
+            };
+
+            timer.Tick += TimerTick;
+        }
+
+        public void Start()
+        {
+            timer.Start();
+        }
+
+        public void Stop()
+        {
+            timer.Stop();
+        }
+
+        private void TimerTick(object sender, EventArgs e)
+        {
+            if (IsNeedPainting())
+            {
+                isArrived = false;
+                var difference = CalculateNormalDifference(value, goalValue);
+                speed = CalculateSpeed(difference, speed);
+                value = value + speed;
+                value = NormalizeValue(value);
+            }
+            else
+            {
+                isArrived = true;
+            }
+
+            timer.Interval = TimeSpan.FromMilliseconds(isArrived ? LongSleep : DefaultSleep);
+        }
 
         public double GetSmoothValue(double newValue)
         {
             CalculateGoalValue(newValue);
 
-            if (IsNeedPainting())
-            {
-                isArrived = false;
-                var difference = CalculateNormalDifference(oldValue, goalValue);
-                speed = CalculateSpeed(difference, speed);
-                oldValue = oldValue + speed;
-
-                return oldValue;
-            }
-            else
-            {
-                isArrived = true;
-                return oldValue;
-            }
-
+            return value;
         }
 
         private void CalculateGoalValue(double newValue)
@@ -61,11 +92,11 @@ namespace robobot_winphone.Model.Utils
         {
             if (isArrived)
             {
-                return Math.Abs(oldValue - goalValue) > LeavedEps;
+                return Math.Abs(value - goalValue) > LeavedEps;
             }
             else
             {
-                return Math.Abs(oldValue - goalValue) > ArrivedEps || Math.Abs(speed) > SpeedEps;
+                return Math.Abs(value - goalValue) > ArrivedEps || Math.Abs(speed) > SpeedEps;
             }
         }
 
