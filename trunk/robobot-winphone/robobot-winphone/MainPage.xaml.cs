@@ -2,6 +2,7 @@
 using Microsoft.Phone.Controls;
 using robobot_winphone.ViewModel;
 using robobot_winphone.Model;
+using robobot_winphone.Model.SensorHandler;
 
 namespace robobot_winphone
 {

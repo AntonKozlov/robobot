@@ -41,6 +41,8 @@ namespace robobot_winphone.Model.SensorHandler
                 {
                     Accelerometer.Start();
                     Timer.Start();
+                    TurnSmoothValueManager.Start();
+                    SpeedSmoothValueManager.Start();
                 }
                 else
                 {
@@ -59,6 +61,8 @@ namespace robobot_winphone.Model.SensorHandler
             {
                 Accelerometer.Stop();
                 Timer.Stop();
+                TurnSmoothValueManager.Stop();
+                SpeedSmoothValueManager.Stop();
             }
             catch (Exception)
             {

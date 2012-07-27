@@ -21,8 +21,6 @@ namespace robobot_winphone.Model.SensorHandler
 
                 SensorExecutor = sensorView;
 
-                Compass.Calibrate += CompassCalibrate;
-
                 Accelerometer.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
                 Compass.TimeBetweenUpdates = TimeSpan.FromSeconds(frequency);
 
@@ -44,6 +42,8 @@ namespace robobot_winphone.Model.SensorHandler
                     Compass.Start();
                     Accelerometer.Start();
                     Timer.Start();
+                    TurnSmoothValueManager.Start();
+                    SpeedSmoothValueManager.Start();
                 }
                 else
                 {
@@ -66,6 +66,8 @@ namespace robobot_winphone.Model.SensorHandler
                 Compass.Stop();
                 Accelerometer.Stop();
                 Timer.Stop();
+                TurnSmoothValueManager.Stop();
+                SpeedSmoothValueManager.Stop();
             }
             catch (Exception)
             {
@@ -79,8 +81,16 @@ namespace robobot_winphone.Model.SensorHandler
         {
             if (isFixComassDataDetected)
             {
-                SensorExecutor.ProcessSensorData(CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
-                                CalculateSpeed(-Accelerometer.CurrentValue.Acceleration.X * 180));
+                if (Compass.CurrentValue.HeadingAccuracy > 20)
+                {
+                    CompassCalibrate();
+                }
+                else
+                {
+                    SensorExecutor.ProcessSensorData(
+                        CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
+                        CalculateSpeed(-Accelerometer.CurrentValue.Acceleration.X*180));
+                }
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
             {

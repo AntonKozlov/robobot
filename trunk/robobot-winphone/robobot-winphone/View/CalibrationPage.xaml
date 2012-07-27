@@ -28,10 +28,25 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <TextBlock Text="Please, calibrate the compass. After that press Back button" FontSize="28" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="90,0,90,0" Width="522" />
+            <Grid.Resources>
+                <Style TargetType="TextBlock" x:Name="TextStyle">
+                    <Style.Setters>
+                        <Setter Property="FontSize" Value="28"></Setter>
+                        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+                    </Style.Setters>
+                </Style>
+            </Grid.Resources>
+
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Please, calibrate the compass. Heading accuracy must be less then 20. After that press Back button" Style="{StaticResource TextStyle}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Heading accuracy: " Style="{StaticResource TextStyle}"/>
+                    <TextBlock Text="{Binding HeadingAccuracy}" Style="{StaticResource TextStyle}" Foreground="{StaticResource PhoneAccentBrush}"/>
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
- 
+
     <!--Sample code showing usage of ApplicationBar-->
     <!--<phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
