@@ -11,6 +11,7 @@ namespace robobot_winphone.ViewModel
         public NavigationService NService { get; set; }
         public string Port { get; set; }
         public string IP { get; set; }
+        public bool IsDisconnectEnable { get; private set; }
 
         public ICommand DisconnectCommand { get; private set; }
         public ICommand ConnectCommand { get; private set; }
@@ -22,6 +23,7 @@ namespace robobot_winphone.ViewModel
             DisconnectCommand = new ButtonCommand(Disconnect);
             IP = settings.IP;
             Port = settings.Port;
+            IsDisconnectEnable = SocketClient.Instance.IsConnected();
         }
        
         private void Connect(object p)
