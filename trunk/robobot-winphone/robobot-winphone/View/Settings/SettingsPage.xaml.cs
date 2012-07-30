@@ -1,7 +1,7 @@
 ﻿using Microsoft.Phone.Controls;
 using robobot_winphone.ViewModel;
 
-namespace robobot_winphone.View
+namespace robobot_winphone.View.Settings
 {
     public partial class SettingsPage : PhoneApplicationPage
     {

@@ -56,6 +56,7 @@
     <Reference Include="Microsoft.Phone.Controls.Maps" />
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="system.data.linq" />
     <Reference Include="System.Device" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Servicemodel" />
@@ -76,6 +77,9 @@
     </Compile>
     <Compile Include="Model\ButtonCommand.cs" />
     <Compile Include="Model\Converters\SendingStatusConverter.cs" />
+    <Compile Include="Model\DataBase\ConnectionDataBase.cs" />
+    <Compile Include="Model\DataBase\ConnectionDataBaseItem.cs" />
+    <Compile Include="Model\DataBase\ConnectionDataContext.cs" />
     <Compile Include="Model\SensorHandler\AbstractCompassSensorHandler.cs" />
     <Compile Include="Model\SensorHandler\AbstractTurnCompassSensorHandler.cs" />
     <Compile Include="Model\Utils\ComplementaryFilter.cs" />
@@ -104,7 +108,10 @@
     <Compile Include="View\DeviceConnectionPage.xaml.cs">
       <DependentUpon>DeviceConnectionPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SettingsPage.xaml.cs">
+    <Compile Include="View\Settings\SaveConnectionDialog.xaml.cs">
+      <DependentUpon>SaveConnectionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Settings\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -125,7 +132,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\SettingsPage.xaml">
+    <Page Include="View\Settings\SaveConnectionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Settings\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
