@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows.Input;
 using System.Text;
@@ -28,7 +29,8 @@ namespace robobot_winphone.ViewModel
         private double speedRotation;
         private double turnRotation;
 
-        public ICommand DisconnectCommand { get; private set; }
+        public double StartSendingValue{ private get; set; }
+    
         public ICommand SendingCommand { get; private set; }
 
         public ConnectionStatus ConnectionStatus
@@ -91,9 +93,13 @@ namespace robobot_winphone.ViewModel
             }
         }
 
-        public MainPageViewModel()
+        public MainPageViewModel(Action<SendingStatus> sendingStatusChangedAction)
         {
-            DisconnectCommand = new ButtonCommand(Disconnect);
+            PropertyChanged += (sender, args) =>
+                                   {
+                                       sendingStatusChangedAction(SendingStatus);
+                                   };
+
             SendingCommand = new ButtonCommand(SendOrStopSend);
 
             ConnectionStatus = ConnectionStatus.Disconnected;
@@ -116,7 +122,6 @@ namespace robobot_winphone.ViewModel
                     {
                         ConnectionStatus = ConnectionStatus.Disconnected;
                         StopSensorHandler();
-                        SendingStatus = SendingStatus.StartSending;
                     }
                 };
             timer.Start();
@@ -124,10 +129,6 @@ namespace robobot_winphone.ViewModel
             handler = SensorHandlerManager.GetSensorHandler(0.01, this);
         }
 
-        private void Disconnect(object p)
-        {
-            SocketClient.Instance.Disconnect();
-        }
 
         private void SendMessage(int turn, int speed)
         {
@@ -137,11 +138,11 @@ namespace robobot_winphone.ViewModel
 
         private void SendOrStopSend(object p)
         {
-            if (SendingStatus == SendingStatus.StartSending)
+            if ((SendingStatus == SendingStatus.StartSending) && ((double)p - StartSendingValue >= 0))
             {
                 StartSensorHandler();
             }
-            else
+            else if ((double)p - StartSendingValue <= 0)
             {
                 StopSensorHandler();
             }

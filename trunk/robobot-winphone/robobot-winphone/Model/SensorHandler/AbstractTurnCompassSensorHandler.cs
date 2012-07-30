@@ -7,7 +7,7 @@
 
         protected override int CalculateTurn(double value, double factor)
         {
-            return CalculateValue(value, TurnSmoothValueManager, factor);
+            return CalculateValue(value - fixCompassData, TurnSmoothValueManager, factor);
         }
 
         protected override int CalculateTurn(double value)
