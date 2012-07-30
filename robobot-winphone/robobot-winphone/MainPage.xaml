@@ -18,6 +18,7 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.Resources>
             <c:ConnectionStatusConverter x:Key="StatusConverter" x:Name="StatusConverter"/>
+            <c:SendingStatusConverter x:Key="SendingStatusConverter" x:Name="SendingStatusConverter"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -30,7 +31,7 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,12">
             <StackPanel Orientation="Vertical">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -52,23 +53,31 @@
                         </Image.RenderTransform>
                     </Image>
                 </Grid>
-                <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock Text="Connection status: " Height="30" Width="Auto" FontSize="22"/>
-                        <TextBlock Text="{Binding ConnectionStatus}" Height="30" Width="Auto" FontSize="24"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Height="65">
-                        <Button Content="Disconnect" Command="{Binding DisconnectCommand}" IsEnabled="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}" Height="65" Width="200" FontSize="22"/>
-                        <Button Content="{Binding SendingStatus}" Command="{Binding SendingCommand}" IsEnabled="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}" Height="65" Width="200" FontSize="22"/>
-                    </StackPanel>
-                </StackPanel>
             </StackPanel>
+            <Grid Width="700" HorizontalAlignment="Left">
+                <Ellipse Height="60" Width="60"
+                     Fill="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}" 
+                     Stroke="White" StrokeThickness="2"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Bottom"/>
+                <Slider x:Name="Slider" Width="200"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"  Minimum="0" Maximum="10" 
+                        ManipulationStarted="SliderManipulationStarted"
+                        ManipulationCompleted="SliderManipulationCompleted"
+                        Value="{Binding SendingStatus, Converter={StaticResource SendingStatusConverter}, Mode=TwoWay}"
+                        IsEnabled="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}">
+                    <Slider.RenderTransform>
+                        <CompositeTransform ScaleY="4" TranslateX="-50" TranslateY="-53"/>
+                    </Slider.RenderTransform>
+                </Slider>
+            </Grid>
         </Grid>
     </Grid>
 
     <!--Sample code showing usage of ApplicationBar-->
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" >
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="/Resources/Icons/connection.png" Text="Connect" Click="ConnectClick"/>
             <shell:ApplicationBarIconButton IconUri="/Resources/Icons/settings.png" Text="Settings" Click="SettingsClick"/>
         </shell:ApplicationBar>

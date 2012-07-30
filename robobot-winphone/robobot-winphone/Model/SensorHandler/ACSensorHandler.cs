@@ -36,7 +36,7 @@ namespace robobot_winphone.Model.SensorHandler
         public override void Start()
         {
             try
-            {       
+            {
                 if (SensorExecutor != null)
                 {
                     Compass.Start();
@@ -79,18 +79,15 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            if (isFixComassDataDetected)
+            if (Compass.CurrentValue.HeadingAccuracy > 20)
             {
-                if (Compass.CurrentValue.HeadingAccuracy > 20)
-                {
-                    CompassCalibrate();
-                }
-                else
-                {
-                    SensorExecutor.ProcessSensorData(
-                        CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
-                        CalculateSpeed(-Accelerometer.CurrentValue.Acceleration.X*180));
-                }
+                CompassCalibrate();
+            }
+            else if (isFixComassDataDetected)
+            {
+                SensorExecutor.ProcessSensorData(
+                    CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
+                    CalculateSpeed(-Accelerometer.CurrentValue.Acceleration.X * 180));
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
             {

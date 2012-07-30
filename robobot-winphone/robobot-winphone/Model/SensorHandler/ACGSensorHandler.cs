@@ -113,18 +113,15 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            if (isFixComassDataDetected)
+            if (Compass.CurrentValue.HeadingAccuracy > 20)
             {
-                if (Compass.CurrentValue.HeadingAccuracy > 20)
-                {
-                    CompassCalibrate();
-                }
-                else
-                {
-                    SensorExecutor.ProcessSensorData(
-                        CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
-                        CalculateSpeed(-filter.CummulativeValue.X * 60, GyroscopeValueFactor));
-                }
+                CompassCalibrate();
+            }
+            else if (isFixComassDataDetected)
+            {
+                SensorExecutor.ProcessSensorData(
+                    CalculateTurn(Compass.CurrentValue.TrueHeading, CompassValueFactor),
+                    CalculateSpeed(-filter.CummulativeValue.X * 60, GyroscopeValueFactor));
             }
             else if ((DateTime.Now - startTime).Seconds > 1)
             {

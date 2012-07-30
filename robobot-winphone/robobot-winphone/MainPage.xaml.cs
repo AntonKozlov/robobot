@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
 using robobot_winphone.ViewModel;
 using robobot_winphone.Model;
 using robobot_winphone.Model.SensorHandler;
@@ -13,7 +17,7 @@ namespace robobot_winphone
         public MainPage()
         {
             InitializeComponent();
-            viewModel = new MainPageViewModel();
+            viewModel = new MainPageViewModel(ChangeAppBarVisibility);
             DataContext = viewModel;
         }
 
@@ -49,6 +53,21 @@ namespace robobot_winphone
         {
             viewModel.StopSensorHandler();
             base.OnNavigatingFrom(e);
+        }
+
+        private void ChangeAppBarVisibility(SendingStatus sendingStatus)
+        {
+            ApplicationBar.IsVisible = sendingStatus == SendingStatus.StartSending;
+        }
+
+        private void SliderManipulationStarted(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        {
+            viewModel.StartSendingValue = Slider.Value;
+        }
+
+        private void SliderManipulationCompleted(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
+        {
+            viewModel.SendingCommand.Execute(Slider.Value);
         }
     }
 }

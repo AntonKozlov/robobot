@@ -40,6 +40,8 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Connect"
                             Command="{Binding ConnectCommand}"/>
+                    <Button Content="Disconnect" 
+                            Command="{Binding DisconnectCommand}"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

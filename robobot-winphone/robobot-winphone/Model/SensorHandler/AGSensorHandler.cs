@@ -34,7 +34,7 @@ namespace robobot_winphone.Model.SensorHandler
                 SpeedSmoothValueManager = new SmoothValueManager();
 
                 SensorExecutor = sensorView;
-               
+
                 Accelerometer.CurrentValueChanged += AccelerometerCurrentValueChanged;
 
                 Timer = new DispatcherTimer
@@ -46,7 +46,7 @@ namespace robobot_winphone.Model.SensorHandler
             else
             {
                 LogManager.Log("Some sensor is not supported on this device");
-            }            
+            }
         }
 
         public override void Start()
@@ -88,7 +88,7 @@ namespace robobot_winphone.Model.SensorHandler
         private void AccelerometerCurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
             try
-            {              
+            {
                 filter.UpdateCummulativeValue(gyroscope.CurrentValue.RotationRate, e.SensorReading.Acceleration,
                                                   Compass.CurrentValue.MagnetometerReading, e.SensorReading.Timestamp);
             }
@@ -102,20 +102,17 @@ namespace robobot_winphone.Model.SensorHandler
 
         private void TimerTick(object sender, EventArgs e)
         {
-            if ((DateTime.Now - startTime).Seconds <= 1)
-            {
-                return;
-            }
-
             if (Compass.CurrentValue.HeadingAccuracy > 20)
             {
                 CompassCalibrate();
             }
-            else
+            else if ((DateTime.Now - startTime).Seconds <= 1)
             {
-                SensorExecutor.ProcessSensorData(CalculateSpeed(filter.CummulativeValue.Y*60, GyroscopeValueFactor),
-                                                 CalculateTurn(-filter.CummulativeValue.X*60, GyroscopeValueFactor));
+                return;
             }
+            SensorExecutor.ProcessSensorData(CalculateSpeed(filter.CummulativeValue.Y * 60, GyroscopeValueFactor),
+                                             CalculateTurn(-filter.CummulativeValue.X * 60, GyroscopeValueFactor));
+
         }
     }
 }
