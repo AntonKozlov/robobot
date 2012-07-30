@@ -35,7 +35,7 @@ namespace robobot_winphone.Model
 
         public void NavigateToSettingsPage()
         {
-            Navigate("//View/SettingsPage.xaml");
+            Navigate("//View/Settings/SettingsPage.xaml");
         }
 
         public void NavigateToCalibrationPage()

@@ -163,6 +163,7 @@ namespace robobot_winphone.ViewModel
         public void StopSensorHandler()
         {
             handler.Stop();
+            ProcessSensorData(0, 0);
             SendingStatus = SendingStatus.StartSending;
         }
 
