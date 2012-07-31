@@ -15,12 +15,14 @@ namespace robobot_winphone.ViewModel
 
         public ICommand DisconnectCommand { get; private set; }
         public ICommand ConnectCommand { get; private set; }
+        public ICommand ChooseConnectionCommand { get; private set; }
 
         public DeviceConnectionPageViewModel()
         {
             var settings = new Settings();
             ConnectCommand = new ButtonCommand(Connect);
             DisconnectCommand = new ButtonCommand(Disconnect);
+            ChooseConnectionCommand = new ButtonCommand(ChooseConnection);
             IP = settings.IP;
             Port = settings.Port;
             IsDisconnectEnable = SocketClient.Instance.IsConnected();
@@ -47,6 +49,11 @@ namespace robobot_winphone.ViewModel
         {
             SocketClient.Instance.Disconnect();
             GoBack();
+        }
+
+        private void ChooseConnection(object p)
+        {
+            NavigationManager.Instance.NavigateToConnectionsPage();
         }
 
         private void GoBack()

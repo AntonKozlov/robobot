@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace robobot_winphone.Model.DataBase
@@ -53,10 +54,23 @@ namespace robobot_winphone.Model.DataBase
                     db.Connections.InsertOnSubmit(newItem);
                     db.SubmitChanges();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     LogManager.Log("Add to DB error");
                 }
+            }
+        }
+
+        public ObservableCollection<ConnectionDataBaseItem> GetItemCollection()
+        {
+            using (var db = new ConnectionDataContext(ConnectionString))
+            {
+                var collection = new ObservableCollection<ConnectionDataBaseItem>();
+                foreach(var p in db.Connections)
+                {
+                    collection.Add(p);
+                }
+                return collection;
             }
         }
     }
