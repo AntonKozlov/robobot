@@ -42,5 +42,10 @@ namespace robobot_winphone.Model
         {
             Navigate("//View/CalibrationPage.xaml");
         }
+
+        public void NavigateToConnectionsPage()
+        {
+            Navigate("//View/Connections/ConnectionsPage.xaml");
+        }
     }
 }
