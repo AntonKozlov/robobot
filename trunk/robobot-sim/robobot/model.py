@@ -51,11 +51,17 @@ def linesplit(socket):
 
 # Transalte raw input to control
 class proto:
+    cmd_dict = {
+	    1 : lambda v, sock : control(v),
+	    2 : lambda v, sock : sock.send("ImROBOSIM\n") and None
+    }
+    def proto_cmd(self, v, sock):
+	return proto.cmd_dict[v[0]](v[1:], sock)
     def __init__(self, socket):
         self.socket = socket
     def start(self):
-        return imap(lambda str: control(map(int, str.split())), 
-                linesplit(self.socket))
+	return imap(lambda str: self.proto_cmd(map(int, str.split()), self.socket),
+		linesplit(self.socket))
 
 
 # Split stream to pieces of n
@@ -87,4 +93,5 @@ class robot:
         self.proto = proto
     def start(self):
         for c in self.proto.start():
-            self.model.update_control(c)
+	    if c:
+		self.model.update_control(c)
