@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:c="clr-namespace:robobot_winphone.Model.Converters"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d" d:DesignWidth="656" d:DesignHeight="480"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -54,23 +55,23 @@
                     </Image>
                 </Grid>
             </StackPanel>
-            <Grid Width="700" HorizontalAlignment="Left">
+            <Grid Width="600" HorizontalAlignment="Left">
                 <Ellipse Height="60" Width="60"
                      Fill="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}" 
                      Stroke="White" StrokeThickness="2"
                      HorizontalAlignment="Left"
                      VerticalAlignment="Bottom"/>
-                <Slider x:Name="Slider" Width="200"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom"  Minimum="0" Maximum="10" 
-                        ManipulationStarted="SliderManipulationStarted"
-                        ManipulationCompleted="SliderManipulationCompleted"
-                        Value="{Binding SendingStatus, Converter={StaticResource SendingStatusConverter}, Mode=TwoWay}"
-                        IsEnabled="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}">
-                    <Slider.RenderTransform>
-                        <CompositeTransform ScaleY="4" TranslateX="-50" TranslateY="-53"/>
-                    </Slider.RenderTransform>
-                </Slider>
+                <toolkit:ToggleSwitch Checked="ToggleSwitchChecked" 
+                                      Unchecked="ToggleSwitchUnchecked" 
+                                      Content="Sending  " 
+                                      HorizontalContentAlignment="Right" 
+                                      VerticalAlignment="Bottom"
+                                      IsEnabled="{Binding ConnectionStatus, Converter={StaticResource StatusConverter}}"
+                                      IsChecked="{Binding SendingStatus, Mode=TwoWay, Converter={StaticResource SendingStatusConverter}}">
+                    <toolkit:ToggleSwitch.RenderTransform>
+                        <CompositeTransform TranslateY="30"/>
+                    </toolkit:ToggleSwitch.RenderTransform>
+                </toolkit:ToggleSwitch>
             </Grid>
         </Grid>
     </Grid>

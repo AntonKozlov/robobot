@@ -28,8 +28,6 @@ namespace robobot_winphone.ViewModel
         private AbstractSensorHandler handler;
         private double speedRotation;
         private double turnRotation;
-
-        public double StartSendingValue{ private get; set; }
     
         public ICommand SendingCommand { get; private set; }
 
@@ -100,8 +98,6 @@ namespace robobot_winphone.ViewModel
                                        sendingStatusChangedAction(SendingStatus);
                                    };
 
-            SendingCommand = new ButtonCommand(SendOrStopSend);
-
             ConnectionStatus = ConnectionStatus.Disconnected;
             sendingStatus = SendingStatus.StartSending;
 
@@ -136,18 +132,6 @@ namespace robobot_winphone.ViewModel
             LogManager.Log(String.Format("{0} {1}\n", turn, speed));
         }
 
-        private void SendOrStopSend(object p)
-        {
-            if ((SendingStatus == SendingStatus.StartSending) && ((double)p - StartSendingValue >= 0))
-            {
-                StartSensorHandler();
-            }
-            else if ((double)p - StartSendingValue <= 0)
-            {
-                StopSensorHandler();
-            }
-        }
-
         public void ProcessSensorData(int turn, int speed)
         {
             SpeedRotation = speed * 1.5;
@@ -160,10 +144,16 @@ namespace robobot_winphone.ViewModel
             handler = SensorHandlerManager.GetSensorHandler(0.01, this);
         }
 
-        public void StopSensorHandler()
+        public void InterruptSensorHandler()
         {
             handler.Stop();
             ProcessSensorData(0, 0);
+            SendingStatus = SendingStatus.StartSending;
+        }
+
+        public void StopSensorHandler()
+        {
+            handler.Stop();
             SendingStatus = SendingStatus.StartSending;
         }
 

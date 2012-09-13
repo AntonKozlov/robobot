@@ -48,11 +48,11 @@ namespace robobot_winphone.ViewModel
 
         public ConnectionsPageViewModel()
         {
-            FillDataSource();
+            UpdateDataSource();
             DataBaseEventManager.Instance.AddHandler(DeleteConnection);
         }
 
-        private void FillDataSource()
+        private void UpdateDataSource()
         {
             var db = new ConnectionDataBase();
             DataSource = db.GetItemCollection();
@@ -63,6 +63,7 @@ namespace robobot_winphone.ViewModel
             if (e.Type != DataBaseEventType.Delete) return;
             var db = new ConnectionDataBase();
             db.DeleteConnection(e.Item);
+            UpdateDataSource();
         }
     }
 }
