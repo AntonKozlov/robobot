@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using robobot_winphone.Model.EventManager;
 
 namespace robobot_winphone.Model.DataBase
 {
@@ -21,5 +22,17 @@ namespace robobot_winphone.Model.DataBase
         public string Ip { get; set; }
         [Column()]
         public int Port  { get; set; }
+
+        public ConnectionDataBaseItem()
+        {
+            ChooseCommand = new ButtonCommand(Choose);
+        }
+
+        public ICommand ChooseCommand { get; private set; }
+
+        private void Choose(object p)
+        {
+            DataBaseEventManager.Instance.NotifyDataBaseChanged(Port.ToString(), Ip);
+        }
     }
 }
