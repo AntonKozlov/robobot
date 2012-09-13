@@ -18,21 +18,28 @@ namespace robobot_winphone.Model.DataBase
     {
         [Column(IsPrimaryKey = true)]
         public string Name { get; set; }
-        [Column()]
+        [Column]
         public string Ip { get; set; }
-        [Column()]
+        [Column]
         public int Port  { get; set; }
+
+        public ICommand ChooseCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
 
         public ConnectionDataBaseItem()
         {
             ChooseCommand = new ButtonCommand(Choose);
-        }
-
-        public ICommand ChooseCommand { get; private set; }
+            DeleteCommand = new ButtonCommand(Delete);
+        }   
 
         private void Choose(object p)
         {
-            DataBaseEventManager.Instance.NotifyDataBaseChanged(Port.ToString(), Ip);
+            DataBaseEventManager.Instance.NotifyDataBaseChanged(this, DataBaseEventType.Choose);
+        }
+
+        private void Delete(object p)
+        {
+            DataBaseEventManager.Instance.NotifyDataBaseChanged(this, DataBaseEventType.Delete);
         }
     }
 }

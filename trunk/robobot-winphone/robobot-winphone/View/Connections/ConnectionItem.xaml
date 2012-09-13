@@ -15,12 +15,13 @@
             <toolkit:ContextMenuService.ContextMenu>
                 <toolkit:ContextMenu >
                     <toolkit:MenuItem
-                            Header="Choose"
+                        Header="Choose"
                         Command="{Binding ChooseCommand}"
-                        Click="MenuItem_Click"
+                        Click="ChooseClick"
                             />
                     <toolkit:MenuItem
-                            Header="Delete"
+                        Header="Delete"
+                        Command="{Binding DeleteCommand}"
                             />
                 </toolkit:ContextMenu>
             </toolkit:ContextMenuService.ContextMenu>

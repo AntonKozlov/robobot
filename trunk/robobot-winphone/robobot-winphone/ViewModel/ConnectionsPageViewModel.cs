@@ -41,8 +41,7 @@ namespace robobot_winphone.ViewModel
                 selectedItem = value;
                 if (value != null)
                 {
-                    //todo remove tostring
-                    DataBaseEventManager.Instance.NotifyDataBaseChanged(value.Port.ToString(), value.Ip);
+                    DataBaseEventManager.Instance.NotifyDataBaseChanged(value, DataBaseEventType.Choose);
                 }
             }
         }
@@ -50,6 +49,7 @@ namespace robobot_winphone.ViewModel
         public ConnectionsPageViewModel()
         {
             FillDataSource();
+            DataBaseEventManager.Instance.AddHandler(DeleteConnection);
         }
 
         private void FillDataSource()
@@ -58,5 +58,11 @@ namespace robobot_winphone.ViewModel
             DataSource = db.GetItemCollection();
         }
 
+        private void DeleteConnection(object sender, DataBaseEventArgs e)
+        {
+            if (e.Type != DataBaseEventType.Delete) return;
+            var db = new ConnectionDataBase();
+            db.DeleteConnection(e.Item);
+        }
     }
 }

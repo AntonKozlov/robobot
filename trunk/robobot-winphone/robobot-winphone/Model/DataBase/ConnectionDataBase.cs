@@ -27,9 +27,9 @@ namespace robobot_winphone.Model.DataBase
             using (var db = new ConnectionDataContext(ConnectionString))
             {
                 var i = -1;
-                foreach (var nameEnd in from p in db.Connections 
-                                        where p.Name.Length > DefaultName.Length && 
-                                              p.Name.StartsWith(DefaultName) 
+                foreach (var nameEnd in from p in db.Connections
+                                        where p.Name.Length > DefaultName.Length &&
+                                              p.Name.StartsWith(DefaultName)
                                         select p.Name.Substring(DefaultName.Length))
                 {
                     int parsed;
@@ -39,7 +39,7 @@ namespace robobot_winphone.Model.DataBase
             }
         }
 
-        public void AddNewConnection(string name, string ip, int port)
+        public void AddConnection(string name, string ip, int port)
         {
             using (var db = new ConnectionDataContext(ConnectionString))
             {
@@ -66,11 +66,21 @@ namespace robobot_winphone.Model.DataBase
             using (var db = new ConnectionDataContext(ConnectionString))
             {
                 var collection = new ObservableCollection<ConnectionDataBaseItem>();
-                foreach(var p in db.Connections)
+                foreach (var p in db.Connections)
                 {
                     collection.Add(p);
                 }
                 return collection;
+            }
+        }
+
+        public void DeleteConnection(ConnectionDataBaseItem item)
+        {
+            using (var db = new ConnectionDataContext(ConnectionString))
+            {
+                db.Connections.Attach(item);
+                db.Connections.DeleteOnSubmit(item);
+                db.SubmitChanges();
             }
         }
     }

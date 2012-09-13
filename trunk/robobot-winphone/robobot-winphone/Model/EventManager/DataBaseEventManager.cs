@@ -1,11 +1,18 @@
 ﻿using System;
+using robobot_winphone.Model.DataBase;
 
 namespace robobot_winphone.Model.EventManager
 {
+    public enum DataBaseEventType
+    {
+        Delete,
+        Choose
+    }
+
     public class DataBaseEventArgs : EventArgs
     {
-        public string Port;
-        public string IP;
+        public DataBaseEventType Type;
+        public ConnectionDataBaseItem Item;
     }
 
     public delegate void DataBaseEventHandler(object sender, DataBaseEventArgs e);
@@ -23,12 +30,12 @@ namespace robobot_winphone.Model.EventManager
         private DataBaseEventManager()
         {}
 
-        public void NotifyDataBaseChanged(string port, string ip)
+        public void NotifyDataBaseChanged(ConnectionDataBaseItem item, DataBaseEventType type)
         {
             var eventArgs = new DataBaseEventArgs
                                 {
-                                    Port = port, 
-                                    IP = ip
+                                    Item = item,
+                                    Type = type,
                                 };
 
             if (dataBaseChanged != null)

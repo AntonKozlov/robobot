@@ -128,7 +128,7 @@ namespace robobot_winphone.ViewModel
         private void Save(object p)
         {
             var db = new ConnectionDataBase();
-            db.AddNewConnection(ConnectionName, IP, Convert.ToInt32(Port));
+            db.AddConnection(ConnectionName, IP, Convert.ToInt32(Port));
             SaveConnectionDialogVisibility = Visibility.Collapsed;
         }
 
