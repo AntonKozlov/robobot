@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
 using robobot_winphone.ViewModel;
 using robobot_winphone.Model;
-using robobot_winphone.Model.SensorHandler;
 
 namespace robobot_winphone
 {
@@ -51,7 +47,7 @@ namespace robobot_winphone
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-            viewModel.StopSensorHandler();
+            viewModel.InterruptSensorHandler();
             base.OnNavigatingFrom(e);
         }
 
@@ -60,14 +56,14 @@ namespace robobot_winphone
             ApplicationBar.IsVisible = sendingStatus == SendingStatus.StartSending;
         }
 
-        private void SliderManipulationStarted(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        private void ToggleSwitchChecked(object sender, RoutedEventArgs e)
         {
-            viewModel.StartSendingValue = Slider.Value;
+            viewModel.StartSensorHandler();
         }
 
-        private void SliderManipulationCompleted(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
+        private void ToggleSwitchUnchecked(object sender, RoutedEventArgs e)
         {
-            viewModel.SendingCommand.Execute(Slider.Value);
+            viewModel.InterruptSensorHandler();
         }
     }
 }
