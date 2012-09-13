@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using robobot_winphone.ViewModel;
+using robobot_winphone.Model.EventManager;
 
 namespace robobot_winphone.View.Connections
 {
@@ -20,6 +21,11 @@ namespace robobot_winphone.View.Connections
         {
             InitializeComponent();
             DataContext = new ConnectionsPageViewModel();
+        }
+
+        private void ConnectionListSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            NavigationService.GoBack();
         }
     }
 }

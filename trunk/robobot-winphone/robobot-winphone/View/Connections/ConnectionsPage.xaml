@@ -33,7 +33,8 @@
                 <ListBox x:Name="List"
                      ItemsSource="{Binding DataSource, Mode=TwoWay}"
                      SelectionMode="Single"
-                     SelectedItem ="{Binding SelectedConnection, Mode=TwoWay}"
+                     SelectedItem ="{Binding SelectedItem, Mode=TwoWay}"
+                     SelectionChanged="ConnectionListSelectionChanged"
                      toolkit:TiltEffect.IsTiltEnabled="True"
                      >
                     <ListBox.ItemTemplate>

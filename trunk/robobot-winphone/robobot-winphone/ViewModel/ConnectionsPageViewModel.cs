@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using robobot_winphone.Model.DataBase;
+using robobot_winphone.Model.EventManager;
 
 namespace robobot_winphone.ViewModel
 {
@@ -40,7 +41,8 @@ namespace robobot_winphone.ViewModel
                 selectedItem = value;
                 if (value != null)
                 {
-                    //ToDo choose
+                    //todo remove tostring
+                    DataBaseEventManager.Instance.NotifyDataBaseChanged(value.Port.ToString(), value.Ip);
                 }
             }
         }
@@ -55,5 +57,6 @@ namespace robobot_winphone.ViewModel
             var db = new ConnectionDataBase();
             DataSource = db.GetItemCollection();
         }
+
     }
 }

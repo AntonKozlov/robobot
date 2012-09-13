@@ -81,6 +81,7 @@
     <Compile Include="Model\DataBase\ConnectionDataBase.cs" />
     <Compile Include="Model\DataBase\ConnectionDataBaseItem.cs" />
     <Compile Include="Model\DataBase\ConnectionDataContext.cs" />
+    <Compile Include="Model\EventManager\DataBaseEventManager.cs" />
     <Compile Include="Model\SensorHandler\AbstractCompassSensorHandler.cs" />
     <Compile Include="Model\SensorHandler\AbstractTurnCompassSensorHandler.cs" />
     <Compile Include="Model\Utils\ComplementaryFilter.cs" />
