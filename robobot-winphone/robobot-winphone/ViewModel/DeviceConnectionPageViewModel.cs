@@ -94,8 +94,9 @@ namespace robobot_winphone.ViewModel
 
         private void ChangeConnection(object sender, DataBaseEventArgs e)
         {
-            IP = e.IP;
-            Port = e.Port;
+            if (e.Type != DataBaseEventType.Choose) return;
+            IP = e.Item.Ip;
+            Port = e.Item.Port.ToString();
         }
     }
 }

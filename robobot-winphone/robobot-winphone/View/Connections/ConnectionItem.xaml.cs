@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using Microsoft.Phone.Controls;
+using robobot_winphone.Model.Helpers;
 
 namespace robobot_winphone.View.Connections
 {
@@ -12,25 +13,9 @@ namespace robobot_winphone.View.Connections
             InitializeComponent();
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void ChooseClick(object sender, RoutedEventArgs e)
         {
-            FindParentOfType<PhoneApplicationPage>(this).NavigationService.GoBack();
-        }
-
-        public static T FindParentOfType<T>(FrameworkElement element)
-        {
-            var parent = VisualTreeHelper.GetParent(element) as FrameworkElement;
-
-
-            while (parent != null)
-            {
-                if (parent is T)
-                    return (T)(object)parent;
-
-
-                parent = VisualTreeHelper.GetParent(parent) as FrameworkElement;
-            }
-            return default(T);
-        }
+            FindParentHelper.FindParentOfType<PhoneApplicationPage>(this).NavigationService.GoBack();
+        }      
     }
 }
