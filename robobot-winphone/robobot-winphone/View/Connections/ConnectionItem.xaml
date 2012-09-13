@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -11,7 +12,20 @@
     
     <Grid x:Name="LayoutRoot">
         <StackPanel Orientation="Vertical">
-            <TextBlock Text="{Binding Name}" 
+            <toolkit:ContextMenuService.ContextMenu>
+                <toolkit:ContextMenu >
+                    <toolkit:MenuItem
+                            Header="Choose"
+                        Command="{Binding ChooseCommand}"
+                        Click="MenuItem_Click"
+                            />
+                    <toolkit:MenuItem
+                            Header="Delete"
+                            />
+                </toolkit:ContextMenu>
+            </toolkit:ContextMenuService.ContextMenu>
+            <TextBlock x:Name="ItemName"
+                Text="{Binding Name}" 
                        FontSize="22"/>
             <TextBlock Text="{Binding Ip}" 
                        FontSize="18"
@@ -19,6 +33,8 @@
             <TextBlock Text="{Binding Port}" 
                        FontSize="18"
                        Foreground="{StaticResource PhoneSubtleBrush}"/>
+           
         </StackPanel>
+        
     </Grid>
 </UserControl>
