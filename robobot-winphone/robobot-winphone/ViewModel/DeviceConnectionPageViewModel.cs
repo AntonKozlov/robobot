@@ -3,14 +3,40 @@ using System.Net;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using robobot_winphone.Model;
+using robobot_winphone.Model.EventManager;
 
 namespace robobot_winphone.ViewModel
 {
     public class DeviceConnectionPageViewModel : BaseViewModel
     {
+        private string port;
+        private string ip;
+
         public NavigationService NService { get; set; }
-        public string Port { get; set; }
-        public string IP { get; set; }
+        public string Port 
+        { 
+            get
+            {
+                return port;
+            }
+            set 
+            { 
+                port = value;
+                NotifyPropertyChanged("Port");
+            }
+        }
+        public string IP
+        {
+            get
+            {
+                return ip;
+            }
+            set
+            {
+                ip = value;
+                NotifyPropertyChanged("IP");
+            }
+        }
         public bool IsDisconnectEnable { get; private set; }
 
         public ICommand DisconnectCommand { get; private set; }
@@ -26,6 +52,7 @@ namespace robobot_winphone.ViewModel
             IP = settings.IP;
             Port = settings.Port;
             IsDisconnectEnable = SocketClient.Instance.IsConnected();
+            DataBaseEventManager.Instance.AddHandler(ChangeConnection);
         }
        
         private void Connect(object p)
@@ -62,6 +89,13 @@ namespace robobot_winphone.ViewModel
             {
                 NService.GoBack();
             }
+        }
+
+
+        private void ChangeConnection(object sender, DataBaseEventArgs e)
+        {
+            IP = e.IP;
+            Port = e.Port;
         }
     }
 }
