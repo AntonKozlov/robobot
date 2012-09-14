@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace robobot_winphone.Model.Converters
 {

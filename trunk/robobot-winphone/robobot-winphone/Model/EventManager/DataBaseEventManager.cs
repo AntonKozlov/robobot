@@ -48,5 +48,10 @@ namespace robobot_winphone.Model.EventManager
         {
             dataBaseChanged += handler;
         }
+
+        public void RemoveHandler(DataBaseEventHandler handler)
+        {
+            dataBaseChanged -= handler;
+        }
     }
 }

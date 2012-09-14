@@ -6,19 +6,13 @@ namespace robobot_winphone.View
 {
     public partial class DeviceConnectionPage : PhoneApplicationPage
     {
-        private DeviceConnectionPageViewModel deviceConnectionPageViewModel;
+        private DeviceConnectionPageViewModel viewModel;
 
         public DeviceConnectionPage()
         {
             InitializeComponent();
-            deviceConnectionPageViewModel = new DeviceConnectionPageViewModel();
-            DataContext = deviceConnectionPageViewModel;
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            deviceConnectionPageViewModel.NService = NavigationService;
-            base.OnNavigatedTo(e);
+            viewModel = new DeviceConnectionPageViewModel();
+            DataContext = viewModel;
         }
 
         protected override void OnOrientationChanged(OrientationChangedEventArgs e)
@@ -31,6 +25,12 @@ namespace robobot_winphone.View
             {
                 base.OnOrientationChanged(e);
             }
+        }
+
+        private void PageLoaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            viewModel.NService = NavigationService;
+            NavigationService.Navigated += viewModel.NavigatedFromEvent;
         }
     }
 }
