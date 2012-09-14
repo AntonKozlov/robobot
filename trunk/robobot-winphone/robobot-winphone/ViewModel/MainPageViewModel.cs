@@ -11,14 +11,14 @@ namespace robobot_winphone.ViewModel
 {
     public enum ConnectionStatus
     {
-        Connected = 0,
-        Disconnected = 1
+        Connected,
+        Disconnected
     }
 
     public enum SendingStatus
     {
-        StartSending = 0,
-        StopSending = 1
+        StartSending,
+        StopSending
     }
 
     public class MainPageViewModel : BaseViewModel, ISensorExecutor
@@ -148,7 +148,6 @@ namespace robobot_winphone.ViewModel
         {
             handler.Stop();
             ProcessSensorData(0, 0);
-            SendingStatus = SendingStatus.StartSending;
         }
 
         public void StopSensorHandler()
@@ -160,7 +159,6 @@ namespace robobot_winphone.ViewModel
         public void StartSensorHandler()
         {
             handler.Start();
-            SendingStatus = SendingStatus.StopSending;
         }
     }
 }
