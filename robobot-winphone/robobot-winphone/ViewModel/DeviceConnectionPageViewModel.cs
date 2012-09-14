@@ -91,12 +91,19 @@ namespace robobot_winphone.ViewModel
             }
         }
 
-
         private void ChangeConnection(object sender, DataBaseEventArgs e)
         {
             if (e.Type != DataBaseEventType.Choose) return;
             IP = e.Item.Ip;
             Port = e.Item.Port.ToString();
+        }
+
+        public void NavigatedFromEvent(object sender, NavigationEventArgs e)
+        {
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                DataBaseEventManager.Instance.RemoveHandler(ChangeConnection);
+            }
         }
     }
 }
