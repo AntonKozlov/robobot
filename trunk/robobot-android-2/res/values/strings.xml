@@ -10,4 +10,10 @@
     <string name="select_string">Select device</string>
     <string name="connected_string">Connected to</string>
     <string name="cannot_determ_bot">Cannot determ bot</string>
+    <string name="choose_address">Choose address</string>
+    <string name="address">Address:</string>
+    <string name="port">Port:</string>
+    <string name="address_hint">IP address</string>
+    <string name="port_hint">Port</string>
+    <string name="connect">Connect</string>
 </resources>
