@@ -12,8 +12,8 @@ public class BluetoothTransport implements ITransport {
 	private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	
 	public BluetoothTransport(ScanDeviceHandler handler) {
-		if (mBluetoothAdapter.isEnabled() == false) {
-			handler.obtainMessage(ITransport.REQUEST_HW_ENABLE, this).sendToTarget();
+		if (mBluetoothAdapter.isEnabled() ) {
+			//handler.obtainMessage(ITransport.REQUEST_HW_ENABLE, this).sendToTarget();
 		}
 	}
 	
