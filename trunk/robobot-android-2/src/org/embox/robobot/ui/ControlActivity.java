@@ -65,7 +65,8 @@ public class ControlActivity extends Activity implements SensorEventListener{
 	    super.onCreate(savedInstanceState);
 	    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	    setContentView(R.layout.control);
-	    device = SelectActivity.getChoosedDevice();
+	    device = SelectActivity.getChoosedDevice() == null ?
+                AddressChooserActivity.getChoosedDevice() : SelectActivity.getChoosedDevice();
 	    device.setDeviceHandler(new ControlDeviceHandler());
 	    device.init();
 	    
