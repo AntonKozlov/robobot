@@ -1,5 +1,6 @@
 
 import socket
+import OptionMessage_pb2
 
 from itertools import imap
 
@@ -51,17 +52,28 @@ def linesplit(socket):
 
 # Transalte raw input to control
 class proto:
-    cmd_dict = {
-	    1 : lambda v, sock : control(v),
-	    2 : lambda v, sock : sock.send("ImROBOSIM\n") and None
-    }
+    conf_sent = False
+    def det_conf_msg (self):
+        conf_msg = OptionMessage_pb2.OptionMessageEntity()
+        conf_msg.id = 666
+        conf_msg.type = 100
+        conf_msg.sensors = 0
+        conf_msg.commands = 0
+        return conf_msg.SerializeToString()
+
     def proto_cmd(self, v, sock):
-	return proto.cmd_dict[v[0]](v[1:], sock)
+        if not self.conf_sent:
+            self.conf_sent = True
+            return sock.send("\0" + self.det_conf_msg()) and None
+        else:
+            return control(v)
+
     def __init__(self, socket):
         self.socket = socket
+
     def start(self):
-	return imap(lambda str: self.proto_cmd(map(int, str.split()), self.socket),
-		linesplit(self.socket))
+	    return imap(lambda str: self.proto_cmd(map(int, str.split()), self.socket),
+		    linesplit(self.socket))
 
 
 # Split stream to pieces of n
@@ -93,5 +105,5 @@ class robot:
         self.proto = proto
     def start(self):
         for c in self.proto.start():
-	    if c:
-		self.model.update_control(c)
+	        if c:
+		        self.model.update_control(c)
