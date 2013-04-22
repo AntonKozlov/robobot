@@ -7,19 +7,21 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.net.Socket;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.embox.robobot.proto.IProtocol;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import org.embox.robobot.proto.OptionMessage;
+import org.embox.robobot.proto.OptionMessageHelper;
 
 public class InternetDevice implements IDevice, IControllable {
-	/**
-	 * Auto generated, doesn't know AK
-	 */
 	String devId;
 	String name;
+
+    int deviceId;
 	
 	IProtocol proto;
 	IControllable controllable;
@@ -47,7 +49,12 @@ public class InternetDevice implements IDevice, IControllable {
 		this(devId, proto, controllable, socket);
 		this.name = name;
 	}
-	
+
+    public InternetDevice(String name, Socket socket) {
+        this.socket = socket;
+        this.name = name;
+    }
+
 	public int[] setControl(int[] control) {
 		int[] ctrl = controllable.setControl(control);
 		write(proto.translateOutput(ctrl));
@@ -70,7 +77,7 @@ public class InternetDevice implements IDevice, IControllable {
 		
 		@Override
 		public void run() {
-			byte[] buff = new byte[5];
+			byte[] buff = new byte[512];
 			int count;
 			while (aBool.get()) {
 				try {
@@ -183,11 +190,17 @@ public class InternetDevice implements IDevice, IControllable {
 			threadHandler = deviceThread.getThreadHandler();
 			deviceState = DEVICE_DISCONNECTED;
 			outsideHandler.initOk();
-            deviceState = DEVICE_CONNECTED;
-            connectOk();
 		}
-		
-		@Override
+
+        private void determBotSendStamp() {
+            final byte stamp[] = new byte[2];
+            stamp[0] = '2';
+            stamp[1] = '\n';
+            deviceThread.writeData(stamp);
+        }
+
+
+        @Override
 		protected void connectOk() {
 			InputStream stream;
 			try {
@@ -201,7 +214,7 @@ public class InternetDevice implements IDevice, IControllable {
 				deviceReadThread = new DeviceReadThread(this, stream);
 				deviceReadThread.start();
 				//TODO bot determination
-				//determBotSendStamp();
+				determBotSendStamp();
 			} else {
 				outsideHandler.connectOk();
 			}
@@ -216,7 +229,7 @@ public class InternetDevice implements IDevice, IControllable {
 		protected void readDone(byte[] data, int count) {
 			Log.d("robobot", Integer.toString(count)+ Arrays.toString(data));
 			if (deviceState == DEVICE_DETERMING) {
-				int status = 2; //TODO determBotDeterm(data, count);
+				int status = determBotDeterm(data, count);
 				if (status == 0) {
 					connectError("Cannot determ bot");
 					disconnect();
@@ -228,6 +241,25 @@ public class InternetDevice implements IDevice, IControllable {
 				outsideHandler.readDone(proto.translateInput(data), count);
 			}
 		}
+
+        private int determBotDeterm(byte[] data, int count) {
+            OptionMessage.OptionMessageEntity message;
+            byte[] messageBody = new byte[count - 1];
+            System.arraycopy(data, 1, messageBody, 0, count - 1);
+            if (data[0] == 0x0) {
+                message = OptionMessageHelper.getOptionMessage(messageBody);
+                proto = OptionMessageHelper.getDeviceProtocolByType(message.getType());
+                controllable = (IControllable)proto;
+                if (proto != null) {
+                    //TODO as string
+                    deviceId = message.getId();
+                    return RESULT_DETERM_OK;
+                } else {
+                    return RESULT_DETERM_ERROR;
+                }
+            }
+            return RESULT_DETERM_ERROR;
+        }
 		
 		@Override
 		protected void writeDone() {

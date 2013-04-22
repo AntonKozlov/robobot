@@ -1,0 +1,6 @@
+message OptionMessageEntity {
+	optional int32 id = 1;
+	optional int32 type = 2;
+	required int32 sensors = 3;
+	required int32 commands = 4;
+}
