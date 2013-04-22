@@ -1,11 +1,12 @@
 package org.embox.robobot.proto;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.embox.robobot.IControllable;
+import org.embox.robobot.proto.OptionMessage;
 
 public class ProtocolPythonSimulator implements IProtocol, IControllable {
 
     int[] control = new int[2];
-    private boolean isBegin = false;
 
     //TODO in utils
     static int cut(int val, int range) {
@@ -20,22 +21,16 @@ public class ProtocolPythonSimulator implements IProtocol, IControllable {
 
 	@Override
 	public byte[] translateOutput(int[] control) {
-        if (isBegin) {
 		    return (String.format("%d %d\n", control[0], control[1])).getBytes();
-        } else {
-            return null;
-        }
 	}
 
 	@Override
 	public byte[] translateInput(byte[] data) {
-		return null;
-	}
+        return null;
+    }
 
 	@Override
 	public int[] setControl(int[] control) {
-        isBegin = true;
-
         double power = (double) control[1] * 10;
         double turn = (double) control[0] * 10;
 
@@ -49,5 +44,4 @@ public class ProtocolPythonSimulator implements IProtocol, IControllable {
 	public void calibrate(int[] control) {
         return;
 	}
-
 }

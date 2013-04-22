@@ -33,8 +33,6 @@ public class AddressChooserActivity extends Activity {
     private static IDevice choosedDevice;
     Socket socket;
 
-    ProtocolPythonSimulator proto = new ProtocolPythonSimulator();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +44,6 @@ public class AddressChooserActivity extends Activity {
         findViewById(R.id.connect).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-
                 tryConnect();
             }
         });
@@ -55,8 +52,8 @@ public class AddressChooserActivity extends Activity {
     private void tryConnect(){
         String address;
         int port;
-        address = "192.168.0.107";//this.address.getText().toString();
-        port = 1806;//Integer.parseInt(this.port.getText().toString());
+        address = this.address.getText().toString();
+        port = Integer.parseInt(this.port.getText().toString());
 
         try {
             InetAddress inetAddress = InetAddress.getByName(address);
@@ -67,14 +64,14 @@ public class AddressChooserActivity extends Activity {
             return;
         }
 
-        choosedDevice = createDevice("Python", "Python", proto, proto, socket);
+        choosedDevice = createDevice(socket);
         Intent intent = new Intent(AddressChooserActivity.this, ControlActivity.class);
         startActivity(intent);
     }
 
-    private IDevice createDevice(String devId, String name, IProtocol protocol, IControllable controllable,
-                                 Socket socket) {
-        IDevice dev = new InternetDevice(devId, name, protocol, controllable, socket);
+    private IDevice createDevice(Socket socket) {
+        //TODO
+        IDevice dev = new InternetDevice("Python", socket);
         return dev;
     }
 
