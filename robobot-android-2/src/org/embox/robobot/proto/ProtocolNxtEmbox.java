@@ -85,7 +85,13 @@ public class ProtocolNxtEmbox implements IControllable, IProtocol {
 	public byte[] translateInput(byte[] data) {
 		return null;
 	}
-	@Override
+
+    @Override
+    public void setConfig(OptionMessage.OptionMessageEntity config) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
 	public byte[] translateOutput(int[] control) {
 		out[4] = (byte) control[0];
 		out[5] = (byte) control[1];

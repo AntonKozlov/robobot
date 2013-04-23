@@ -2,11 +2,19 @@ package org.embox.robobot.proto;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.embox.robobot.IControllable;
-import org.embox.robobot.proto.OptionMessage;
+import org.embox.robobot.proto.OptionMessage.OptionMessageEntity;
 
 public class ProtocolPythonSimulator implements IProtocol, IControllable {
 
-    int[] control = new int[2];
+    private OptionMessageEntity config;
+    private int[] control = new int[2];
+
+    public ProtocolPythonSimulator() {
+    }
+
+    public ProtocolPythonSimulator(OptionMessageEntity config) {
+        this.config = config;
+    }
 
     //TODO in utils
     static int cut(int val, int range) {
@@ -21,7 +29,11 @@ public class ProtocolPythonSimulator implements IProtocol, IControllable {
 
 	@Override
 	public byte[] translateOutput(int[] control) {
-		    return (String.format("%d %d\n", control[0], control[1])).getBytes();
+        if (config != null) {
+            if ((config.getCommands() & 1) != 0)
+                return (String.format("1#0#%d#%d\n", control[0], control[1])).getBytes();
+        }
+        return null;
 	}
 
 	@Override
@@ -44,4 +56,12 @@ public class ProtocolPythonSimulator implements IProtocol, IControllable {
 	public void calibrate(int[] control) {
         return;
 	}
+
+    public void setConfig(OptionMessageEntity config) {
+        this.config = config;
+    }
+
+    public OptionMessageEntity getConfig() {
+        return  this.config;
+    }
 }
