@@ -1,6 +1,10 @@
 
+import sys
 import socket
+import logging
 import OptionMessage_pb2
+
+log = logging.getLogger(__name__)
 
 from itertools import imap
 
@@ -40,7 +44,7 @@ def linesplit(socket):
     while not done:
         if "\n" in buffer:
             (line, buffer) = buffer.split("\n", 1)
-            yield line+"\n"
+            yield line
         else:
             more = socket.recv(4096)
             if not more:
@@ -58,21 +62,29 @@ class proto:
         conf_msg.id = 666
         conf_msg.type = 100
         conf_msg.sensors = 0
-        conf_msg.commands = 0
+        conf_msg.commands |= 0x1
+        conf_msg.commands |= 0x10
         return conf_msg.SerializeToString()
+
+    cmd_dict = {
+        0 : lambda v : control(map(int, v)),
+        1 : lambda v : log.info('Additional command test') and None
+    }
 
     def proto_cmd(self, v, sock):
         if not self.conf_sent:
             self.conf_sent = True
             return sock.send("\0" + self.det_conf_msg()) and None
+        elif int(v[0]) == 1:
+            return self.cmd_dict[int(v[1])](v[2:])
         else:
-            return control(v)
+            log.info('Unknown command')
 
     def __init__(self, socket):
         self.socket = socket
 
     def start(self):
-	    return imap(lambda str: self.proto_cmd(map(int, str.split()), self.socket),
+	    return imap(lambda str: self.proto_cmd(str.split('#'), self.socket),
 		    linesplit(self.socket))
 
 
