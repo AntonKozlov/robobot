@@ -52,8 +52,8 @@ public class AddressChooserActivity extends Activity {
     private void tryConnect(){
         String address;
         int port;
-        address = this.address.getText().toString();
-        port = Integer.parseInt(this.port.getText().toString());
+        address = "192.168.33.17";//this.address.getText().toString();
+        port = 1806;//Integer.parseInt(this.port.getText().toString());
 
         try {
             InetAddress inetAddress = InetAddress.getByName(address);

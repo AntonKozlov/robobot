@@ -4,4 +4,6 @@ public interface IProtocol {
 	byte[] translateOutput(int[] control);
 	
 	byte[] translateInput(byte[] data);
+
+    void setConfig(OptionMessage.OptionMessageEntity config);
 }
