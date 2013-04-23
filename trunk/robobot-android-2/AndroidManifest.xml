@@ -20,7 +20,7 @@
             android:icon="@drawable/icon"
             android:label="@string/app_name">
         <activity
-                android:name=".ui.SelectActivity"
+                android:name=".ui.MainMenuActivity"
                 android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -28,13 +28,15 @@
             </intent-filter>
         </activity>
         <activity
+                android:name=".ui.SelectActivity"/>
+        <activity
+                android:name=".ui.AddressChooserActivity"/>
+        <activity
                 android:screenOrientation="landscape"
                 android:name=".ui.ControlActivity"/>
         <activity
                 android:name="com.google.ads.AdActivity"
                 android:configChanges="keyboard|keyboardHidden|orientation"/>
-        <activity
-                android:name=".ui.AddressChooserActivity"/>
 
     </application>
 </manifest>

@@ -246,13 +246,14 @@ public class InternetDevice implements IDevice, IControllable {
             OptionMessage.OptionMessageEntity message;
             byte[] messageBody = new byte[count - 1];
             System.arraycopy(data, 1, messageBody, 0, count - 1);
-            if (data[0] == 0x0) {
+            if (data[0] == 0) {
                 message = OptionMessageHelper.getOptionMessage(messageBody);
                 proto = OptionMessageHelper.getDeviceProtocolByType(message.getType());
                 controllable = (IControllable)proto;
                 if (proto != null) {
                     //TODO as string
                     deviceId = message.getId();
+                    proto.setConfig(message);
                     return RESULT_DETERM_OK;
                 } else {
                     return RESULT_DETERM_ERROR;
