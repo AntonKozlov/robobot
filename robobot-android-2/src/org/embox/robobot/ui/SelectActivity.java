@@ -182,30 +182,7 @@ public class SelectActivity extends Activity {
                     startFullScan();
                 }
                 break;
-            case REQUEST_CHOOSE_ADDRESS:
-                if (resultCode == RESULT_OK) {
-
-                }
-                break;
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.select_activity_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.chooseAddress:
-                Intent intent = new Intent(this, AddressChooserActivity.class);
-                startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
