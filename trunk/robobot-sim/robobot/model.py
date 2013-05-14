@@ -2,7 +2,7 @@
 import sys
 import socket
 import logging
-import OptionMessage_pb2
+import ConfigurationMessage_pb2
 
 log = logging.getLogger(__name__)
 
@@ -58,12 +58,11 @@ def linesplit(socket):
 class proto:
     conf_sent = False
     def det_conf_msg (self):
-        conf_msg = OptionMessage_pb2.OptionMessageEntity()
-        conf_msg.id = 666
-        conf_msg.type = 100
-        conf_msg.sensors = 0
-        conf_msg.commands |= 0x1
-        conf_msg.commands |= 0x10
+        conf_msg = ConfigurationMessage_pb2.DeviceConfigurationMessage()
+        conf_msg.id = "Python-SIM"
+        conf_msg.type = ConfigurationMessage_pb2.SIMULATOR
+        conf_msg.sensors = ""
+        conf_msg.commands = conf_msg.commands + chr(0b11 << 6)
         return conf_msg.SerializeToString()
 
     cmd_dict = {
