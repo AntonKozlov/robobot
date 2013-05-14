@@ -8,7 +8,9 @@ public class ProtocolNxtEmbox implements IControllable, IProtocol {
 	
 	protected double angCalbr;
 
-	protected byte[] nxtPacket(boolean reply, byte command,
+    private ConfigurationMessage.DeviceConfigurationMessage config;
+
+    protected byte[] nxtPacket(boolean reply, byte command,
 			byte[] data) {
 		int dataLen;
 		if (data != null) {
@@ -38,9 +40,8 @@ public class ProtocolNxtEmbox implements IControllable, IProtocol {
 	public ProtocolNxtEmbox() {
 		out[0] = 5;
 		out[1] = 0;
-		out[2] = (byte) 0x80;
-		out[3] = (byte) 0x20;
-	
+		out[2] = 1;
+		out[3] = 0x20;
 	}
 	
 	static protected double angle (int x, int y) {
@@ -87,15 +88,20 @@ public class ProtocolNxtEmbox implements IControllable, IProtocol {
 	}
 
     @Override
-    public void setConfig(OptionMessage.OptionMessageEntity config) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setConfig(ConfigurationMessage.DeviceConfigurationMessage config) {
+        this.config = config;
     }
 
     @Override
 	public byte[] translateOutput(int[] control) {
-		out[4] = (byte) control[0];
-		out[5] = (byte) control[1];
-		out[6] = (byte) 0;
-		return out;
+        if (config != null) {
+            if ((config.getCommands().byteAt(0) & 0x20) != 0) {
+		        out[4] = (byte) control[0];
+		        out[5] = (byte) control[1];
+		        out[6] = (byte) 0;
+		        return out;
+            }
+        }
+        return null;
 	}
 }
