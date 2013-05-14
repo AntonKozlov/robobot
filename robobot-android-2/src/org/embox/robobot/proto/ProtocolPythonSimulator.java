@@ -1,18 +1,17 @@
 package org.embox.robobot.proto;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import org.embox.robobot.IControllable;
-import org.embox.robobot.proto.OptionMessage.OptionMessageEntity;
+import org.embox.robobot.proto.ConfigurationMessage.DeviceConfigurationMessage;
 
 public class ProtocolPythonSimulator implements IProtocol, IControllable {
 
-    private OptionMessageEntity config;
+    private ConfigurationMessage.DeviceConfigurationMessage config;
     private int[] control = new int[2];
 
     public ProtocolPythonSimulator() {
     }
 
-    public ProtocolPythonSimulator(OptionMessageEntity config) {
+    public ProtocolPythonSimulator(ConfigurationMessage.DeviceConfigurationMessage config) {
         this.config = config;
     }
 
@@ -30,7 +29,7 @@ public class ProtocolPythonSimulator implements IProtocol, IControllable {
 	@Override
 	public byte[] translateOutput(int[] control) {
         if (config != null) {
-            if ((config.getCommands() & 1) != 0)
+            if ((config.getCommands().byteAt(0) & 1 << 7) != 0)
                 return (String.format("1#0#%d#%d\n", control[0], control[1])).getBytes();
         }
         return null;
@@ -57,11 +56,11 @@ public class ProtocolPythonSimulator implements IProtocol, IControllable {
         return;
 	}
 
-    public void setConfig(OptionMessageEntity config) {
+    public void setConfig(ConfigurationMessage.DeviceConfigurationMessage config) {
         this.config = config;
     }
 
-    public OptionMessageEntity getConfig() {
+    public ConfigurationMessage.DeviceConfigurationMessage getConfig() {
         return  this.config;
     }
 }
