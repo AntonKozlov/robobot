@@ -7,21 +7,18 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.net.Socket;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.embox.robobot.proto.ConfigurationMessage;
+import org.embox.robobot.proto.ConfigurationMessageHelper;
 import org.embox.robobot.proto.IProtocol;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import org.embox.robobot.proto.OptionMessage;
-import org.embox.robobot.proto.OptionMessageHelper;
 
 public class InternetDevice implements IDevice, IControllable {
 	String devId;
 	String name;
-
-    int deviceId;
 	
 	IProtocol proto;
 	IControllable controllable;
@@ -243,16 +240,16 @@ public class InternetDevice implements IDevice, IControllable {
 		}
 
         private int determBotDeterm(byte[] data, int count) {
-            OptionMessage.OptionMessageEntity message;
+            ConfigurationMessage.DeviceConfigurationMessage message;
             byte[] messageBody = new byte[count - 1];
             System.arraycopy(data, 1, messageBody, 0, count - 1);
             if (data[0] == 0) {
-                message = OptionMessageHelper.getOptionMessage(messageBody);
-                proto = OptionMessageHelper.getDeviceProtocolByType(message.getType());
+                message = ConfigurationMessageHelper.getOptionMessage(messageBody);
+                proto = ConfigurationMessageHelper.getDeviceProtocolByType(message.getType());
                 controllable = (IControllable)proto;
                 if (proto != null) {
                     //TODO as string
-                    deviceId = message.getId();
+                    devId = message.getId();
                     proto.setConfig(message);
                     return RESULT_DETERM_OK;
                 } else {

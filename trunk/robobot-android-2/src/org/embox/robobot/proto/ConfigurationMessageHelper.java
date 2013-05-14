@@ -9,15 +9,15 @@ import com.google.protobuf.InvalidProtocolBufferException;
  * Time: 16:15
  * To change this template use File | Settings | File Templates.
  */
-public class OptionMessageHelper {
+public class ConfigurationMessageHelper {
     private static final int ROBOBOT_CAR = 0;
     private static final int LEGO_NXT = 1;
     private static final int PYTHON_SIMULATOR = 100;
 
-    public static OptionMessage.OptionMessageEntity getOptionMessage(byte[] data) {
-        OptionMessage.OptionMessageEntity message;
+    public static ConfigurationMessage.DeviceConfigurationMessage getOptionMessage(byte[] data) {
+        ConfigurationMessage.DeviceConfigurationMessage message;
         try {
-            message = OptionMessage.OptionMessageEntity.parseFrom(data);
+            message = ConfigurationMessage.DeviceConfigurationMessage.parseFrom(data);
             return message;
         } catch (InvalidProtocolBufferException e) {
             //TODO normal logger
@@ -26,13 +26,13 @@ public class OptionMessageHelper {
         return null;
     }
 
-    public static IProtocol getDeviceProtocolByType(int type) {
+    public static IProtocol getDeviceProtocolByType(ConfigurationMessage.DeviceType type) {
         switch (type) {
-            case ROBOBOT_CAR :
-               return new ProtocolRobobotCar();
+//            case ROBOBOT_CAR :
+//               return new ProtocolRobobotCar();
             case LEGO_NXT :
                 return new ProtocolNxtEmbox();
-            case PYTHON_SIMULATOR :
+            case SIMULATOR :
                 return new ProtocolPythonSimulator();
             default :
                 //TODO throw exception

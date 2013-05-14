@@ -5,5 +5,5 @@ public interface IProtocol {
 	
 	byte[] translateInput(byte[] data);
 
-    void setConfig(OptionMessage.OptionMessageEntity config);
+    void setConfig(ConfigurationMessage.DeviceConfigurationMessage config);
 }
