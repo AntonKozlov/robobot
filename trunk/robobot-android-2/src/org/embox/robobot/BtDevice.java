@@ -7,10 +7,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.embox.robobot.proto.IProtocol;
-import org.embox.robobot.proto.ProtocolNxtDirect;
-import org.embox.robobot.proto.ProtocolNxtEmbox;
-import org.embox.robobot.proto.ProtocolRobobotCar;
+import org.embox.robobot.proto.*;
+import org.embox.robobot.proto.ConfigurationMessage.DeviceConfigurationMessage;
 import org.embox.robobot.transport.BluetoothTransport;
 
 import android.bluetooth.BluetoothDevice;
@@ -213,11 +211,10 @@ public class BtDevice implements IDevice, IControllable {
 	}
 	
 	private void determBotSendStamp() {
-		final byte stamp[] = new byte[4];
-		stamp[0] = 2;
-		stamp[1] = 0;
-		stamp[2] = 0;
-		stamp[3] = 0x0D;
+		final byte stamp[] = new byte[3];
+        stamp[0] = 1;
+        stamp[1] = 0;
+        stamp[2] = 0;
 //		threadHandler.obtainMessage(IDevice.REQUEST_WRITE, stamp).sendToTarget();
 		threadHandler.postDelayed(new Runnable() {
 			
@@ -234,37 +231,29 @@ public class BtDevice implements IDevice, IControllable {
 	private int headerPos = 0;
 	
 	private int determBotDeterm(byte[] data, int count) {
-		int dataPos = 0;
-		
-		while (dataPos < count && headerPos < botHeaderLen) {
-			if (data[dataPos] == botHeader[headerPos]) {
-				headerPos ++;
-			} else {
-				headerPos = 0;
-			}
-			dataPos ++;
-		} 
-		
-		if (headerPos < botHeaderLen) {
-			return 1;
-		}
-		
-		if (data[dataPos] == 0x0) { // NXT tank
-			proto = new ProtocolNxtDirect();
-			controllable = (IControllable) proto;
-		}
-		
-		if (data[dataPos] == 0x01) { // Embox tank
-			proto = new ProtocolNxtEmbox();
-			controllable = (IControllable) proto;
-		}
-		
-		if (data[dataPos] == 0x02) {
-			proto = new ProtocolRobobotCar();
-			controllable = (IControllable) proto;
-		}
-		
-		return 2;
+               DeviceConfigurationMessage message;
+        byte[] messageBody = new byte[count - 2];
+        System.arraycopy(data, 2, messageBody, 0, count - 2);
+        if (data[0] == 0) {
+            try {
+                message = ConfigurationMessageHelper.getOptionMessage(messageBody);
+                if (message == null) {
+                    return 1;
+                }
+            } catch (Exception e) {
+                return 1;
+            }
+            proto = ConfigurationMessageHelper.getDeviceProtocolByType(message.getType());
+            controllable = (IControllable)proto;
+            if (proto != null) {
+                devId = message.getId();
+                proto.setConfig(message);
+                return RESULT_DETERM_OK;
+            } else {
+                return RESULT_DETERM_ERROR;
+            }
+        }
+        return RESULT_DETERM_ERROR;
 	}
 	
 	private class DeviceHandlerInternal extends DeviceHandler {
@@ -302,19 +291,36 @@ public class BtDevice implements IDevice, IControllable {
 		protected void connectError(String error) {
 			outsideHandler.connectError(error);
 		}
-		
+
+        private byte[] message = new byte[0];
 		@Override
 		protected void readDone(byte[] data, int count) {
 			Log.d("robobot", Integer.toString(count)+ Arrays.toString(data));
 			if (deviceState == DEVICE_DETERMING) {
-				int status = determBotDeterm(data, count);
+                int status = -1;
+                if (message.length == 0){
+				    status = determBotDeterm(data, count);
+                } else {
+                    byte[] oldMessage = new byte[message.length];
+                    System.arraycopy(message, 0, oldMessage, 0, message.length);
+                    message = new byte[oldMessage.length + count];
+                    System.arraycopy(oldMessage, 0, message, 0, oldMessage.length);
+                    System.arraycopy(data, 0, message, oldMessage.length, count);
+                    status = determBotDeterm(message, message.length);
+                }
 				if (status == 0) {
 					connectError("Cannot determ bot");
 					disconnect();
 				} else if (status == 2){
 					deviceState = DEVICE_CONNECTED;
 					connectOk();
-				}
+				} else if (status == 1){
+                    if (message.length == 0) {
+                        message = new byte[count];
+                        System.arraycopy(data, 0, message, 0, count);
+                    }
+                    return;
+                }
 			} else {
 				outsideHandler.readDone(proto.translateInput(data), count);
 			}
