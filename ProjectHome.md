@@ -1,0 +1,1 @@
+We are going to create an application for mobile platform (Android, iPhone,...) which make enable remote control for  Lego Mindstorms robots
